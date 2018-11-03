@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace game
 {
@@ -8,6 +9,7 @@ namespace game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Player player;
 
         public Game()
         {
@@ -27,7 +29,10 @@ namespace game
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            player = new Player(
+                new Sprite(Content.Load<Texture2D>("Sprites/Player"), new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2)),
+                .5f
+            );
         }
 
         protected override void Update(GameTime gameTime)
@@ -35,7 +40,9 @@ namespace game
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            InputManager.Update();
+
+            player.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -43,9 +50,11 @@ namespace game
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
 
-            // TODO: Add your drawing code here
+            player.Draw(spriteBatch);
 
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
