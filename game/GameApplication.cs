@@ -1,17 +1,26 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace game
 {
-    public class Game : Microsoft.Xna.Framework.Game
+    public class GameApplication : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Player player;
 
-        public Game()
+        private Texture2D blank;
+        
+        [STAThread]
+        static void Main()
+        {
+            using (var game = new GameApplication())
+                game.Run();
+        }
+
+        public GameApplication()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -28,6 +37,8 @@ namespace game
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            blank = Content.Load<Texture2D>("blank");
 
             player = new Player(
                 new Sprite(Content.Load<Texture2D>("Sprites/Player"), new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2)),
@@ -53,6 +64,8 @@ namespace game
             spriteBatch.Begin();
 
             player.Draw(spriteBatch);
+            
+            spriteBatch.Draw(blank, new Rectangle(10,10,200,200), Color.Red);
 
             spriteBatch.End();
             base.Draw(gameTime);
