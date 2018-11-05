@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
@@ -51,6 +52,16 @@ namespace game.Entities
                     i--;
                 }
             }
+        }
+
+        /// <summary>
+        /// Get all existing entities of a certain type
+        /// </summary>
+        /// <param name="type">The type of entities to get</param>
+        /// <returns>An array of entities with the certain type</returns>
+        public static Entity[] GetEntitiesByType(EntityTypes type)
+        {
+            return entities.Where(ent => ent.EntityType == type).ToArray();
         }
     }
 }

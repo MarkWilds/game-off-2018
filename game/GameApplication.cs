@@ -48,6 +48,12 @@ namespace game
                 position: new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2)
             );
 
+            EntityManager.AddEntity(new Enemy(
+                speed: .25f,
+                texture: Content.Load<Texture2D>("Sprites/Player"),
+                position: new Vector2(GraphicsDevice.Viewport.Width / 3, GraphicsDevice.Viewport.Height / 3)
+            ));
+
             //TODO: remove when done testing
             player.bulletTexture = Content.Load<Texture2D>("Sprites/Bullet");
 

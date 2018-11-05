@@ -16,6 +16,7 @@ namespace game.Entities
         public Bullet(Texture2D texture, Vector2 position, Vector2 direction, float rotation = 0) : base(texture, position, rotation)
         {
             this.direction = direction;
+            this.EntityType = EntityTypes.Bullet;
         }
 
         public override void Update(GameTime gameTime)
@@ -28,6 +29,20 @@ namespace game.Entities
             }
 
             sprite.Position += direction * (speed * gameTime.ElapsedGameTime.Milliseconds);
+            CheckCollision();
+        }
+
+        private void CheckCollision()
+        {
+            var enemies = EntityManager.GetEntitiesByType(EntityTypes.Enemy);
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                if (sprite.BoudingBox.Intersects(enemies[i].BoundingBox))
+                {
+                    Destroy();
+                    enemies[i].Destroy();
+                }
+            }
         }
     }
 }

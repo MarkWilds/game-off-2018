@@ -19,6 +19,7 @@ namespace game
             : base(texture, position, rotation)
         {
             this.speed = speed;
+            EntityType = EntityTypes.Player;
         }
 
         public override void Update(GameTime gameTime)
@@ -27,7 +28,6 @@ namespace game
             LookAtMouse();
             Shoot();
         }
-
 
         private void Move(GameTime gameTime)
         {

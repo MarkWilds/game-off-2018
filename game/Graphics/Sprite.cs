@@ -13,6 +13,10 @@ namespace game
         public float Rotation;
         private float scale;
 
+        public int Height => texture.Height;
+        public int Width => texture.Width;
+        public Rectangle BoudingBox => new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
+
         public Sprite(Texture2D texture, Vector2 position, float rotation = 0, float scale = 1)
         {
             this.texture = texture;

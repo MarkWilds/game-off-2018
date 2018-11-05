@@ -24,6 +24,10 @@ namespace game.Entities
         public Vector2 Position { get { return sprite.Position; } set { sprite.Position = value; } }
         public float Rotation { get { return sprite.Rotation; } set { sprite.Rotation = value; } }
 
+        public EntityTypes EntityType { get; protected set; }
+
+        public Rectangle BoundingBox => sprite.BoudingBox;
+
         public Entity(Texture2D texture, Vector2 position, float rotation = 0)
         {
             sprite = new Sprite(texture, position, rotation);
@@ -43,7 +47,7 @@ namespace game.Entities
         /// <summary>
         /// Destroy the entity deleting it from the game
         /// </summary>
-        protected void Destroy()
+        public void Destroy()
         {
             ShouldBeDestroyed = true;
         }
