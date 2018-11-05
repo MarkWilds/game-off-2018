@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using game.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -29,7 +31,7 @@ namespace game
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            EntityManager.Initialize();
 
             base.Initialize();
         }
@@ -41,9 +43,15 @@ namespace game
             blank = Content.Load<Texture2D>("blank");
 
             player = new Player(
-                new Sprite(Content.Load<Texture2D>("Sprites/Player"), new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2)),
-                .5f
+                speed: .25f, 
+                texture: Content.Load<Texture2D>("Sprites/Player"), 
+                position: new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2)
             );
+
+            //TODO: remove when done testing
+            player.bulletTexture = Content.Load<Texture2D>("Sprites/Bullet");
+
+            EntityManager.AddEntity(player);
         }
 
         protected override void Update(GameTime gameTime)
@@ -52,18 +60,18 @@ namespace game
                 Exit();
 
             InputManager.Update();
-
-            player.Update(gameTime);
+            EntityManager.Update(gameTime);
 
             base.Update(gameTime);
         }
+
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
 
-            player.Draw(spriteBatch);
+            EntityManager.Draw(spriteBatch);
             
             spriteBatch.Draw(blank, new Rectangle(10,10,200,200), Color.Red);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,8 @@ namespace game
 
         public static float MouseAxisX => currentMouseState.X - previousMouseState.X;
         public static float MouseAxisY => currentMouseState.Y - previousMouseState.Y;
+
+        public static Vector2 MouseWorldPosition => currentMouseState.Position.ToVector2();
 
         public static bool IsKeyPressed(Keys key)
         {

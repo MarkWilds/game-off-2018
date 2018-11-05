@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using game.Entities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -7,44 +8,61 @@ using System.Text;
 
 namespace game
 {
-    class Player
+    class Player : Entity
     {
-        private Sprite sprite;
         private float speed;
 
-        public Player(Sprite sprite, float speed)
+        //TODO: Remove after testing
+        public Texture2D bulletTexture;
+
+        public Player(float speed, Texture2D texture, Vector2 position, float rotation = 0) 
+            : base(texture, position, rotation)
         {
-            this.sprite = sprite;
             this.speed = speed;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Update(GameTime gameTime)
         {
-            sprite.Draw(spriteBatch);
+            Move(gameTime);
+            LookAtMouse();
+            Shoot();
         }
 
-        public void Update(GameTime gameTime)
+
+        private void Move(GameTime gameTime)
         {
-            Vector2 movement = new Vector2();
+            Vector2 direction = new Vector2();
             float deltaTime = gameTime.ElapsedGameTime.Milliseconds;
 
             if (InputManager.IsKeyPressed(Keys.A))
-                movement.X -= 1;
+                direction.X -= 1;
 
             if (InputManager.IsKeyPressed(Keys.D))
-                movement.X += 1;
+                direction.X += 1;
 
             if (InputManager.IsKeyPressed(Keys.W))
-                movement.Y -= 1;
+                direction.Y -= 1;
 
             if (InputManager.IsKeyPressed(Keys.S))
-                movement.Y += 1;
+                direction.Y += 1;
 
             //Normalize vector to prevent faster movement when 2 directions are pressed
-            if(movement.X != 0|| movement.Y != 0)
-                movement.Normalize();
+            if (direction.X != 0 || direction.Y != 0)
+                direction.Normalize();
 
-            sprite.Position += movement * (speed * deltaTime);
+            sprite.Position += direction * (speed * deltaTime);
+        }
+
+        private void LookAtMouse()
+        {
+            var distance = Position - InputManager.MouseWorldPosition;
+            Rotation = (float)Math.Atan2(distance.Y, distance.X) - ((1f * (float)Math.PI) / 2);
+        }
+
+        private void Shoot()
+        {
+            if (InputManager.MouseButtonClicked(MouseButton.Left))
+                new Bullet(bulletTexture, sprite.Position, Forward, Rotation);
         }
     }
 }
