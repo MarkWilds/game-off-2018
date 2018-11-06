@@ -15,7 +15,8 @@ namespace game
 
         public int Height => texture.Height;
         public int Width => texture.Width;
-        public Rectangle BoudingBox => new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
+        public Vector2 Center => new Vector2(Position.X - Width / 2, Position.Y - Height / 2);
+        public Rectangle BoundingBox => new Rectangle((int)Center.X, (int)Center.Y, Width, Height);
 
         public Sprite(Texture2D texture, Vector2 position, float rotation = 0, float scale = 1)
         {

@@ -29,7 +29,7 @@ namespace game.Entities
             }
 
             sprite.Position += direction * (speed * gameTime.ElapsedGameTime.Milliseconds);
-            CheckCollision();
+            //CheckCollision();
         }
 
         private void CheckCollision()
@@ -37,7 +37,7 @@ namespace game.Entities
             var enemies = EntityManager.GetEntitiesByType(EntityTypes.Enemy);
             for (int i = 0; i < enemies.Length; i++)
             {
-                if (sprite.BoudingBox.Intersects(enemies[i].BoundingBox))
+                if (sprite.BoundingBox.Intersects(enemies[i].BoundingBox))
                 {
                     Destroy();
                     enemies[i].Destroy();

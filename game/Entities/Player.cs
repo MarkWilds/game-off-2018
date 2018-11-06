@@ -50,13 +50,13 @@ namespace game
             if (direction.X != 0 || direction.Y != 0)
                 direction.Normalize();
 
-            sprite.Position += direction * (speed * deltaTime);
+            Position += direction * (speed * deltaTime);
         }
 
         private void LookAtMouse()
         {
-            var distance = Position - InputManager.MouseWorldPosition;
-            Rotation = (float)Math.Atan2(distance.Y, distance.X) - ((1f * (float)Math.PI) / 2);
+            var direction = Position - InputManager.MouseWorldPosition;
+            Rotation = (float)Math.Atan2(direction.Y, direction.X) - ((1f * (float)Math.PI) / 2);
         }
 
         private void Shoot()
