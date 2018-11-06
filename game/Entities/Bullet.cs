@@ -32,17 +32,17 @@ namespace game.Entities
             //CheckCollision();
         }
 
-        private void CheckCollision()
-        {
-            var enemies = EntityManager.GetEntitiesByType(EntityTypes.Enemy);
-            for (int i = 0; i < enemies.Length; i++)
-            {
-                if (sprite.BoundingBox.Intersects(enemies[i].BoundingBox))
-                {
-                    Destroy();
-                    enemies[i].Destroy();
-                }
-            }
-        }
+        //private void CheckCollision()
+        //{
+        //    var enemies = EntityManager.GetEntitiesByType(EntityTypes.Enemy);
+        //    for (int i = 0; i < enemies.Length; i++)
+        //    {
+        //        if (sprite.BoundingBox.Intersects(enemies[i].BoundingBox))
+        //        {
+        //            Destroy();
+        //            enemies[i].Destroy();
+        //        }
+        //    }
+        //}
     }
 }

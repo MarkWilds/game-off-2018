@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using game.Entities;
+using game.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,8 +12,7 @@ namespace game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Player player;
-        public static Texture2D BulletTexture;
+        ScreenManager screenManager;
         
         [STAThread]
         static void Main()
@@ -30,29 +30,15 @@ namespace game
 
         protected override void Initialize()
         {
-            EntityManager.Initialize();
-
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            screenManager = new ScreenManager(spriteBatch, Content);
 
-            player = new Player(
-                speed: .25f, 
-                texture: Content.Load<Texture2D>("Sprites/Player"), 
-                position: new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2)
-            );
-
-            new Enemy(
-                speed: .00025f,
-                texture: Content.Load<Texture2D>("Sprites/Enemy"),
-                position: new Vector2(GraphicsDevice.Viewport.Width / 3, GraphicsDevice.Viewport.Height / 3)
-            );
-
-            //TODO: remove when done testing
-            BulletTexture = Content.Load<Texture2D>("Sprites/Bullet");
+            screenManager.ChangeScreen(new OverworldScreen());
         }
 
         protected override void Update(GameTime gameTime)
@@ -61,7 +47,7 @@ namespace game
                 Exit();
 
             InputManager.Update();
-            EntityManager.Update(gameTime);
+            screenManager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -72,8 +58,8 @@ namespace game
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
 
-            EntityManager.Draw(spriteBatch);
-            
+            screenManager.Draw(gameTime);
+
             spriteBatch.End();
             base.Draw(gameTime);
         }

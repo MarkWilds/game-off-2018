@@ -23,16 +23,12 @@ namespace game.Entities
         public Rectangle BoundingBox => sprite.BoundingBox;
 
         //When entity position or rotation is set we adjust the sprite position and rotation
-        public Vector2 Position { get { return sprite.Position; } set { sprite.Position = value; } }
-        public float Rotation { get { return sprite.Rotation; } set { sprite.Rotation = value; } }
+        public Vector2 Position { get => sprite.Position; set => sprite.Position = value; }
+        public float Rotation { get => sprite.Rotation; set => sprite.Rotation = value; }
 
         public Entity(Texture2D texture, Vector2 position, float rotation = 0)
         {
             sprite = new Sprite(texture, position, rotation);
-            Position = position;
-            Rotation = rotation;
-
-            EntityManager.AddEntity(this);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

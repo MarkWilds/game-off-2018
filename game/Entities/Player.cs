@@ -1,4 +1,5 @@
 ﻿using game.Entities;
+using game.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -20,6 +21,7 @@ namespace game
         {
             this.speed = speed;
             EntityType = EntityTypes.Player;
+            bulletTexture = OverworldScreen.BulletTexture;
         }
 
         public override void Update(GameTime gameTime)

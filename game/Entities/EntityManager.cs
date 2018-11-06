@@ -7,16 +7,11 @@ using System.Text;
 
 namespace game.Entities
 {
-    static class EntityManager
+    class EntityManager
     {
-        private static List<Entity> entities;
+        private List<Entity> entities = new List<Entity>();
 
-        public static void Initialize()
-        {
-            entities = new List<Entity>();
-        }
-
-        public static void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             foreach (var entity in entities.ToArray())
             {
@@ -26,7 +21,7 @@ namespace game.Entities
             PostUpdate();
         }
 
-        public static void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch)
         {
             foreach (var entity in entities)
             {
@@ -34,7 +29,7 @@ namespace game.Entities
             }
         }
 
-        public static void AddEntity(Entity entity)
+        public void AddEntity(Entity entity)
         {
             entities.Add(entity);
         }
@@ -42,7 +37,7 @@ namespace game.Entities
         /// <summary>
         /// Check if any entity has to be removed from the game
         /// </summary>
-        private static void PostUpdate()
+        private void PostUpdate()
         {
             for (int i = 0; i < entities.Count; i++)
             {
@@ -59,7 +54,7 @@ namespace game.Entities
         /// </summary>
         /// <param name="type">The type of entities to get</param>
         /// <returns>An array of entities with the certain type</returns>
-        public static Entity[] GetEntitiesByType(EntityTypes type)
+        public Entity[] GetEntitiesByType(EntityTypes type)
         {
             return entities.Where(ent => ent.EntityType == type).ToArray();
         }
