@@ -9,6 +9,18 @@ namespace game.Entities
 {
     class EntityManager
     {
+        public static EntityManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new EntityManager();
+                return instance;
+            }
+        }
+        private static EntityManager instance;
+        private EntityManager() { }
+
         private List<Entity> entities = new List<Entity>();
 
         public void Update(GameTime gameTime)
@@ -54,7 +66,7 @@ namespace game.Entities
         /// </summary>
         /// <param name="type">The type of entities to get</param>
         /// <returns>An array of entities with the certain type</returns>
-        public Entity[] GetEntitiesByType(EntityTypes type)
+        public Entity[] GetEntitiesByType(EntityType type)
         {
             return entities.Where(ent => ent.EntityType == type).ToArray();
         }

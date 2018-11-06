@@ -40,9 +40,8 @@ namespace game
 
         private void RemoveCurrentScreen()
         {
-            var screen = CurrentScreen;
-            screen.Dispose();
-            activeGameScreens.Remove(screen);
+            CurrentScreen.Dispose();
+            activeGameScreens.Remove(CurrentScreen);
         }
 
         public void PushScreen(IGameScreen screen)

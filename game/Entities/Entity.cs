@@ -14,7 +14,7 @@ namespace game.Entities
         /// If set to true, the entity will be removed from the game.
         /// </summary>
         public bool ShouldBeDestroyed { get; protected set; }
-        public EntityTypes EntityType { get; protected set; }
+        public EntityType EntityType { get; protected set; }
 
         /// <summary>
         /// The forward vector of the entity

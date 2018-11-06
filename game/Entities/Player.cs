@@ -20,7 +20,7 @@ namespace game
             : base(texture, position, rotation)
         {
             this.speed = speed;
-            EntityType = EntityTypes.Player;
+            EntityType = EntityType.Player;
             bulletTexture = OverworldScreen.BulletTexture;
         }
 
@@ -34,7 +34,6 @@ namespace game
         private void Move(GameTime gameTime)
         {
             Vector2 direction = new Vector2();
-            float deltaTime = gameTime.ElapsedGameTime.Milliseconds;
 
             if (InputManager.IsKeyPressed(Keys.A))
                 direction.X -= 1;
@@ -52,7 +51,7 @@ namespace game
             if (direction.X != 0 || direction.Y != 0)
                 direction.Normalize();
 
-            Position += direction * (speed * deltaTime);
+            Position += direction * (speed * gameTime.ElapsedGameTime.Milliseconds);
         }
 
         private void LookAtMouse()
@@ -64,7 +63,7 @@ namespace game
         private void Shoot()
         {
             if (InputManager.MouseButtonClicked(MouseButton.Left))
-                new Bullet(bulletTexture, sprite.Position, Forward, Rotation);
+                EntityManager.Instance.AddEntity(new Bullet(bulletTexture, sprite.Position, Forward, EntityType.Enemy, Rotation));
         }
     }
 }

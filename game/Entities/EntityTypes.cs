@@ -4,7 +4,7 @@ using System.Text;
 
 namespace game.Entities
 {
-    enum EntityTypes
+    enum EntityType
     {
         Player,
         Enemy,
