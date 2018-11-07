@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using game.Entities;
+﻿using game.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace game.GameScreens
 {
@@ -15,7 +13,7 @@ namespace game.GameScreens
         public static Texture2D PistolTexture;
         public static Texture2D RifleTexture;
 
-        public bool IsPaused { get; private set; }
+        public ScreenManager ScreenManager { get; set; }
 
         public void Initialize(ContentManager Content)
         {
@@ -37,26 +35,22 @@ namespace game.GameScreens
         public void Update(GameTime gameTime)
         {
             EntityManager.Instance.Update(gameTime);
+
+            if (InputManager.IsKeyPressed(Keys.F4))
+            {
+                ScreenManager.PushScreen(new ShooterScreen());
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            EntityManager.Instance.Draw(spriteBatch, gameTime);
-        }
-
-        public void Pause()
-        {
-            IsPaused = true;
-        }
-
-        public void Resume()
-        {
-            IsPaused = false;
+            spriteBatch.Begin();
+            EntityManager.Instance.Draw(spriteBatch);
+            spriteBatch.End();
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }

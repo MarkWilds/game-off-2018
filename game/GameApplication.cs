@@ -13,7 +13,7 @@ namespace game
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         ScreenManager screenManager;
-        
+
         [STAThread]
         static void Main()
         {
@@ -28,22 +28,18 @@ namespace game
             IsMouseVisible = true;
         }
 
-        protected override void Initialize()
-        {
-            base.Initialize();
-        }
-
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            screenManager = new ScreenManager(spriteBatch, Content);
+            screenManager = new ScreenManager(spriteBatch, Content, GraphicsDevice);
 
             screenManager.ChangeScreen(new OverworldScreen());
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+                Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             InputManager.Update();
@@ -52,15 +48,12 @@ namespace game
             base.Update(gameTime);
         }
 
-
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
 
             screenManager.Draw(gameTime);
 
-            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
