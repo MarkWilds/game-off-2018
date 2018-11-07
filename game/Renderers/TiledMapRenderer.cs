@@ -25,10 +25,9 @@ namespace game
                         continue;
 
                     Texture2D tilesetTexture = map.Textures[tileset];
-                    Vector2 center = new Vector2(tileset.TileWidth / 2, tileset.TileHeight / 2);
 
                     map.GetSourceAndDestinationRectangles(tileset, tile, out source, out destination);
-                    batch.Draw(tilesetTexture, destination, source, Color.White, 0, center, SpriteEffects.None,
+                    batch.Draw(tilesetTexture, destination, source, Color.White, 0, Vector2.Zero, SpriteEffects.None,
                         0);
                 }
             }
@@ -38,17 +37,18 @@ namespace game
         {
             List<TmxLayerTile> indexList = new List<TmxLayerTile>();
             TmxMap data = map.Data;
+            Rectangle cameraBounds = camera.GetBounds();
 
             // calculate how many tiles to draw
             int cameraTilesWidth = ((int) camera.Width / data.TileWidth) + 2;
             int cameraTilesHeight = ((int) camera.Height / data.TileHeight) + 2;
 
             // get camera position in tiles
-            int xCameraStartTile = (int) (camera.Position.X / data.TileWidth);
-            int yCameraStartTile = (int) (camera.Position.Y / data.TileHeight);
+            int xCameraStartTile = (int) ((camera.Position.X - cameraBounds.Width / 2) / data.TileWidth);
+            int yCameraStartTile = (int) ((camera.Position.Y - cameraBounds.Height / 2) / data.TileHeight);
 
-            int yCameraEndTile = yCameraStartTile + cameraTilesHeight;
             int xCameraEndTile = xCameraStartTile + cameraTilesWidth;
+            int yCameraEndTile = yCameraStartTile + cameraTilesHeight;
 
             // clamp values
             ClampValue(ref xCameraStartTile, data.Width);

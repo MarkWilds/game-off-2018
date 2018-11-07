@@ -44,8 +44,6 @@ namespace game
 
             InputManager.Update();
             screenManager.Update(gameTime);
-
-            base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -53,8 +51,6 @@ namespace game
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             screenManager.Draw(gameTime);
-
-            base.Draw(gameTime);
         }
     }
 }

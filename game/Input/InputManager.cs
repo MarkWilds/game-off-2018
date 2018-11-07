@@ -27,19 +27,11 @@ namespace game
         /// <summary>
         /// The world position of the mouse
         /// </summary>
-        public static Vector2 MouseWorldPosition => currentMouseState.Position.ToVector2();
+        public static Vector2 MousePosition => currentMouseState.Position.ToVector2();
         
         public static bool IsKeyDown(Keys key)
         {
             return currentKeyboardState.IsKeyDown(key);
-        }
-
-        /// <summary>
-        /// Check if a key is being held down this frame
-        /// </summary>
-        public static bool IsKeyDown(Keys key)
-        {
-            return currentKeyboardState.IsKeyDown(key) && !previousKeyboardState.IsKeyDown(key);
         }
 
         /// <summary>

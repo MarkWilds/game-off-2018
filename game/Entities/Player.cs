@@ -39,7 +39,6 @@ namespace game
         public override void Update(GameTime gameTime)
         {
             Move(gameTime);
-            LookAtMouse();
             Shoot();
 
             weaponManager.Update(gameTime);
@@ -66,12 +65,6 @@ namespace game
                 direction.Normalize();
 
             Position += direction * (speed * gameTime.ElapsedGameTime.Milliseconds);
-        }
-
-        private void LookAtMouse()
-        {
-            var direction = Position - InputManager.MouseWorldPosition;
-            Rotation = (float)Math.Atan2(direction.Y, direction.X) - ((1f * (float)Math.PI) / 2);
         }
 
         private void Shoot()

@@ -1,4 +1,6 @@
-﻿using game.Entities;
+﻿using System;
+using Comora;
+using game.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,6 +15,11 @@ namespace game.GameScreens
         public static Texture2D PistolTexture;
         public static Texture2D RifleTexture;
 
+        private Player player;
+        private Camera camera;
+        private Map hubMap;
+        private TiledMapRenderer mapRenderer;
+
         public ScreenManager ScreenManager { get; set; }
 
         public void Initialize(ContentManager Content)
@@ -21,20 +28,34 @@ namespace game.GameScreens
             PistolTexture = Content.Load<Texture2D>("Sprites/Pistol");
             RifleTexture = Content.Load<Texture2D>("Sprites/Rifle");
 
-            EntityManager.Instance.AddEntity(
-                new Player(.25f,Content.Load<Texture2D>("Sprites/Player"),new Vector2(300, 300))
-            );
+            player = new Player(.25f, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
+            EntityManager.Instance.AddEntity(player);
 
             EntityManager.Instance.AddEntity(
-                new Enemy(.25f,Content.Load<Texture2D>("Sprites/Enemy"),new Vector2(50, 50))
+                new Enemy(.25f, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512))
             );
 
             EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), new Vector2(400, 400)));
+
+            mapRenderer = new TiledMapRenderer();
+
+            camera = new Camera(ScreenManager.GraphicsDevice);
+            camera.Debug.IsVisible = true;
+            camera.LoadContent();
+//            camera.Debug.Grid.AddLines(32, Color.White, 2);
+//            camera.Debug.Grid.AddLines(256, Color.Red, 4);
+
+            hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
         }
 
         public void Update(GameTime gameTime)
         {
+            UpdatePlayerLookDirection();
+
             EntityManager.Instance.Update(gameTime);
+
+            camera.Position = player.Position;
+            camera.Position = new Vector2((int)camera.Position.X, (int)camera.Position.Y);
 
             if (InputManager.IsKeyPressed(Keys.F4))
             {
@@ -42,11 +63,32 @@ namespace game.GameScreens
             }
         }
 
+        private void UpdatePlayerLookDirection()
+        {
+            Vector2 mouseWorldPosition = InputManager.MousePosition;
+            mouseWorldPosition += camera.Position;
+            mouseWorldPosition.X -= camera.GetBounds().Width / 2;
+            mouseWorldPosition.Y -= camera.GetBounds().Height / 2;
+            
+            // does not see to work :/
+//            camera.ToWorld(ref mousePosition, out mouseWorldPosition);
+
+            var direction = player.Position - mouseWorldPosition;
+            player.Rotation = (float) (Math.Atan2(direction.Y, direction.X) - Math.PI / 2);
+        }
+
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.Begin();
-            EntityManager.Instance.Draw(spriteBatch);
+
+
+            spriteBatch.Begin(camera);
+
+            mapRenderer.Render(hubMap, spriteBatch, camera);
+            EntityManager.Instance.Draw(spriteBatch, gameTime);
+
             spriteBatch.End();
+            
+            spriteBatch.Draw(this.camera.Debug);
         }
 
         public void Dispose()
