@@ -35,16 +35,16 @@ namespace game
         {
             Vector2 direction = new Vector2();
 
-            if (InputManager.IsKeyPressed(Keys.A))
+            if (InputManager.IsKeyDown(Keys.A))
                 direction.X -= 1;
 
-            if (InputManager.IsKeyPressed(Keys.D))
+            if (InputManager.IsKeyDown(Keys.D))
                 direction.X += 1;
 
-            if (InputManager.IsKeyPressed(Keys.W))
+            if (InputManager.IsKeyDown(Keys.W))
                 direction.Y -= 1;
 
-            if (InputManager.IsKeyPressed(Keys.S))
+            if (InputManager.IsKeyDown(Keys.S))
                 direction.Y += 1;
 
             //Normalize vector to prevent faster movement when 2 directions are pressed

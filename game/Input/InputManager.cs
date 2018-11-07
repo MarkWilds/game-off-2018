@@ -18,10 +18,15 @@ namespace game
         public static float MouseAxisY => currentMouseState.Y - previousMouseState.Y;
 
         public static Vector2 MouseWorldPosition => currentMouseState.Position.ToVector2();
+        
+        public static bool IsKeyDown(Keys key)
+        {
+            return currentKeyboardState.IsKeyDown(key);
+        }
 
         public static bool IsKeyPressed(Keys key)
         {
-            return currentKeyboardState.IsKeyDown(key);
+            return currentKeyboardState.IsKeyDown(key) && !previousKeyboardState.IsKeyDown(key);
         }
 
         public static bool IsMouseButtonPressed(MouseButton button)
