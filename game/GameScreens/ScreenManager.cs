@@ -1,13 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace game
 {
-    class ScreenManager
+    public class ScreenManager
     {
         private readonly SpriteBatch spriteBatch;
         private readonly ContentManager contentManager;
@@ -25,12 +23,8 @@ namespace game
         public void ChangeScreen(IGameScreen screen)
         {
             RemoveAllScreens();
-
-            activeGameScreens.Add(screen);
-
-            screen.Initialize(contentManager);
+            PushScreen(screen);
         }
-
 
         private void RemoveAllScreens()
         {
@@ -46,9 +40,7 @@ namespace game
 
         public void PushScreen(IGameScreen screen)
         {
-            if (!IsScreenListEmpty)
-                CurrentScreen.Pause();
-
+            screen.ScreenManager = this;
             activeGameScreens.Add(screen);
 
             screen.Initialize(contentManager);
@@ -58,23 +50,18 @@ namespace game
         {
             if (!IsScreenListEmpty)
                 RemoveCurrentScreen();
-
-            if (!IsScreenListEmpty)
-                CurrentScreen.Resume();
         }
 
         public void Update(GameTime gameTime)
         {
             if (!IsScreenListEmpty)
-                if(!CurrentScreen.IsPaused)
-                    CurrentScreen.Update(gameTime);
+                CurrentScreen.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime)
         {
             if (!IsScreenListEmpty)
-                if (!CurrentScreen.IsPaused)
-                    CurrentScreen.Draw(spriteBatch, gameTime);
+                CurrentScreen.Draw(spriteBatch, gameTime);
         }
     }
 }

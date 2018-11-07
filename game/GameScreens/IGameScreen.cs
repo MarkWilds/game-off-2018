@@ -7,15 +7,12 @@ using System.Text;
 
 namespace game
 {
-    interface IGameScreen : IDisposable
+    public interface IGameScreen : IDisposable
     {
+        ScreenManager ScreenManager { get; set; }
+        
         void Initialize(ContentManager contentManager);
         void Update(GameTime gameTime);
         void Draw(SpriteBatch spriteBatch, GameTime gameTime);
-
-        bool IsPaused { get; }
-
-        void Pause();
-        void Resume();
     }
 }

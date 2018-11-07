@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using game.Entities;
+﻿using game.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace game.GameScreens
 {
@@ -13,7 +11,7 @@ namespace game.GameScreens
         //TODO: Remove after testing
         public static Texture2D BulletTexture;
 
-        public bool IsPaused { get; private set; }
+        public ScreenManager ScreenManager { get; set; }
 
         public void Initialize(ContentManager Content)
         {
@@ -31,6 +29,11 @@ namespace game.GameScreens
         public void Update(GameTime gameTime)
         {
             EntityManager.Instance.Update(gameTime);
+
+            if (InputManager.IsKeyPressed(Keys.F4))
+            {
+                
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -38,19 +41,8 @@ namespace game.GameScreens
             EntityManager.Instance.Draw(spriteBatch);
         }
 
-        public void Pause()
-        {
-            IsPaused = true;
-        }
-
-        public void Resume()
-        {
-            IsPaused = false;
-        }
-
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }
