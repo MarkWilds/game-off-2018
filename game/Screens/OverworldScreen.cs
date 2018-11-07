@@ -38,7 +38,9 @@ namespace game.GameScreens
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            spriteBatch.Begin();
             EntityManager.Instance.Draw(spriteBatch);
+            spriteBatch.End();
         }
 
         public void Dispose()

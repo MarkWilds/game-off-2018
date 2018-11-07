@@ -9,12 +9,14 @@ namespace game
     {
         private readonly SpriteBatch spriteBatch;
         private readonly ContentManager contentManager;
+        public readonly GraphicsDevice GraphicsDevice;
         private List<IGameScreen> activeGameScreens = new List<IGameScreen>();
 
-        public ScreenManager(SpriteBatch spriteBatch, ContentManager contentManager)
+        public ScreenManager(SpriteBatch spriteBatch, ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
             this.spriteBatch = spriteBatch;
             this.contentManager = contentManager;
+            this.GraphicsDevice = graphicsDevice;
         }
 
         private IGameScreen CurrentScreen => activeGameScreens[activeGameScreens.Count - 1];

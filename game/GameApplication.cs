@@ -31,7 +31,7 @@ namespace game
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            screenManager = new ScreenManager(spriteBatch, Content);
+            screenManager = new ScreenManager(spriteBatch, Content, GraphicsDevice);
 
             screenManager.ChangeScreen(new OverworldScreen());
         }
@@ -51,11 +51,9 @@ namespace game
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
 
             screenManager.Draw(gameTime);
 
-            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
