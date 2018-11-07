@@ -19,7 +19,7 @@ namespace game.Entities
         /// <summary>
         /// The forward vector of the entity
         /// </summary>
-        protected Vector2 Forward => new Vector2((float)Math.Sin(sprite.Rotation), -(float)Math.Cos(sprite.Rotation));
+        public Vector2 Forward => new Vector2((float)Math.Sin(sprite.Rotation), -(float)Math.Cos(sprite.Rotation));
         public Rectangle BoundingBox => sprite.BoundingBox;
 
         //When entity position or rotation is set we adjust the sprite position and rotation
@@ -31,7 +31,7 @@ namespace game.Entities
             sprite = new Sprite(texture, position, rotation);
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             sprite.Draw(spriteBatch);
         }

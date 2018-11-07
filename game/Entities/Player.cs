@@ -12,6 +12,7 @@ namespace game
     class Player : Entity
     {
         private float speed;
+        private WeaponManager weaponManager;
 
         //TODO: Remove after testing
         public Texture2D bulletTexture;
@@ -22,6 +23,17 @@ namespace game
             this.speed = speed;
             EntityType = EntityType.Player;
             bulletTexture = OverworldScreen.BulletTexture;
+
+            weaponManager = new WeaponManager(this);
+            weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture, Position + Forward));
+            weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture, Position + Forward));
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            base.Draw(spriteBatch, gameTime);
+
+            weaponManager.Draw(spriteBatch, gameTime);
         }
 
         public override void Update(GameTime gameTime)
@@ -29,22 +41,24 @@ namespace game
             Move(gameTime);
             LookAtMouse();
             Shoot();
+
+            weaponManager.Update(gameTime);
         }
 
         private void Move(GameTime gameTime)
         {
             Vector2 direction = new Vector2();
 
-            if (InputManager.IsKeyPressed(Keys.A))
+            if (InputManager.IsKeyDown(Keys.A))
                 direction.X -= 1;
 
-            if (InputManager.IsKeyPressed(Keys.D))
+            if (InputManager.IsKeyDown(Keys.D))
                 direction.X += 1;
 
-            if (InputManager.IsKeyPressed(Keys.W))
+            if (InputManager.IsKeyDown(Keys.W))
                 direction.Y -= 1;
 
-            if (InputManager.IsKeyPressed(Keys.S))
+            if (InputManager.IsKeyDown(Keys.S))
                 direction.Y += 1;
 
             //Normalize vector to prevent faster movement when 2 directions are pressed
@@ -63,7 +77,7 @@ namespace game
         private void Shoot()
         {
             if (InputManager.MouseButtonClicked(MouseButton.Left))
-                EntityManager.Instance.AddEntity(new Bullet(bulletTexture, sprite.Position, Forward, EntityType.Enemy, Rotation));
+                weaponManager.CurrentWeapon.Shoot();
         }
     }
 }

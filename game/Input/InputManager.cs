@@ -14,16 +14,40 @@ namespace game
         private static MouseState currentMouseState;
         private static MouseState previousMouseState;
 
+        /// <summary>
+        /// The amount the mouse moved in the X axis
+        /// </summary>
         public static float MouseAxisX => currentMouseState.X - previousMouseState.X;
+
+        /// <summary>
+        /// The amount the mouse moved in the Y axis
+        /// </summary>
         public static float MouseAxisY => currentMouseState.Y - previousMouseState.Y;
 
+        /// <summary>
+        /// The world position of the mouse
+        /// </summary>
         public static Vector2 MouseWorldPosition => currentMouseState.Position.ToVector2();
 
-        public static bool IsKeyPressed(Keys key)
+        /// <summary>
+        /// Check if a key is being held down this frame
+        /// </summary>
+        public static bool IsKeyDown(Keys key)
         {
             return currentKeyboardState.IsKeyDown(key);
         }
 
+        /// <summary>
+        /// Check if a key has been pressed this frame
+        /// </summary>
+        public static bool IsKeyPressed(Keys key)
+        {
+            return previousKeyboardState.IsKeyUp(key) && currentKeyboardState.IsKeyDown(key);
+        }
+
+        /// <summary>
+        /// Check if a mousebutton is being held down this frame
+        /// </summary>
         public static bool IsMouseButtonPressed(MouseButton button)
         {
             switch (button)
@@ -37,6 +61,11 @@ namespace game
             }
         }
 
+        /// <summary>
+        /// Check if a mousebutton has been clicked this frame
+        /// </summary>
+        /// <param name="button"></param>
+        /// <returns></returns>
         public static bool MouseButtonClicked(MouseButton button)
         {
             switch (button)
@@ -51,8 +80,7 @@ namespace game
         }
 
         public static void Update()
-        {
-            
+        {            
             previousKeyboardState = currentKeyboardState;
             currentKeyboardState = Keyboard.GetState();
 

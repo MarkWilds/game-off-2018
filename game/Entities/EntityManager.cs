@@ -33,11 +33,11 @@ namespace game.Entities
             PostUpdate();
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             foreach (var entity in entities)
             {
-                entity.Draw(spriteBatch);
+                entity.Draw(spriteBatch, gameTime);
             }
         }
 
