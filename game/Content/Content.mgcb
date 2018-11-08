@@ -25,7 +25,7 @@
 /processorParam:TextureFormat=Color
 /build:blank.png
 
-#begin Sprites/Bullet.png
+#begin Sprites/AmmoPack.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,7 +35,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Bullet.png
+/build:Sprites/AmmoPack.png
 
 #begin Sprites/Bullet.png
 /importer:TextureImporter
@@ -61,18 +61,6 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/Car.png
 
-#begin Sprites/Car.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/Car.png
-
 #begin Sprites/Enemy.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -85,7 +73,7 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/Enemy.png
 
-#begin Sprites/Enemy.png
+#begin Sprites/HealthPack.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -95,7 +83,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Enemy.png
+/build:Sprites/HealthPack.png
 
 #begin Sprites/Pistol.png
 /importer:TextureImporter
@@ -108,18 +96,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Sprites/Pistol.png
-
-#begin Sprites/Player.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/Player.png
 
 #begin Sprites/Player.png
 /importer:TextureImporter

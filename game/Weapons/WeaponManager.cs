@@ -1,4 +1,5 @@
 ﻿using game.Entities;
+using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,11 +11,16 @@ namespace game
 {
     class WeaponManager
     {
-        public IWeapon CurrentWeapon => weaponList[currWeaponIndex];
-
+        private IWeapon CurrentWeapon => weaponList[currWeaponIndex];
         private List<IWeapon> weaponList = new List<IWeapon>();
         private int currWeaponIndex = 0;
         private Entity owner;
+
+        private Dictionary<BulletType, int> ammo = new Dictionary<BulletType, int>()
+        {
+            {BulletType.Pistol, 30 },
+            {BulletType.AssaultRifle, 30 }
+        };
 
         public WeaponManager(Entity owner)
         {
@@ -64,6 +70,23 @@ namespace game
                 PreviousWeapon();
 
             CurrentWeapon.Update(gameTime);
+        }
+
+        public void ShootCurrentWeapon()
+        {
+            if (ammo[CurrentWeapon.BulletType] <= 0)
+                return;
+
+            if(CurrentWeapon.Shoot())
+                ammo[CurrentWeapon.BulletType]--;
+        }
+
+        public void AddAmmo(BulletType type, int amount)
+        {
+            if (!ammo.ContainsKey(type))
+                throw new Exception("That ammo doesn't exist in our dictionary");
+            else
+                ammo[type] += amount;
         }
     }
 }

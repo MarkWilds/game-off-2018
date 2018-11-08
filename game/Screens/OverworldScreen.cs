@@ -1,6 +1,7 @@
 ﻿using System;
 using Comora;
 using game.Entities;
+using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,6 +38,9 @@ namespace game.GameScreens
 
             EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), new Vector2(400, 400),
                 (float) -Math.PI / 2));
+
+            EntityManager.Instance.AddEntity(new AmmoPack(BulletType.AssaultRifle, 30, Content.Load<Texture2D>("Sprites/AmmoPack"), new Vector2(200, 300)));
+            EntityManager.Instance.AddEntity(new HealthPack(25, Content.Load<Texture2D>("Sprites/HealthPack"), new Vector2(300, 300)));
 
             mapRenderer = new TiledMapRenderer();
 

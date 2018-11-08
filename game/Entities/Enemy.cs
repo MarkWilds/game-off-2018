@@ -5,18 +5,20 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace game.Entities
 {
-    class Enemy : Entity
+    class Enemy : Entity, IDamageable
     {
-        public float speed;
+        private float speed;
         private float timeBetweenShots = 1;
         private float timer;
         private Entity target;
+        private int damage = 10;
+
+        public int Health { get; private set; } = 50;
 
         public Enemy(float speed, Texture2D texture, Vector2 position, float rotation = 0)
             : base(texture, position, rotation)
         {
             this.speed = speed;
-            this.EntityType = EntityType.Enemy;
         }
 
         public override void Update(GameTime gameTime)
@@ -49,7 +51,7 @@ namespace game.Entities
             if (timer < timeBetweenShots)
                 return;
 
-            EntityManager.Instance.AddEntity(new Bullet(OverworldScreen.BulletTexture, position, Forward, EntityType.Player, rotation));
+            EntityManager.Instance.AddEntity(new Bullet(damage, OverworldScreen.BulletTexture, position + (Forward * Height), Forward, rotation));
             timer = 0;
         }
 
@@ -61,7 +63,19 @@ namespace game.Entities
 
         private void GetNewTarget()
         {
-            target = EntityManager.Instance.GetEntitiesByType(EntityType.Player)[0];
+            target = EntityManager.Instance.GetPlayer();
+        }
+
+        public void TakeDamage(int amount)
+        {
+            Health -= amount;
+            if (Health <= 0)
+                Die();
+        }
+
+        private void Die()
+        {
+            Destroy();
         }
     }
 }

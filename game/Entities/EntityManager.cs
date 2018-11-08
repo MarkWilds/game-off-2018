@@ -62,13 +62,17 @@ namespace game.Entities
         }
 
         /// <summary>
-        /// Get all existing entities of a certain type
+        /// Get all exisiting damageable entities
         /// </summary>
-        /// <param name="type">The type of entities to get</param>
-        /// <returns>An array of entities with the certain type</returns>
-        public Entity[] GetEntitiesByType(EntityType type)
+        /// <returns></returns>
+        public Entity[] GetDamageableEntities()
         {
-            return entities.Where(ent => ent.EntityType == type).ToArray();
+            return entities.Where(entity => entity is IDamageable).ToArray();
+        }
+
+        public Entity GetPlayer()
+        {
+            return entities.FirstOrDefault(ent => ent is Player);
         }
     }
 }

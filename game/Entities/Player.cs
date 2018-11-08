@@ -9,25 +9,24 @@ using System.Text;
 
 namespace game
 {
-    class Player : Entity
+    class Player : Entity, IDamageable
     {
         private float speed;
-        private WeaponManager weaponManager;
+        public WeaponManager WeaponManager { get; private set; }
 
-        //TODO: Remove after testing
-        public Texture2D bulletTexture;
+        public int MaxHealth { get; private set; } = 100;
+        public int Health { get; private set; }
 
         public Player(float speed, Texture2D texture, Vector2 position, float rotation = 0)
             : base(texture, position, rotation)
         {
             this.speed = speed;
-            EntityType = EntityType.Player;
-            bulletTexture = OverworldScreen.BulletTexture;
+            Health = MaxHealth;
 
-            weaponManager = new WeaponManager(this);
-            weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture,
+            WeaponManager = new WeaponManager(this);
+            WeaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture,
                 base.position + Forward));
-            weaponManager.AddWeapon(new AssaultRifle(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
+            WeaponManager.AddWeapon(new AssaultRifle(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
                 base.position + Forward));
         }
 
@@ -35,7 +34,7 @@ namespace game
         {
             base.Draw(spriteBatch, gameTime);
 
-            weaponManager.Draw(spriteBatch, gameTime);
+            WeaponManager.Draw(spriteBatch, gameTime);
         }
 
         public override void Update(GameTime gameTime)
@@ -43,7 +42,7 @@ namespace game
             Move(gameTime);
             Shoot();
 
-            weaponManager.Update(gameTime);
+            WeaponManager.Update(gameTime);
         }
 
         private void Move(GameTime gameTime)
@@ -62,6 +61,13 @@ namespace game
             if (InputManager.IsKeyDown(Keys.S))
                 direction.Y += 1;
 
+            //Testing for ammo
+            if (InputManager.IsKeyPressed(Keys.D1))
+                WeaponManager.AddAmmo(Weapons.BulletType.Pistol, 30);
+            if (InputManager.IsKeyPressed(Keys.D2))
+                WeaponManager.AddAmmo(Weapons.BulletType.AssaultRifle, 30);
+
+
             //Normalize vector to prevent faster movement when 2 directions are pressed
             if (direction.X != 0 || direction.Y != 0)
                 direction.Normalize();
@@ -71,8 +77,32 @@ namespace game
 
         private void Shoot()
         {
-            if (InputManager.MouseButtonClicked(MouseButton.Left))
-                weaponManager.CurrentWeapon.Shoot();
+            if (InputManager.IsMouseButtonPressed(MouseButton.Left))
+                WeaponManager.ShootCurrentWeapon();
+        }
+
+        public void TakeDamage(int amount)
+        {
+            Health -= amount;
+            if (Health <= 0)
+                Die();
+        }
+
+        private void Die()
+        {
+            Destroy();
+        }
+
+        public bool Heal(int amount)
+        {
+            if (Health == MaxHealth)
+                return false;
+
+            Health += amount;
+            if (Health > MaxHealth)
+                Health = MaxHealth;
+
+            return true;
         }
     }
 }
