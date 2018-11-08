@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace game.Entities
+﻿namespace game.Entities
 {
-    enum EntityType
+    public enum EntityType
     {
         Player,
         Enemy,

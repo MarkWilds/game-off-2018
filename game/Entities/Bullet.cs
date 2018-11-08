@@ -1,8 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace game.Entities
 {
@@ -33,7 +30,7 @@ namespace game.Entities
                 Destroy();
             }
 
-            sprite.Position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
             CheckCollision();
         }
 
@@ -42,7 +39,7 @@ namespace game.Entities
             var enemies = EntityManager.Instance.GetEntitiesByType(entityToHit);
             for (int i = 0; i < enemies.Length; i++)
             {
-                if (sprite.BoundingBox.Intersects(enemies[i].BoundingBox))
+                if (BoundingBox.Intersects(enemies[i].BoundingBox))
                 {
                     Destroy();
                     enemies[i].Destroy();

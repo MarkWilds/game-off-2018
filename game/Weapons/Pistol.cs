@@ -26,7 +26,7 @@ namespace game
             if (timer < secondBetweenShots)
                 return;
 
-            EntityManager.Instance.AddEntity(new Bullet(bulletTexture, Position, Forward, EntityType.Enemy, Owner.Rotation));
+            EntityManager.Instance.AddEntity(new Bullet(bulletTexture, position, Forward, EntityType.Enemy, Owner.rotation));
             timer = 0;
         }
 
@@ -34,8 +34,8 @@ namespace game
         {
             base.Update(gameTime);
 
-            sprite.Position = Owner.Position + Owner.Forward;
-            sprite.Rotation = Owner.Rotation;
+            position = Owner.position + Owner.Forward;
+            rotation = Owner.rotation;
 
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
         }

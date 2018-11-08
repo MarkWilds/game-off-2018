@@ -17,7 +17,7 @@ namespace game
         //TODO: Remove after testing
         public Texture2D bulletTexture;
 
-        public Player(float speed, Texture2D texture, Vector2 position, float rotation = 0) 
+        public Player(float speed, Texture2D texture, Vector2 position, float rotation = 0)
             : base(texture, position, rotation)
         {
             this.speed = speed;
@@ -25,8 +25,10 @@ namespace game
             bulletTexture = OverworldScreen.BulletTexture;
 
             weaponManager = new WeaponManager(this);
-            weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture, Position + Forward));
-            weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture, Position + Forward));
+            weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture,
+                base.position + Forward));
+            weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
+                base.position + Forward));
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -64,7 +66,7 @@ namespace game
             if (direction.X != 0 || direction.Y != 0)
                 direction.Normalize();
 
-            Position += direction * (speed * gameTime.ElapsedGameTime.Milliseconds);
+            position += direction * (speed * gameTime.ElapsedGameTime.Milliseconds);
         }
 
         private void Shoot()

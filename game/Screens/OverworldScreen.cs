@@ -54,7 +54,7 @@ namespace game.GameScreens
 
             EntityManager.Instance.Update(gameTime);
 
-            camera.Position = player.Position;
+            camera.Position = player.position;
             camera.Position = new Vector2((int)camera.Position.X, (int)camera.Position.Y);
 
             if (InputManager.IsKeyPressed(Keys.F4))
@@ -73,8 +73,8 @@ namespace game.GameScreens
             // does not see to work :/
 //            camera.ToWorld(ref mousePosition, out mouseWorldPosition);
 
-            var direction = player.Position - mouseWorldPosition;
-            player.Rotation = (float) (Math.Atan2(direction.Y, direction.X) - Math.PI / 2);
+            var direction = mouseWorldPosition - player.position;
+            player.rotation = (float) Math.Atan2(direction.Y, direction.X);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

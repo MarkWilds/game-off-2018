@@ -1,9 +1,7 @@
-﻿using game.GameScreens;
+﻿using System;
+using game.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace game.Entities
 {
@@ -33,7 +31,7 @@ namespace game.Entities
             {
                 LookAtTarget();
 
-                if (Vector2.Distance(Position, target.Position) < 300)
+                if (Vector2.Distance(position, target.position) < 300)
                     Shoot();
                 else
                     MoveTowardsTarget(gameTime);
@@ -42,8 +40,8 @@ namespace game.Entities
 
         private void MoveTowardsTarget(GameTime gameTime)
         {
-            direction = target.Position - Position;
-            Position += direction * (speed * gameTime.ElapsedGameTime.Milliseconds);
+            direction = target.position - position;
+            position += direction * (speed * gameTime.ElapsedGameTime.Milliseconds);
         }
 
         private void Shoot()
@@ -51,14 +49,14 @@ namespace game.Entities
             if (timer < timeBetweenShots)
                 return;
 
-            EntityManager.Instance.AddEntity(new Bullet(OverworldScreen.BulletTexture, Position, Forward, EntityType.Player, Rotation));
+            EntityManager.Instance.AddEntity(new Bullet(OverworldScreen.BulletTexture, position, Forward, EntityType.Player, rotation));
             timer = 0;
         }
 
         private void LookAtTarget()
         {
-            var direction = target.Position - Position;
-            Rotation = (float)Math.Atan2(direction.Y, direction.X) + ((1f * (float)Math.PI) / 2);
+            var direction = target.position - position;
+            rotation = (float)Math.Atan2(direction.Y, direction.X) + ((1f * (float)Math.PI) / 2);
         }
 
         private void GetNewTarget()
