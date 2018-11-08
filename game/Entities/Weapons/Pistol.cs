@@ -34,7 +34,7 @@ namespace game
         {
             base.Update(gameTime);
 
-            sprite.Position = Owner.Position + Owner.Forward;
+            sprite.Position = Owner.Position + (Owner.Forward * sprite.Height /2);
             sprite.Rotation = Owner.Rotation;
 
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;

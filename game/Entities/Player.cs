@@ -69,7 +69,7 @@ namespace game
 
         private void Shoot()
         {
-            if (InputManager.MouseButtonClicked(MouseButton.Left))
+            if (InputManager.IsMouseButtonPressed(MouseButton.Left))
                 weaponManager.CurrentWeapon.Shoot();
         }
     }

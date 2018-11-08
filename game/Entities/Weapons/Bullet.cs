@@ -8,7 +8,7 @@ namespace game.Entities
 {
     class Bullet : Entity
     {
-        private float speed = 0.5f;
+        private float speed = 1f;
         private float lifeSpan = 2f;
         private float timer;
         private Vector2 direction;
