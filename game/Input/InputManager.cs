@@ -29,13 +29,19 @@ namespace game
         /// </summary>
         public static Vector2 MousePosition => currentMouseState.Position.ToVector2();
         
+        public static bool ScrollWheelUp => currentMouseState.ScrollWheelValue > previousMouseState.ScrollWheelValue;
+        public static bool ScrollWheelDown => currentMouseState.ScrollWheelValue < previousMouseState.ScrollWheelValue;
+
+        /// <summary>
+        /// Checks if a key is being pressed down this frame
+        /// </summary>
         public static bool IsKeyDown(Keys key)
         {
             return currentKeyboardState.IsKeyDown(key);
         }
 
         /// <summary>
-        /// Check if a key has been pressed this frame
+        /// Check if a key has been pressed this frame and was released last frame
         /// </summary>
         public static bool IsKeyPressed(Keys key)
         {

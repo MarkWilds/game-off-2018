@@ -1,4 +1,5 @@
 ﻿using game.Entities;
+using game.Entities.Weapons;
 using game.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,7 +27,7 @@ namespace game
 
             weaponManager = new WeaponManager(this);
             weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture, Position + Forward));
-            weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture, Position + Forward));
+            weaponManager.AddWeapon(new AssaultRifle(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture, Position + Forward));
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
