@@ -37,7 +37,7 @@ namespace game.Entities
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.Draw(texture, position, null, Color.White, rotation + (float) Math.PI / 2,
+            spriteBatch.Draw(texture, position, null, Color.White, rotation,
                 new Vector2(texture.Width / 2, texture.Height / 2), 1, SpriteEffects.None, 0);
         }
 

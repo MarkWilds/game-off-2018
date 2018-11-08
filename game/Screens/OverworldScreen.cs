@@ -28,14 +28,15 @@ namespace game.GameScreens
             PistolTexture = Content.Load<Texture2D>("Sprites/Pistol");
             RifleTexture = Content.Load<Texture2D>("Sprites/Rifle");
 
-            player = new Player(.25f, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
+            player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
             EntityManager.Instance.AddEntity(player);
 
             EntityManager.Instance.AddEntity(
-                new Enemy(.25f, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512))
+                new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512))
             );
 
-            EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), new Vector2(400, 400)));
+            EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), new Vector2(400, 400),
+                (float) -Math.PI / 2));
 
             mapRenderer = new TiledMapRenderer();
 
@@ -55,7 +56,7 @@ namespace game.GameScreens
             EntityManager.Instance.Update(gameTime);
 
             camera.Position = player.position;
-            camera.Position = new Vector2((int)camera.Position.X, (int)camera.Position.Y);
+            camera.Position = new Vector2((int) camera.Position.X, (int) camera.Position.Y);
 
             if (InputManager.IsKeyPressed(Keys.F4))
             {
@@ -69,7 +70,7 @@ namespace game.GameScreens
             mouseWorldPosition += camera.Position;
             mouseWorldPosition.X -= camera.GetBounds().Width / 2;
             mouseWorldPosition.Y -= camera.GetBounds().Height / 2;
-            
+
             // does not see to work :/
 //            camera.ToWorld(ref mousePosition, out mouseWorldPosition);
 
@@ -79,15 +80,13 @@ namespace game.GameScreens
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-
-
             spriteBatch.Begin(camera);
 
             mapRenderer.Render(hubMap, spriteBatch, camera);
             EntityManager.Instance.Draw(spriteBatch, gameTime);
 
             spriteBatch.End();
-            
+
             spriteBatch.Draw(this.camera.Debug);
         }
 

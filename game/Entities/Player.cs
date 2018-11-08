@@ -66,7 +66,7 @@ namespace game
             if (direction.X != 0 || direction.Y != 0)
                 direction.Normalize();
 
-            position += direction * (speed * gameTime.ElapsedGameTime.Milliseconds);
+            position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         private void Shoot()
