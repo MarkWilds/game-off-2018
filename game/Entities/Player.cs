@@ -27,7 +27,7 @@ namespace game
             weaponManager = new WeaponManager(this);
             weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture,
                 base.position + Forward));
-            weaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
+            weaponManager.AddWeapon(new AssaultRifle(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
                 base.position + Forward));
         }
 

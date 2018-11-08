@@ -58,12 +58,12 @@ namespace game
 
         public void Update(GameTime gameTime)
         {
-            CurrentWeapon.Update(gameTime);
-
-            if (InputManager.IsKeyPressed(Keys.E))
+            if (InputManager.IsKeyPressed(Keys.E) || InputManager.ScrollWheelUp)
                 NextWeapon();
-            if (InputManager.IsKeyPressed(Keys.Q))
+            if (InputManager.IsKeyPressed(Keys.Q) || InputManager.ScrollWheelDown)
                 PreviousWeapon();
+
+            CurrentWeapon.Update(gameTime);
         }
     }
 }

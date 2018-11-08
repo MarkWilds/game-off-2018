@@ -8,16 +8,13 @@ namespace game
 {
     public class Map
     {
-        private TmxMap data;
-        private Dictionary<TmxTileset, Texture2D> tilesetTextureMap;
-
-        public TmxMap Data => data;
-        public Dictionary<TmxTileset, Texture2D> Textures => tilesetTextureMap;
+        public TmxMap Data { get; private set; }
+        public Dictionary<TmxTileset, Texture2D> Textures { get; private set; }
 
         private Map(TmxMap data, Dictionary<TmxTileset, Texture2D> textures)
         {
-            this.data = data;
-            tilesetTextureMap = textures;
+            this.Data = data;
+            Textures = textures;
         }
 
         public static Map LoadTiledMap(GraphicsDevice graphicsDevice, string pathToMap)
@@ -46,10 +43,10 @@ namespace game
         {
             // TODO: fix tileset choosing, might have to refactor the tiledSharp lib for it
             // we now assume that tilesets are ordered in ascending order by gid
-            int tilesetCount = data.Tilesets.Count;
+            int tilesetCount = Data.Tilesets.Count;
             for (int i = 0; i < tilesetCount; i++)
             {
-                TmxTileset tileset = data.Tilesets[tilesetCount - 1 - i];
+                TmxTileset tileset = Data.Tilesets[tilesetCount - 1 - i];
                 if (tile.Gid >= tileset.FirstGid)
                     return tileset;
             }

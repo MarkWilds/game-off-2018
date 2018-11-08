@@ -1,7 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using game.Entities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace game.Entities
+namespace game
 {
     class Bullet : Entity
     {
