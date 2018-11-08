@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using game.Entities;
 using game.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

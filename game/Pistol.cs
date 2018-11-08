@@ -26,7 +26,7 @@ namespace game
             if (timer < secondBetweenShots)
                 return;
 
-            EntityManager.Instance.AddEntity(new Bullet(bulletTexture, Position + Forward, Forward, EntityType.Enemy, Owner.Rotation));
+            EntityManager.Instance.AddEntity(new Bullet(bulletTexture, Position, Forward, EntityType.Enemy, Owner.Rotation));
             timer = 0;
         }
 

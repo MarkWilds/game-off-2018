@@ -8,7 +8,9 @@ namespace game.Entities
 {
     class Bullet : Entity
     {
-        private float speed = 0.5f;
+        // units per second travel speed
+        // a tile is currently 32 units
+        private float speed = 512f;
         private float lifeSpan = 2f;
         private float timer;
         private Vector2 direction;
@@ -31,7 +33,7 @@ namespace game.Entities
                 Destroy();
             }
 
-            sprite.Position += direction * (speed * gameTime.ElapsedGameTime.Milliseconds);
+            sprite.Position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
             CheckCollision();
         }
 
