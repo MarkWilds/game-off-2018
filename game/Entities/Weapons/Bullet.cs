@@ -15,7 +15,7 @@ namespace game
         private int damage;
 
         public Bullet(int damage, Texture2D texture, Vector2 position, Vector2 direction, float rotation = 0) 
-            : base(texture, position, rotation)
+            : base(texture, 8, 8, position, rotation)
         {
             this.direction = direction;
             this.damage = damage;

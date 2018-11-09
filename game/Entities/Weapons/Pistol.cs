@@ -8,18 +8,18 @@ using System.Text;
 
 namespace game
 {
-    class AssaultRifle : Entity, IWeapon
+    class Pistol : Entity, IWeapon
     {
-        private float secondBetweenShots = .1f;
+        private float secondBetweenShots = .4f;
         private Texture2D bulletTexture;
         private float timer;
 
         public Entity Owner { get; set; }
-        public BulletType BulletType => BulletType.AssaultRifle;
-        public int Damage => 10;
+        public BulletType BulletType => BulletType.Pistol;
+        public int Damage => 15;
 
-        public AssaultRifle(Texture2D bulletTexture, Texture2D texture, Vector2 position, float rotation = 0)
-            : base(texture, position, rotation)
+        public Pistol(Texture2D bulletTexture, Texture2D texture, Vector2 position, float rotation = 0) 
+            : base(texture, 16, 16, position, rotation)
         {
             this.bulletTexture = bulletTexture;
         }
@@ -29,9 +29,8 @@ namespace game
             if (timer < secondBetweenShots)
                 return false;
 
-            EntityManager.Instance.AddEntity(new Bullet(Damage, bulletTexture, position + (Forward * Height / 2), Forward, Owner.rotation));
+            EntityManager.Instance.AddEntity(new Bullet(Damage, bulletTexture, position + (Forward * Height), Forward, Owner.rotation));
             timer = 0;
-
             return true;
         }
 
@@ -39,7 +38,7 @@ namespace game
         {
             base.Update(gameTime);
 
-            position = Owner.position + (Owner.Forward * (Height /2));
+            position = Owner.position + (Owner.Forward * (Height / 2));
             rotation = Owner.rotation;
 
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;

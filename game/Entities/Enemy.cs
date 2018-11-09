@@ -16,7 +16,7 @@ namespace game.Entities
         public int Health { get; private set; } = 50;
 
         public Enemy(float speed, Texture2D texture, Vector2 position, float rotation = 0)
-            : base(texture, position, rotation)
+            : base(texture, 32, 32, position, rotation)
         {
             this.speed = speed;
         }

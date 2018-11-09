@@ -20,6 +20,7 @@ namespace game.GameScreens
         private Camera camera;
         private Map hubMap;
         private TiledMapRenderer mapRenderer;
+        private PlayerInterface playerInterface;
 
         public ScreenManager ScreenManager { get; set; }
 
@@ -32,11 +33,12 @@ namespace game.GameScreens
             player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
             EntityManager.Instance.AddEntity(player);
 
+
             EntityManager.Instance.AddEntity(
                 new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512))
             );
 
-            EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), new Vector2(400, 400),
+            EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), 46, 24, new Vector2(400, 400),
                 (float) -Math.PI / 2));
 
             EntityManager.Instance.AddEntity(new AmmoPack(BulletType.AssaultRifle, 30, Content.Load<Texture2D>("Sprites/AmmoPack"), new Vector2(200, 300)));
@@ -51,6 +53,7 @@ namespace game.GameScreens
 //            camera.Debug.Grid.AddLines(256, Color.Red, 4);
 
             hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
+            playerInterface = new PlayerInterface(player, Content, ScreenManager.GraphicsDevice);
         }
 
         public void Update(GameTime gameTime)
@@ -84,6 +87,7 @@ namespace game.GameScreens
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            //World
             spriteBatch.Begin(camera);
 
             mapRenderer.Render(hubMap, spriteBatch, camera);
@@ -91,7 +95,16 @@ namespace game.GameScreens
 
             spriteBatch.End();
 
-            spriteBatch.Draw(this.camera.Debug);
+
+            //Interface
+            spriteBatch.Begin();
+
+            playerInterface.Draw(spriteBatch, gameTime);
+
+            spriteBatch.End();
+
+            //Debug
+            spriteBatch.Draw(camera.Debug);
         }
 
         public void Dispose()
