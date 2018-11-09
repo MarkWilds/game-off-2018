@@ -24,4 +24,13 @@
     <Folder Include="Content\Tilesets" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Content\Maps\hub.tmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Tilesets\hub.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
