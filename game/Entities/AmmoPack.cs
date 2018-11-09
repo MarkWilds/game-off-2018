@@ -12,7 +12,8 @@ namespace game.Entities
         private BulletType bulletType;
         private int amount;
 
-        public AmmoPack(BulletType type, int amount, Texture2D texture, Vector2 position, float rotation = 0) : base(texture, position, rotation)
+        public AmmoPack(BulletType type, int amount, Texture2D texture, Vector2 position, float rotation = 0) 
+            : base(texture, 16, 16, position, rotation)
         {
             this.amount = amount;
             this.bulletType = type;
