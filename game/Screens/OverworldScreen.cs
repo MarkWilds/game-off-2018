@@ -36,7 +36,7 @@ namespace game.GameScreens
                 new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512))
             );
 
-            EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), new Vector2(400, 400),
+            EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), 46, 24, new Vector2(400, 400),
                 (float) -Math.PI / 2));
 
             EntityManager.Instance.AddEntity(new AmmoPack(BulletType.AssaultRifle, 30, Content.Load<Texture2D>("Sprites/AmmoPack"), new Vector2(200, 300)));

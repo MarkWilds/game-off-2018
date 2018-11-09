@@ -19,7 +19,7 @@ namespace game
         public int Damage => 10;
 
         public AssaultRifle(Texture2D bulletTexture, Texture2D texture, Vector2 position, float rotation = 0)
-            : base(texture, position, rotation)
+            : base(texture, 32, 32, position, rotation)
         {
             this.bulletTexture = bulletTexture;
         }
