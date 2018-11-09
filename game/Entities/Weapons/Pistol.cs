@@ -19,7 +19,7 @@ namespace game
         public int Damage => 15;
 
         public Pistol(Texture2D bulletTexture, Texture2D texture, Vector2 position, float rotation = 0) 
-            : base(texture, position, rotation)
+            : base(texture, 16, 16, position, rotation)
         {
             this.bulletTexture = bulletTexture;
         }

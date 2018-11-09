@@ -1,4 +1,5 @@
 ﻿using game.Entities;
+using game.Entities.Animations;
 using game.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,10 +19,14 @@ namespace game
         public int Health { get; private set; }
 
         public Player(float speed, Texture2D texture, Vector2 position, float rotation = 0)
-            : base(texture, position, rotation)
+            : base(texture, 32, 32, position, rotation)
         {
             this.speed = speed;
             Health = MaxHealth;
+
+            animator = new Animator(32, 32);
+            animator.AddAnimation(new Animation(0, 1, 0)); //Idle
+            animator.AddAnimation(new Animation(1, 3, 100)); //Running
 
             WeaponManager = new WeaponManager(this);
             WeaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture,
@@ -43,6 +48,7 @@ namespace game
             Shoot();
 
             WeaponManager.Update(gameTime);
+            base.Update(gameTime);
         }
 
         private void Move(GameTime gameTime)
@@ -61,12 +67,16 @@ namespace game
             if (InputManager.IsKeyDown(Keys.S))
                 direction.Y += 1;
 
+            if (direction.X != 0 || direction.Y != 0)
+                animator.ChangeAnimation(1);
+            else
+                animator.ChangeAnimation(0);
+
             //Testing for ammo
             if (InputManager.IsKeyPressed(Keys.D1))
                 WeaponManager.AddAmmo(Weapons.BulletType.Pistol, 30);
             if (InputManager.IsKeyPressed(Keys.D2))
                 WeaponManager.AddAmmo(Weapons.BulletType.AssaultRifle, 30);
-
 
             //Normalize vector to prevent faster movement when 2 directions are pressed
             if (direction.X != 0 || direction.Y != 0)
