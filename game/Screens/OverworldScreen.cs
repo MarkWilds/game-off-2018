@@ -53,7 +53,7 @@ namespace game.GameScreens
 //            camera.Debug.Grid.AddLines(256, Color.Red, 4);
 
             hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
-            playerInterface = new PlayerInterface(player.WeaponManager, player, Content, ScreenManager.GraphicsDevice);
+            playerInterface = new PlayerInterface(player, Content, ScreenManager.GraphicsDevice);
         }
 
         public void Update(GameTime gameTime)
