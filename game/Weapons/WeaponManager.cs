@@ -11,11 +11,12 @@ namespace game
 {
     class WeaponManager
     {
+        public int CurrentWeaponAmmo => ammo[CurrentWeapon.BulletType];
+
         private IWeapon CurrentWeapon => weaponList[currWeaponIndex];
         private List<IWeapon> weaponList = new List<IWeapon>();
         private int currWeaponIndex = 0;
         private Entity owner;
-
         private Dictionary<BulletType, int> ammo = new Dictionary<BulletType, int>()
         {
             {BulletType.Pistol, 30 },
