@@ -47,11 +47,6 @@ namespace game.GameScreens
             mapRenderer = new TiledMapRenderer();
 
             camera = new Camera(ScreenManager.GraphicsDevice);
-            camera.Debug.IsVisible = true;
-            camera.LoadContent();
-//            camera.Debug.Grid.AddLines(32, Color.White, 2);
-//            camera.Debug.Grid.AddLines(256, Color.Red, 4);
-
             hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
             playerInterface = new PlayerInterface(player, Content, ScreenManager.GraphicsDevice);
         }
