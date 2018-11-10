@@ -75,7 +75,7 @@ namespace game
 
             //Testing for ammo
             if (InputManager.IsKeyPressed(Keys.D1))
-                new ParticleEmitter(100, 1000, position, -Forward, .1f, 180, 3, 1, ParticleShape.Square, Color.Brown);
+                new ParticleEmitter(100, 1000, position, -Forward, .1f, 10, 3, 1, ParticleShape.Square, Color.Brown);
 
             //Normalize vector to prevent faster movement when 2 directions are pressed
             if (direction.X != 0 || direction.Y != 0)

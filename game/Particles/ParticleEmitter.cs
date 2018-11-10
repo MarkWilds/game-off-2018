@@ -61,18 +61,15 @@ namespace game.Particles
         {
             Texture2D texture = ParticleSystem.Instance.GetTexture(particleShape);
 
-            //var cos = Math.Cos(maxAngle);
-            //var sin = Math.Sin(maxAngle);
+            var randomAngle = (float)(random.NextDouble() * 2 - 1) * maxAngle;
+            var directionAngle = Math.Atan2(particleVelocity.Y, particleVelocity.X) * (180 / Math.PI) + randomAngle;
+            var directionRad = directionAngle / (180 / Math.PI);
 
-            //var angle = maxAngle / 100;
-            //Vector2 velocity = new Vector2(1f * (float)((random.NextDouble() * angle) - angle),
-            //                               1f * (float)((random.NextDouble() * angle) - angle));
+            var newDirection = new Vector2(
+                (float)Math.Cos(directionRad),
+                (float)Math.Sin(directionRad));
 
-            Vector2 velocity = new Vector2(
-                                    1f * (float)(random.NextDouble() * 2 - 1),
-                                    1f * (float)(random.NextDouble() * 2 - 1));
-
-            return new Particle(texture, emitLocation, velocity, particleSpeed, 0, 0, color, particleScale, particleLifeTime);
+            return new Particle(texture, emitLocation, newDirection, particleSpeed, 0, 0, color, particleScale, particleLifeTime);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
