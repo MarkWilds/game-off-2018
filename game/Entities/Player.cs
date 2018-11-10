@@ -19,6 +19,8 @@ namespace game
         public int MaxHealth { get; private set; } = 100;
         public int Health { get; private set; }
 
+        private ParticleEmitter test;
+
         public Player(float speed, Texture2D texture, Vector2 position, float rotation = 0)
             : base(texture, 32, 32, position, rotation)
         {
@@ -34,6 +36,9 @@ namespace game
                 base.position + Forward));
             WeaponManager.AddWeapon(new AssaultRifle(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
                 base.position + Forward));
+
+            test = new ParticleEmitter(true, 50, position, -Forward, 5, 50, .25f, 2, ParticleShape.Square, Color.Aqua, Color.Aqua);
+            test.Stop();
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -75,7 +80,9 @@ namespace game
 
             //Testing for ammo
             if (InputManager.IsKeyDown(Keys.D1))
-                
+                test.Start();
+            if (InputManager.IsKeyDown(Keys.D2))
+                test.Stop();
 
             //Normalize vector to prevent faster movement when 2 directions are pressed
             if (direction.X != 0 || direction.Y != 0)
@@ -90,10 +97,10 @@ namespace game
                 WeaponManager.ShootCurrentWeapon();
         }
 
-        public void TakeDamage(int amount)
+        public void TakeDamage(int amount, Vector2 hitDirection)
         {
             Health -= amount;
-            new ParticleEmitter(.5f, 25, position, Forward, .05f, 180, 1f, 1, ParticleShape.Square, Color.Red);
+            new ParticleEmitter(false, 25, position, -hitDirection, .05f, 180, .25f, 1, ParticleShape.Square, Color.Red, Color.Red);
             if (Health <= 0)
                 Die();
         }

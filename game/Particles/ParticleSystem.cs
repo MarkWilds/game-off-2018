@@ -40,12 +40,19 @@ namespace game.Particles
 
             for (int i = 0; i < emitters.Count; i++)
             {
-                if (emitters[i].EmitterLifeTime <= 0)
+                if (emitters[i].ShouldBeDestroyed)
                 {
+                    emitters[i].Destroy();
                     emitters.RemoveAt(i);
                     i--;
                 }
             }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            foreach (ParticleEmitter emitter in emitters)
+                emitter.Draw(spriteBatch, gameTime);
         }
 
         public Texture2D GetTexture(ParticleShape particleShape)
@@ -54,12 +61,6 @@ namespace game.Particles
                 throw new ArgumentException("Shape doesnt exist in our dictionary");
 
             return textures[particleShape];
-        }
-
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            foreach (ParticleEmitter emitter in emitters)
-                emitter.Draw(spriteBatch, gameTime);
         }
 
         public void AddEmitter(ParticleEmitter emitter)

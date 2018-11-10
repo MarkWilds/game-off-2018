@@ -42,7 +42,7 @@ namespace game
                 if (BoundingBox.Intersects(damagableObjects[i].BoundingBox))
                 {
                     IDamageable obj = damagableObjects[i] as IDamageable;
-                    obj.TakeDamage(damage);
+                    obj.TakeDamage(damage, direction);
                     Destroy();
                 }
             }

@@ -13,22 +13,27 @@ namespace game.Particles
         private Vector2 velocity;
         private float angle;
         private float angularVelocity;
-        private Color color;
+        private Color startColor;
+        private Color endColor;
         private float scale;
         public float lifeSpan;
         private float speed;
 
-        public Particle(Texture2D texture, Vector2 position, Vector2 velocity, float particleSpeed, float angle, float angularVelocity, Color color, float scale, float lifeSpan)
+        public Particle(Texture2D texture, Vector2 position, Vector2 velocity, float particleSpeed, float angle, float angularVelocity, 
+            float scale, float lifeSpan, Color startColor, Color endColor)
         {
             this.texture = texture;
             this.position = position;
             this.velocity = velocity;
             this.angle = angle;
             this.angularVelocity = angularVelocity;
-            this.color = color;
+            this.startColor = startColor;
             this.scale = scale;
             this.lifeSpan = lifeSpan;
             this.speed = particleSpeed;
+
+            if(endColor == null)
+                this.endColor = startColor;
         }
 
         public void Update(GameTime gameTime)
@@ -36,6 +41,7 @@ namespace game.Particles
             lifeSpan -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             position += velocity * (speed * (float)gameTime.ElapsedGameTime.TotalMilliseconds);
             angle += angularVelocity;
+            startColor = Color.Lerp(startColor, endColor, (float)gameTime.ElapsedGameTime.TotalSeconds / lifeSpan);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -43,7 +49,7 @@ namespace game.Particles
             Rectangle sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
 
-            spriteBatch.Draw(texture, position, sourceRectangle, color, angle, origin, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(texture, position, sourceRectangle, startColor, angle, origin, scale, SpriteEffects.None, 0f);
         }
     }
 }

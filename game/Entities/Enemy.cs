@@ -67,10 +67,10 @@ namespace game.Entities
             target = EntityManager.Instance.GetPlayer();
         }
 
-        public void TakeDamage(int amount)
+        public void TakeDamage(int amount, Vector2 hitDirection)
         {
             Health -= amount;
-            new ParticleEmitter(.5f, 25, position, Forward, .05f, 180, 1f, 1, ParticleShape.Square, Color.Red);
+            new ParticleEmitter(false, 25, position, -hitDirection, .05f, 180, .25f, 1, ParticleShape.Square, Color.Red, Color.Red);
             if (Health <= 0)
                 Die();
         }
