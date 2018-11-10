@@ -1,10 +1,7 @@
 using System;
-using System.Numerics;
-using Comora;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TiledSharp;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace game
 {
@@ -17,8 +14,10 @@ namespace game
 
         private struct raycastData
         {
+            public float wallFraction;
             public Vector2 normal;
-            public float distance;
+            public Vector2 tileCoordinates;
+            public float t;
         }
 
         public RaycastedMapRenderer(Viewport view, Texture2D blank, float fov)
@@ -40,7 +39,7 @@ namespace game
             if (!HasProperLayers(mapData))
                 throw new Exception("This map does not contain the proper layer!");
 
-            TmxLayer wallLayer = mapData.Layers["walls"];
+            TmxLayer wallLayer = mapData.Layers["walls1"];
             float halfFov = FOV / 2;
 
             int slices = viewport.Width;
@@ -71,19 +70,32 @@ namespace game
             {
                 float angle = beginAngle + x * anglePart;
                 raycastData? castData = GetIntersectionData(position, angle, isTileSolid);
-                if (castData == null)
+                if (!castData.HasValue)
                     continue;
 
                 // get distance and fix fisheye       
-                float distance = castData.Value.distance * (float) Math.Cos(orientation - angle);
-
-                // get projected slice height
+                float distance = castData.Value.t * (float) Math.Cos(orientation - angle);
                 int sliceHeight = (int) (cellSize * dtp / distance);
-                Rectangle slice = new Rectangle(x, viewport.Height / 2 - sliceHeight / 2, 1, sliceHeight);
+
+                int tileIndex = (int) (castData.Value.tileCoordinates.Y * mapData.Width +
+                                       castData.Value.tileCoordinates.X);
+                TmxLayerTile tile = wallLayer.Tiles[tileIndex];
+                TmxTileset tileset = map.GetTilesetForTile(tile);
+                if (tileset == null)
+                    continue;
+
+                Rectangle source = new Rectangle();
+                Rectangle destination = new Rectangle();
+                map.GetSourceAndDestinationRectangles(tileset, tile, out source, out destination);
+
+                source.X = (int) (source.X + (source.Width * castData.Value.wallFraction) % cellSize);
+                source.Width = 1;
+
+                destination = new Rectangle(x, viewport.Height / 2 - sliceHeight / 2, 1, sliceHeight);
 
                 float dot = Vector2.Dot(castData.Value.normal, Vector2.UnitY);
                 bool darken = Math.Abs(dot) > 0.9f;
-                spriteBatch.Draw(blankTexture, slice, darken ? Color.Gray : Color.White);
+                spriteBatch.Draw(map.Textures[tileset], destination, source, darken ? Color.Gray : Color.White);
             }
 
             RenderMinimap(spriteBatch, map, wallLayer, new Vector2(position.X / cellSize, position.Y / cellSize),
@@ -118,9 +130,9 @@ namespace game
 
             Rectangle playerDestination = new Rectangle(
                 (int) (miniCellSize + tilecoord.X * miniCellSize - 2),
-                (int) (miniCellSize + tilecoord.Y * miniCellSize - 2), 
+                (int) (miniCellSize + tilecoord.Y * miniCellSize - 2),
                 halfCellSize, halfCellSize);
-            
+
             spriteBatch.Draw(blankTexture, playerDestination, Color.Black);
         }
 
@@ -147,37 +159,39 @@ namespace game
             float deltaX = Math.Abs(cellSize / cos);
             float deltaY = Math.Abs(cellSize / sin);
 
-            raycastData collisionData = new raycastData {normal = new Vector2(), distance = 0.0f};
+            raycastData collisionData = new raycastData {normal = new Vector2(), t = 0.0f};
             while (true)
             {
-                if (collisionData.distance >= maxViewDistance)
+                if (collisionData.t >= maxViewDistance)
                     return null;
 
                 if (isSolid.Invoke(tileCoords))
-                    break;
+                    return collisionData;
 
                 if (tX <= tY)
                 {
                     tileCoords.X += signX;
-                    collisionData.distance = tX;
+                    collisionData.t = tX;
                     collisionData.normal = Vector2.UnitX * signX;
+                    collisionData.wallFraction = (position.Y + tX * sin) % cellSize / cellSize;
+                    collisionData.tileCoordinates = tileCoords;
                     tX += deltaX;
                 }
                 else
                 {
                     tileCoords.Y += signY;
-                    collisionData.distance = tY;
+                    collisionData.t = tY;
                     collisionData.normal = Vector2.UnitY * signY;
+                    collisionData.wallFraction = (position.X + tY * cos) % cellSize / cellSize;
+                    collisionData.tileCoordinates = tileCoords;
                     tY += deltaY;
                 }
             }
-
-            return collisionData;
         }
 
         private bool HasProperLayers(TmxMap mapData)
         {
-            return mapData.Layers["walls"] != null;
+            return mapData.Layers["walls1"] != null;
         }
     }
 }
