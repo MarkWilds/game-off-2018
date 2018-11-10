@@ -1,6 +1,7 @@
 ﻿using game.Entities;
 using game.Entities.Animations;
 using game.GameScreens;
+using game.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -74,9 +75,7 @@ namespace game
 
             //Testing for ammo
             if (InputManager.IsKeyPressed(Keys.D1))
-                WeaponManager.AddAmmo(Weapons.BulletType.Pistol, 30);
-            if (InputManager.IsKeyPressed(Keys.D2))
-                WeaponManager.AddAmmo(Weapons.BulletType.AssaultRifle, 30);
+                new ParticleEmitter(100, 1000, position, -Forward, .1f, 180, 3, 1, ParticleShape.Square, Color.Brown);
 
             //Normalize vector to prevent faster movement when 2 directions are pressed
             if (direction.X != 0 || direction.Y != 0)

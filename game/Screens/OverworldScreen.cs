@@ -1,6 +1,7 @@
 ﻿using System;
 using Comora;
 using game.Entities;
+using game.Particles;
 using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -32,7 +33,7 @@ namespace game.GameScreens
 
             player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
             EntityManager.Instance.AddEntity(player);
-
+            ParticleSystem.Instance.Initialize(Content);
 
             EntityManager.Instance.AddEntity(
                 new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512))
@@ -61,6 +62,7 @@ namespace game.GameScreens
             UpdatePlayerLookDirection();
 
             EntityManager.Instance.Update(gameTime);
+            ParticleSystem.Instance.Update(gameTime);
 
             camera.Position = player.position;
             camera.Position = new Vector2((int) camera.Position.X, (int) camera.Position.Y);
@@ -92,6 +94,7 @@ namespace game.GameScreens
 
             mapRenderer.Render(hubMap, spriteBatch, camera);
             EntityManager.Instance.Draw(spriteBatch, gameTime);
+            ParticleSystem.Instance.Draw(spriteBatch, gameTime);
 
             spriteBatch.End();
 
