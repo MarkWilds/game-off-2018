@@ -1,5 +1,6 @@
 ﻿using System;
 using game.GameScreens;
+using game.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -69,6 +70,7 @@ namespace game.Entities
         public void TakeDamage(int amount)
         {
             Health -= amount;
+            new ParticleEmitter(.5f, 25, position, Forward, .05f, 180, 1f, 1, ParticleShape.Square, Color.Red);
             if (Health <= 0)
                 Die();
         }

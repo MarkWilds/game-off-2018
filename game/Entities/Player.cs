@@ -74,8 +74,8 @@ namespace game
                 animator.ChangeAnimation(0);
 
             //Testing for ammo
-            if (InputManager.IsKeyPressed(Keys.D1))
-                new ParticleEmitter(100, 1000, position, -Forward, .1f, 10, 3, 1, ParticleShape.Square, Color.Brown);
+            if (InputManager.IsKeyDown(Keys.D1))
+                
 
             //Normalize vector to prevent faster movement when 2 directions are pressed
             if (direction.X != 0 || direction.Y != 0)
@@ -93,6 +93,7 @@ namespace game
         public void TakeDamage(int amount)
         {
             Health -= amount;
+            new ParticleEmitter(.5f, 25, position, Forward, .05f, 180, 1f, 1, ParticleShape.Square, Color.Red);
             if (Health <= 0)
                 Die();
         }

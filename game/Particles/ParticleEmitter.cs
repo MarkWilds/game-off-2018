@@ -41,6 +41,7 @@ namespace game.Particles
 
         public void Update(GameTime gameTime)
         {
+            EmitterLifeTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             for (int i = particles.Count; i < maxParticles; i++)
             {
                 particles.Add(GenerateNewParticle());
@@ -62,14 +63,16 @@ namespace game.Particles
             Texture2D texture = ParticleSystem.Instance.GetTexture(particleShape);
 
             var randomAngle = (float)(random.NextDouble() * 2 - 1) * maxAngle;
-            var directionAngle = Math.Atan2(particleVelocity.Y, particleVelocity.X) * (180 / Math.PI) + randomAngle;
-            var directionRad = directionAngle / (180 / Math.PI);
+            var directionDeg = Math.Atan2(particleVelocity.Y, particleVelocity.X) * (180 / Math.PI) + randomAngle;
+            var directionRad = directionDeg / (180 / Math.PI);
 
             var newDirection = new Vector2(
                 (float)Math.Cos(directionRad),
                 (float)Math.Sin(directionRad));
 
-            return new Particle(texture, emitLocation, newDirection, particleSpeed, 0, 0, color, particleScale, particleLifeTime);
+            var randomSpeed = random.NextDouble() * particleSpeed + particleSpeed / 2;
+
+            return new Particle(texture, emitLocation, newDirection, (float)randomSpeed, 0, 0, color, particleScale, particleLifeTime);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
