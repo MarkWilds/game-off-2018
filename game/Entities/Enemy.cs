@@ -70,7 +70,7 @@ namespace game.Entities
         public void TakeDamage(int amount, Vector2 hitDirection)
         {
             Health -= amount;
-            new ParticleEmitter(false, 25, position, -hitDirection, .05f, 180, .25f, 1, ParticleShape.Square, Color.Red, Color.Red);
+            new ParticleEmitter(true, false, 25, position, -hitDirection, .05f, 180, .25f, 1, ParticleShape.Square, EmitType.Burst, Color.Red, Color.Red);
             if (Health <= 0)
                 Die();
         }

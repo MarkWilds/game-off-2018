@@ -19,8 +19,6 @@ namespace game
         public int MaxHealth { get; private set; } = 100;
         public int Health { get; private set; }
 
-        private ParticleEmitter test;
-
         public Player(float speed, Texture2D texture, Vector2 position, float rotation = 0)
             : base(texture, 32, 32, position, rotation)
         {
@@ -37,8 +35,10 @@ namespace game
             WeaponManager.AddWeapon(new AssaultRifle(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
                 base.position + Forward));
 
-            test = new ParticleEmitter(true, 50, position, -Forward, 5, 50, .25f, 2, ParticleShape.Square, Color.Aqua, Color.Aqua);
-            test.Stop();
+            new ParticleEmitter(true, true, 50000, position, -Forward, .5f, 45, 1f, 1, ParticleShape.Circle, EmitType.OverTime, Color.Aqua, Color.LawnGreen);
+            new ParticleEmitter(true, true, 20000, position, Forward, .5f, 30, 1f, 1, ParticleShape.Circle, EmitType.Burst, Color.HotPink, Color.Indigo);
+            new ParticleEmitter(true, true, 15000, position + -Vector2.UnitY * 100, -Vector2.UnitY, .05f, 50, .75f, 1, ParticleShape.Square, EmitType.OverTime, Color.Red, Color.Yellow);
+            new ParticleEmitter(true, true, 25000, new Vector2(407, 423), Vector2.UnitY, .05f, 40, .3f, 1, ParticleShape.Square, EmitType.OverTime, Color.Gray, Color.Transparent);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -78,12 +78,6 @@ namespace game
             else
                 animator.ChangeAnimation(0);
 
-            //Testing for ammo
-            if (InputManager.IsKeyDown(Keys.D1))
-                test.Start();
-            if (InputManager.IsKeyDown(Keys.D2))
-                test.Stop();
-
             //Normalize vector to prevent faster movement when 2 directions are pressed
             if (direction.X != 0 || direction.Y != 0)
                 direction.Normalize();
@@ -100,7 +94,7 @@ namespace game
         public void TakeDamage(int amount, Vector2 hitDirection)
         {
             Health -= amount;
-            new ParticleEmitter(false, 25, position, -hitDirection, .05f, 180, .25f, 1, ParticleShape.Square, Color.Red, Color.Red);
+            new ParticleEmitter(true, false, 25, position, -hitDirection, .005f, 180, .25f, 1, ParticleShape.Square, EmitType.Burst, Color.Red, Color.Red);
             if (Health <= 0)
                 Die();
         }

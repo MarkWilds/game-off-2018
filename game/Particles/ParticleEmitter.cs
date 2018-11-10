@@ -21,8 +21,10 @@ namespace game.Particles
         private Color endColor;
         private float maxAngle;
         private float particleSpeed;
+        private EmitType emitType;
 
         private float emitterLifeTime;
+        private float timeTillNextParticle;
         private bool shouldEmit = true;
 
         public bool ShouldBeDestroyed { get; private set; }
@@ -40,8 +42,11 @@ namespace game.Particles
         /// <param name="particleScale">Size of particles </param>
         /// <param name="particleShape">Particle shape</param>
         /// <param name="startColor">Starting particle color</param>
-        public ParticleEmitter(bool repeat, int maxParticles, Vector2 emitLocation, Vector2 particleVelocity, 
-            float particleSpeed, float maxAngle, float particleLifeTime, float particleScale, ParticleShape particleShape, Color startColor, Color endColor)
+        /// <param name="autoStart">Should the emitter start immediatly</param>
+        /// <param name="emitType">The type of the emitter</param>
+        /// <param name="endColor">The color of the particle at the end</param>
+        public ParticleEmitter(bool autoStart, bool repeat, int maxParticles, Vector2 emitLocation, Vector2 particleVelocity, 
+            float particleSpeed, float maxAngle, float particleLifeTime, float particleScale, ParticleShape particleShape, EmitType emitType, Color startColor, Color endColor)
         {
             this.repeat = repeat;
             this.maxParticles = maxParticles;
@@ -52,12 +57,17 @@ namespace game.Particles
             this.particleLifeTime = particleLifeTime;
             this.particleScale = particleScale;
             this.particleShape = particleShape;
+            this.emitType = emitType;
             this.startColor = startColor;
             this.endColor = endColor;
+            this.shouldEmit = autoStart;
             random = new Random();
 
             if (repeat == false)
                 emitterLifeTime = particleLifeTime;
+
+            if (emitType == EmitType.OverTime)
+                timeTillNextParticle = particleLifeTime / maxParticles;
 
             ParticleSystem.Instance.AddEmitter(this);
         }
@@ -67,7 +77,7 @@ namespace game.Particles
             if (!repeat)
                 emitterLifeTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            CreateNewParticles();
+            CreateNewParticles(gameTime);
 
             for (int i = 0; i < particles.Count; i++)
             {
@@ -83,14 +93,28 @@ namespace game.Particles
                 ShouldBeDestroyed = true;
         }
 
-        private void CreateNewParticles()
+        private void CreateNewParticles(GameTime gameTime)
         {
             if (!shouldEmit)
                 return;
 
-            for (int i = particles.Count; i < maxParticles; i++)
+            switch (emitType)
             {
-                particles.Add(GenerateNewParticle());
+                case EmitType.OverTime:
+                    timeTillNextParticle -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if(timeTillNextParticle <= 0)
+                    {
+                        particles.Add(GenerateNewParticle());
+                        timeTillNextParticle = particleLifeTime / maxParticles; 
+                    }
+                    break;
+
+                case EmitType.Burst:
+                    for (int i = particles.Count; i < maxParticles; i++)
+                    {
+                        particles.Add(GenerateNewParticle());
+                    }
+                    break;
             }
         }
 

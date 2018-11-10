@@ -31,9 +31,7 @@ namespace game.Particles
             this.scale = scale;
             this.lifeSpan = lifeSpan;
             this.speed = particleSpeed;
-
-            if(endColor == null)
-                this.endColor = startColor;
+            this.endColor = endColor;
         }
 
         public void Update(GameTime gameTime)
