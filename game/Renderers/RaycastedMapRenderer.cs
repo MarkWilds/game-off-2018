@@ -1,8 +1,10 @@
 using System;
+using System.Numerics;
 using Comora;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TiledSharp;
+using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace game
 {
@@ -41,9 +43,10 @@ namespace game
             TmxLayer wallLayer = mapData.Layers["walls"];
             float halfFov = FOV / 2;
 
-            float dtp = viewport.Width / 2 * (float) Math.Tan(halfFov);
+            int slices = viewport.Width;
+            float dtp = slices / 2 * (float) Math.Tan(halfFov);
 
-            float anglePart = FOV / viewport.Width;
+            float anglePart = FOV / slices;
             float beginAngle = orientation - halfFov;
 
             Func<Vector2, bool> isTileSolid = coordinates =>
@@ -54,41 +57,40 @@ namespace game
 
                 int index = (int) (coordinates.Y * mapData.Width + coordinates.X);
                 TmxLayerTile tile = wallLayer.Tiles[index];
-                
+
                 // if tileset is found it is solid
                 return map.GetTilesetForTile(tile) != null;
             };
-            
+
             // draw fake floor for now
-            spriteBatch.Draw(blankTexture, new Rectangle(0, viewport.Height / 2, viewport.Width, viewport.Height), Color.ForestGreen);
-            
+            spriteBatch.Draw(blankTexture, new Rectangle(0, viewport.Height / 2, viewport.Width, viewport.Height),
+                Color.ForestGreen);
+
             // draw all slices
-            for (int x = 0; x < viewport.Width; x++)
+            for (int x = 0; x < slices; x++)
             {
                 float angle = beginAngle + x * anglePart;
                 raycastData? castData = GetIntersectionData(position, angle, isTileSolid);
                 if (castData == null)
                     continue;
 
-                // fix fisheye
-                float distance = castData.Value.distance * (float) Math.Cos(halfFov);
+                // get distance and fix fisheye       
+                float distance = castData.Value.distance * (float) Math.Cos(orientation - angle);
 
                 // get projected slice height
-                int sliceHeight = (int) (cellSize / distance * dtp);
-
+                int sliceHeight = (int) (cellSize * dtp / distance);
                 Rectangle slice = new Rectangle(x, viewport.Height / 2 - sliceHeight / 2, 1, sliceHeight);
 
-                float dot = Vector2.Dot(castData.Value.normal, Vector2.UnitX);
-                bool isSide = dot < 0.00001f || dot > -0.00001f;
-                spriteBatch.Draw(blankTexture, slice, isSide ? Color.Gray: Color.White);
+                float dot = Vector2.Dot(castData.Value.normal, Vector2.UnitY);
+                bool darken = Math.Abs(dot) > 0.9f;
+                spriteBatch.Draw(blankTexture, slice, darken ? Color.Gray : Color.White);
             }
-            
+
             RenderMinimap(spriteBatch, map, wallLayer, new Vector2(position.X / cellSize, position.Y / cellSize),
-                position, orientation);
+                orientation);
         }
 
-        private void RenderMinimap(SpriteBatch spriteBatch, Map map, TmxLayer wallLayer, Vector2 tilecoord, Vector2 pos,
-            float angle)
+        private void RenderMinimap(SpriteBatch spriteBatch, Map map, TmxLayer wallLayer, Vector2 tilecoord, float angle)
         {
             int miniCellSize = 8;
             int halfCellSize = miniCellSize / 2;
@@ -103,19 +105,23 @@ namespace game
 
                 spriteBatch.Draw(blankTexture, new Rectangle(miniCellSize + tile.X * miniCellSize,
                         miniCellSize + tile.Y * miniCellSize, miniCellSize, miniCellSize),
-                    new Rectangle(0, 0, 1, 1), Color.White);
+                    new Rectangle(0, 0, 1, 1), Color.Black);
             }
 
-            Rectangle needleDestination = new Rectangle((int) (miniCellSize + halfCellSize + pos.X / cellSize * miniCellSize),
-                (int) (miniCellSize + halfCellSize + pos.Y / cellSize * miniCellSize),
+            Rectangle needleDestination = new Rectangle(
+                (int) (miniCellSize + tilecoord.X * miniCellSize),
+                (int) (miniCellSize + tilecoord.Y * miniCellSize),
                 miniCellSize, 2);
 
-            spriteBatch.Draw(blankTexture, needleDestination, null, Color.Red, angle, new Vector2(-1, 0),
+            spriteBatch.Draw(blankTexture, needleDestination, null, Color.Red, angle, new Vector2(0, 1),
                 SpriteEffects.None, 0);
 
-            spriteBatch.Draw(blankTexture,
-                new Rectangle((int) (miniCellSize + tilecoord.X * miniCellSize), (int) (miniCellSize + tilecoord.Y * miniCellSize),
-                    miniCellSize, miniCellSize), Color.Black);
+            Rectangle playerDestination = new Rectangle(
+                (int) (miniCellSize + tilecoord.X * miniCellSize - 2),
+                (int) (miniCellSize + tilecoord.Y * miniCellSize - 2), 
+                halfCellSize, halfCellSize);
+            
+            spriteBatch.Draw(blankTexture, playerDestination, Color.Black);
         }
 
         private raycastData? GetIntersectionData(Vector2 position, float angle,
@@ -132,46 +138,41 @@ namespace game
             float signY = Math.Sign(sin);
 
             // get first point delta's as start delta
-            float fX = signX <= 0 ? tileCoords.X * cellSize : tileCoords.X * cellSize + cellSize;
-            float fY = signY <= 0 ? tileCoords.Y * cellSize : tileCoords.Y * cellSize + cellSize;
+            float fX = signX < 0 ? tileCoords.X * cellSize : tileCoords.X * cellSize + cellSize;
+            float fY = signY < 0 ? tileCoords.Y * cellSize : tileCoords.Y * cellSize + cellSize;
 
-            float startX = Math.Abs((fX - position.X) / cos);
-            float startY = Math.Abs((fY - position.Y) / sin);
+            float tX = Math.Abs((fX - position.X) / cos);
+            float tY = Math.Abs((fY - position.Y) / sin);
 
             float deltaX = Math.Abs(cellSize / cos);
             float deltaY = Math.Abs(cellSize / sin);
 
-            raycastData castData = new raycastData {normal = new Vector2()};
-            float t = 0.0f;
+            raycastData collisionData = new raycastData {normal = new Vector2(), distance = 0.0f};
             while (true)
-            {                   
-                if (t >= maxViewDistance)
+            {
+                if (collisionData.distance >= maxViewDistance)
                     return null;
-                
+
                 if (isSolid.Invoke(tileCoords))
                     break;
-                
-                if (startX <= startY)
+
+                if (tX <= tY)
                 {
-                    t = startX;
-                    startX += deltaX;
                     tileCoords.X += signX;
-                    castData.normal.X = -signX;
-                    castData.normal.Y = 0;
+                    collisionData.distance = tX;
+                    collisionData.normal = Vector2.UnitX * signX;
+                    tX += deltaX;
                 }
                 else
                 {
-                    t = startY;
-                    startY += deltaY;
                     tileCoords.Y += signY;
-                    castData.normal.X = 0;
-                    castData.normal.Y = -signY;
+                    collisionData.distance = tY;
+                    collisionData.normal = Vector2.UnitY * signY;
+                    tY += deltaY;
                 }
-                
-                castData.distance = t;
             }
-            
-            return castData;
+
+            return collisionData;
         }
 
         private bool HasProperLayers(TmxMap mapData)

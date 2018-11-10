@@ -1,10 +1,8 @@
 using System;
-using System.Numerics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace game.GameScreens
 {
@@ -16,15 +14,14 @@ namespace game.GameScreens
         private Map currentMap;
         private RaycastedMapRenderer mapRenderer;
 
-        private Vector2 position = new Vector2(48, 48);
+        private Vector2 position = new Vector2(32 + 16, 64 + 16);
         private float movementSpeed = 64;
         private float angle;
-        private float rotateSpeed = 90.0f;
 
         public void Initialize(ContentManager contentManager)
         {
             blankTexture = contentManager.Load<Texture2D>("blank");
-            mapRenderer = new RaycastedMapRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
+            mapRenderer = new RaycastedMapRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 90.0f);
             currentMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/test_fps.tmx");
         }
 
