@@ -24,7 +24,7 @@ namespace game.Particles
         private EmitType emitType;
 
         private float emitterLifeTime;
-        private float timeTillNextParticle;
+        private float particlesPerFrame;
         private bool shouldEmit = true;
 
         public bool ShouldBeDestroyed { get; private set; }
@@ -66,9 +66,6 @@ namespace game.Particles
             if (repeat == false)
                 emitterLifeTime = particleLifeTime;
 
-            if (emitType == EmitType.OverTime)
-                timeTillNextParticle = particleLifeTime / maxParticles;
-
             ParticleSystem.Instance.AddEmitter(this);
         }
 
@@ -101,12 +98,11 @@ namespace game.Particles
             switch (emitType)
             {
                 case EmitType.OverTime:
-                    timeTillNextParticle -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if(timeTillNextParticle <= 0)
-                    {
-                        particles.Add(GenerateNewParticle());
-                        timeTillNextParticle = particleLifeTime / maxParticles; 
-                    }
+                        particlesPerFrame = maxParticles * ((float)gameTime.ElapsedGameTime.TotalSeconds * particleLifeTime);
+                        for (int i = 0; i < particlesPerFrame; i++)
+                        {
+                            particles.Add(GenerateNewParticle());
+                        }
                     break;
 
                 case EmitType.Burst:
