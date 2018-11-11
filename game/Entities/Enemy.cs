@@ -1,4 +1,5 @@
 ﻿using System;
+using game.Core;
 using game.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,13 +13,17 @@ namespace game.Entities
         private float timer;
         private Entity target;
         private int damage = 10;
+        private Player player;
+        private Map map;
 
         public int Health { get; private set; } = 50;
 
-        public Enemy(float speed, Texture2D texture, Vector2 position, float rotation = 0)
-            : base(texture, 32, 32, position, rotation)
+        public Enemy(float speed, Texture2D texture, Vector2 position, Player player, Map map)
+            : base(texture, 32, 32, position, 0)
         {
             this.speed = speed;
+            this.player = player;
+            this.map = map;
         }
 
         public override void Update(GameTime gameTime)
@@ -31,19 +36,39 @@ namespace game.Entities
             else
             {
                 LookAtTarget();
-
-                if (Vector2.Distance(position, target.position) < 300)
+                if (Vector2.Distance(position, target.position) < 10)
                     Shoot();
                 else
                     MoveTowardsTarget(gameTime);
             }
         }
 
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            base.Draw(spriteBatch, gameTime);
+            RenderPath(spriteBatch);
+        }
+
+        private void RenderPath(SpriteBatch spriteBatch)
+        {
+            var path = map.GetPath(tilePosition, player.tilePosition);
+            var lastNode = position;
+            foreach(var node in path)
+            {
+                spriteBatch.DrawLine(node, lastNode, Color.Red);
+                lastNode = node;
+            }
+        }
+
         private void MoveTowardsTarget(GameTime gameTime)
         {
-            Vector2 direction = target.position - position;
-            direction.Normalize();
-            position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            var path = map.GetPath(tilePosition, player.tilePosition);
+            if (path.Count > 1)
+            {
+                Vector2 direction = path[1] - position;
+                direction.Normalize();
+                position += direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
         }
 
         private void Shoot()

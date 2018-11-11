@@ -30,12 +30,17 @@ namespace game.GameScreens
             PistolTexture = Content.Load<Texture2D>("Sprites/Pistol");
             RifleTexture = Content.Load<Texture2D>("Sprites/Rifle");
 
+            mapRenderer = new TiledMapRenderer();
+            camera = new Camera(ScreenManager.GraphicsDevice);
+            hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/path_debug.tmx");
+
             player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
+            playerInterface = new PlayerInterface(player, Content, ScreenManager.GraphicsDevice);
             EntityManager.Instance.AddEntity(player);
 
 
             EntityManager.Instance.AddEntity(
-                new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512))
+                new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512), player, hubMap)
             );
 
             EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), 46, 24, new Vector2(400, 400),
@@ -43,12 +48,6 @@ namespace game.GameScreens
 
             EntityManager.Instance.AddEntity(new AmmoPack(BulletType.AssaultRifle, 30, Content.Load<Texture2D>("Sprites/AmmoPack"), new Vector2(200, 300)));
             EntityManager.Instance.AddEntity(new HealthPack(25, Content.Load<Texture2D>("Sprites/HealthPack"), new Vector2(300, 300)));
-
-            mapRenderer = new TiledMapRenderer();
-
-            camera = new Camera(ScreenManager.GraphicsDevice);
-            hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
-            playerInterface = new PlayerInterface(player, Content, ScreenManager.GraphicsDevice);
         }
 
         public void Update(GameTime gameTime)

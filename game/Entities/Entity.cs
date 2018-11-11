@@ -2,6 +2,7 @@
 using game.Entities.Animations;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RoyT.AStar;
 
 namespace game.Entities
 {
@@ -19,6 +20,8 @@ namespace game.Entities
 
         public Vector2 position;
         public float rotation;
+        public Position tilePosition
+            => new Position((int)Math.Floor(position.X / 32), (int)Math.Floor(position.Y / 32));
 
         protected Animator animator;
         private Texture2D texture;
