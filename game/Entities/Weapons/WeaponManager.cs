@@ -9,7 +9,7 @@ using System.Text;
 
 namespace game
 {
-    class WeaponManager
+    public class WeaponManager
     {
         public int CurrentWeaponAmmo => ammo[CurrentWeapon.BulletType];
 

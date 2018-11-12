@@ -31,17 +31,17 @@ namespace game
             if (!HasProperLayers(mapData))
                 throw new Exception("This map does not contain the proper layer!");
 
-            TmxLayer wallLayer = mapData.Layers["walls1"];
-            float halfFov = FOV / 2;
-
             int slices = viewport.Width;
-            float dtp = slices / 2 * (float) Math.Tan(halfFov);
-
-            float anglePart = FOV / slices;
+            float halfFov = FOV / 2;
+            float sliceAngle = FOV / slices;
             float beginAngle = orientation - halfFov;
 
-            Func<Vector2, bool> isTileSolid = coordinates =>
+            float distanceToProjectionPlane = slices / 2 * (float) Math.Tan(halfFov);
+
+            TmxLayer wallLayer = mapData.Layers["walls1"];
+            Func<RayCaster.hitData, bool> isTileSolid = data =>
             {
+                Vector2 coordinates = data.tileCoordinates;
                 if (coordinates.X < 0 || coordinates.X >= mapData.Width ||
                     coordinates.Y < 0 || coordinates.Y >= mapData.Height)
                     return false;
@@ -62,19 +62,15 @@ namespace game
             // draw all wallslices
             for (int x = 0; x < slices; x++)
             {
-                float angle = beginAngle + x * anglePart;
-                
-                RayCaster.RaycastData? castDataNullable =
-                    RayCaster.GetIntersectionData(position, angle, cellSize, isTileSolid);
-                
-                if (!castDataNullable.HasValue)
-                    continue;
+                float angle = beginAngle + x * sliceAngle;
 
-                RayCaster.RaycastData castData = castDataNullable.Value;
+                RayCaster.hitData castData;
+                if (!RayCaster.RayIntersectsGrid(position, angle, cellSize, out castData, isTileSolid))
+                    continue;
 
                 // get the texture slice
                 int tileIndex = (int) (castData.tileCoordinates.Y * mapData.Width + castData.tileCoordinates.X);
-                
+
                 TmxLayerTile tile = wallLayer.Tiles[tileIndex];
                 TmxTileset tileset = map.GetTilesetForTile(tile);
                 if (tileset == null)
@@ -85,20 +81,20 @@ namespace game
                 map.GetSourceAndDestinationRectangles(tileset, tile, out textureRectangle, out wallRectangle);
 
                 textureRectangle.X = (int) (textureRectangle.X +
-                                            (textureRectangle.Width * castData.fraction) % cellSize);
+                                            (textureRectangle.Width * castData.cellFraction) % cellSize);
                 textureRectangle.Width = 1;
-                
+
                 // get distance and fix fisheye       
-                double distance = castData.t * Math.Cos(orientation - angle);
+                double distance = castData.rayLength * Math.Cos(angle - orientation);
 
                 // get the size of the wall slice
-                int sliceHeight = (int) (cellSize * dtp / distance);
+                int sliceHeight = (int) (cellSize * distanceToProjectionPlane / distance);
                 wallRectangle = new Rectangle(x, viewport.Height / 2 - sliceHeight / 2, 1, sliceHeight);
 
                 // get texture tint
                 float dot = Vector2.Dot(castData.normal, Vector2.UnitY);
                 Color lightingTint = Math.Abs(dot) > 0.9f ? Color.Gray : Color.White;
-                
+
                 spriteBatch.Draw(map.Textures[tileset], wallRectangle, textureRectangle, lightingTint);
             }
         }

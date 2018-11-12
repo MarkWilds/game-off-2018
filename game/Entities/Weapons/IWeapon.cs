@@ -2,13 +2,10 @@
 using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace game
 {
-    interface IWeapon
+    public interface IWeapon
     {
         Entity Owner { get; set; }
         BulletType BulletType { get; }

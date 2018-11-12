@@ -20,7 +20,7 @@ namespace game
         private Rectangle healtBarBackground;
         private int healthbarHeight = 25;
         private int healthbarWidth = 200;
-        private int offsetX = 2;
+        private int offsetX = 4;
         private int offsetY = 2;
 
         private int WindowHeight => graphicsDevice.Viewport.Bounds.Height;
@@ -40,7 +40,8 @@ namespace game
             blankTexture = contentManager.Load<Texture2D>("blank");
             spriteFont = contentManager.Load<SpriteFont>("Arial");
 
-            healtBarBackground = new Rectangle(offsetX, WindowHeight - offsetY - healthbarHeight, healthbarWidth, healthbarHeight);
+            healtBarBackground = new Rectangle(offsetX, WindowHeight - offsetY - healthbarHeight, healthbarWidth,
+                healthbarHeight);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -51,7 +52,7 @@ namespace game
 
         private void DrawHealthBar(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            int width = (int)(healthbarWidth * ((float)player.Health / 100));
+            int width = (int) (healthbarWidth * ((float) player.Health / 100));
             healthBar = new Rectangle(offsetX, WindowHeight - offsetY - healthbarHeight, width, healthbarHeight);
 
             spriteBatch.Draw(blankTexture, healtBarBackground, Color.Black);
@@ -62,7 +63,8 @@ namespace game
         {
             //Adjust the width to the amount of numbers in the text
             textWidth = player.WeaponManager.CurrentWeaponAmmo.ToString().Length * 18;
-            spriteBatch.DrawString(spriteFont, player.WeaponManager.CurrentWeaponAmmo.ToString(), new Vector2(WindowWidth - textWidth - offsetX, WindowHeight - textHeight - offsetY), Color.Black);
+            spriteBatch.DrawString(spriteFont, player.WeaponManager.CurrentWeaponAmmo.ToString(),
+                new Vector2(WindowWidth - textWidth - offsetX, WindowHeight - textHeight - offsetY), Color.White);
         }
     }
 }

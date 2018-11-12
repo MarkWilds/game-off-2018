@@ -10,7 +10,7 @@ using System.Text;
 
 namespace game
 {
-    class Player : Entity, IDamageable
+    public class Player : Entity, IDamageable
     {
         private float speed;
         public WeaponManager WeaponManager { get; private set; }

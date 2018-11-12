@@ -11,18 +11,29 @@ namespace game.GameScreens
     {
         public ScreenManager ScreenManager { get; set; }
 
-        private Texture2D blankTexture;
+        private Player player;
+        private PlayerInterface @interface;
         private Map currentMap;
         private RaycastedMapRenderer mapRenderer;
 
+        private Texture2D blankTexture;
+        private Texture2D weapon;
+        
         private Vector2 position = new Vector2(32 + 16, 64 + 16);
         private float movementSpeed = 64;
-        private float angle;
+        private float angle = 0;
+
+        public ShooterScreen(Player player)
+        {
+            this.player = player;
+        }
 
         public void Initialize(ContentManager contentManager)
         {
+            @interface = new PlayerInterface(player, contentManager, ScreenManager.GraphicsDevice);
             blankTexture = contentManager.Load<Texture2D>("blank");
-            mapRenderer = new RaycastedMapRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 90.0f);
+            weapon = contentManager.Load<Texture2D>("Sprites/gun_weapon");
+            mapRenderer = new RaycastedMapRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
             currentMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/test_fps.tmx");
         }
 
@@ -46,7 +57,6 @@ namespace game.GameScreens
             else if (InputManager.IsKeyDown(Keys.S))
                 verticalMovement = -1.0f;
 
-
             Vector2 forward = new Vector2((float) Math.Cos(angle * Math.PI / 180),
                 (float) Math.Sin(angle * Math.PI / 180));
             Vector2 right = new Vector2(-forward.Y, forward.X);
@@ -65,13 +75,27 @@ namespace game.GameScreens
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+            int weaponW = 64 * 2;
+            
             spriteBatch.Begin();
+            
+            // draw map
             mapRenderer.Render(spriteBatch, currentMap, position, angle * (float) (Math.PI / 180));
-            RenderMinimap(spriteBatch, currentMap, currentMap.Data.Layers["walls1"], 
-                new Vector2(position.X / 32, position.Y / 32), angle * (float)Math.PI / 180);
+
+            // draw sprites
+
+            // draw HUD
+            @interface.Draw(spriteBatch, gameTime);
+            
+            spriteBatch.Draw(weapon, new Rectangle(viewport.Width / 2 - weaponW / 2, viewport.Height - weaponW, weaponW, weaponW),
+                new Rectangle(0, 0, 64, 64), Color.White);
+            
+            RenderMinimap(spriteBatch, currentMap, currentMap.Data.Layers["walls1"],
+                new Vector2(position.X / 32, position.Y / 32), angle * (float) Math.PI / 180);
             spriteBatch.End();
         }
-        
+
         private void RenderMinimap(SpriteBatch spriteBatch, Map map, TmxLayer wallLayer, Vector2 tilecoord, float angle)
         {
             int miniCellSize = 8;
