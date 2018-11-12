@@ -40,7 +40,7 @@ namespace game.GameScreens
 
 
             EntityManager.Instance.AddEntity(
-                new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512), player, hubMap)
+                new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512), hubMap)
             );
 
             EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), 46, 24, new Vector2(400, 400),

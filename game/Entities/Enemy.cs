@@ -1,8 +1,8 @@
-﻿using System;
-using game.Core;
+﻿using game.Core;
 using game.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace game.Entities
 {
@@ -13,16 +13,14 @@ namespace game.Entities
         private float timer;
         private Entity target;
         private int damage = 10;
-        private Player player;
         private Map map;
 
         public int Health { get; private set; } = 50;
 
-        public Enemy(float speed, Texture2D texture, Vector2 position, Player player, Map map)
+        public Enemy(float speed, Texture2D texture, Vector2 position, Map map)
             : base(texture, 32, 32, position, 0)
         {
             this.speed = speed;
-            this.player = player;
             this.map = map;
         }
 
@@ -45,15 +43,18 @@ namespace game.Entities
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            if (target == null)
+                return;
+
             base.Draw(spriteBatch, gameTime);
             RenderPath(spriteBatch);
         }
 
         private void RenderPath(SpriteBatch spriteBatch)
         {
-            var path = map.GetPath(tilePosition, player.tilePosition);
+            var path = map.GetPath(tilePosition, target.tilePosition);
             var lastNode = position;
-            foreach(var node in path)
+            foreach (var node in path)
             {
                 spriteBatch.DrawLine(node, lastNode, Color.Red);
                 lastNode = node;
@@ -62,7 +63,7 @@ namespace game.Entities
 
         private void MoveTowardsTarget(GameTime gameTime)
         {
-            var path = map.GetPath(tilePosition, player.tilePosition);
+            var path = map.GetPath(tilePosition, target.tilePosition);
             if (path.Count > 1)
             {
                 Vector2 direction = path[1] - position;
