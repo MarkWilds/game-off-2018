@@ -28,8 +28,8 @@ namespace game.Particles
         {
             textures = new Dictionary<ParticleShape, Texture2D>()
             {
-                { ParticleShape.Square, contentManager.Load<Texture2D>("blank") },
-                { ParticleShape.Circle, contentManager.Load<Texture2D>("circle") }
+                { ParticleShape.Square, contentManager.Load<Texture2D>("Sprites/Particles/blank") },
+                { ParticleShape.Circle, contentManager.Load<Texture2D>("Sprites/Particles/circle") }
             };
         }
 

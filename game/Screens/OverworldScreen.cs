@@ -31,9 +31,9 @@ namespace game.GameScreens
             PistolTexture = Content.Load<Texture2D>("Sprites/Pistol");
             RifleTexture = Content.Load<Texture2D>("Sprites/Rifle");
 
+            ParticleSystem.Instance.Initialize(Content);
             player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
             EntityManager.Instance.AddEntity(player);
-            ParticleSystem.Instance.Initialize(Content);
 
             EntityManager.Instance.AddEntity(
                 new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512))

@@ -34,11 +34,6 @@ namespace game
                 base.position + Forward));
             WeaponManager.AddWeapon(new AssaultRifle(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
                 base.position + Forward));
-
-            new ParticleEmitter(true, true, 500, position, -Forward, .5f, 45, 1f, 1, ParticleShape.Circle, EmitType.OverTime, Color.Aqua, Color.LawnGreen);
-            new ParticleEmitter(true, true, 200, position, Forward, .5f, 30, 1f, 1, ParticleShape.Circle, EmitType.Burst, Color.HotPink, Color.Indigo);
-            new ParticleEmitter(true, true, 150, position + -Vector2.UnitY * 100, -Vector2.UnitY, .05f, 50, .75f, 1, ParticleShape.Square, EmitType.OverTime, Color.Red, Color.Yellow);
-            new ParticleEmitter(true, true, 250, new Vector2(407, 423), Vector2.UnitY, .05f, 40, .3f, 1, ParticleShape.Square, EmitType.OverTime, Color.Gray, Color.Transparent);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
