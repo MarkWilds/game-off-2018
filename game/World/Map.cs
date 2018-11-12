@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
@@ -15,6 +16,27 @@ namespace game
         {
             this.Data = data;
             Textures = textures;
+        }
+
+        public Func<RayCaster.HitData, bool> GetIsTileOccupiedFunction(string layerName)
+        {
+            if (!Data.Layers.Contains(layerName))
+                throw new ArgumentException($"{layerName} does not exist in this map");
+ 
+            return hitData =>
+            {
+                Vector2 coordinates = hitData.tileCoordinates;
+                if (coordinates.X < 0 || coordinates.X >= Data.Width ||
+                    coordinates.Y < 0 || coordinates.Y >= Data.Height)
+                    return false;
+
+                int index = (int) (coordinates.Y * Data.Width + coordinates.X);
+                TmxLayer wallLayer = Data.Layers[layerName];
+                TmxLayerTile tile = wallLayer.Tiles[index];
+
+                // if tileset is found it is solid
+                return GetTilesetForTile(tile) != null;
+            };
         }
 
         public static Map LoadTiledMap(GraphicsDevice graphicsDevice, string pathToMap)
@@ -54,9 +76,9 @@ namespace game
             return null;
         }
 
-        public void GetSourceAndDestinationRectangles(TmxTileset tileset, TmxLayerTile tile,
-            out Rectangle source, out Rectangle destination)
+        public Rectangle GetSourceRectangleForTile(TmxTileset tileset, TmxLayerTile tile)
         {
+            Rectangle source = new Rectangle();
             int tileWidth = tileset.TileWidth;
             int tileHeight = tileset.TileHeight;
             int tilesInHorizontalAxis = tileset.Image.Width.GetValueOrDefault() / tileWidth;
@@ -66,13 +88,28 @@ namespace game
             int xTilePos = tileIndex / tilesInHorizontalAxis;
             int yTilePos = tileIndex - xTilePos * tilesInHorizontalAxis;
 
-            source.Width = destination.Width = tileWidth;
-            source.Height = destination.Height = tileHeight;
+            source.Width = tileWidth;
+            source.Height = tileHeight;
 
             source.X = yTilePos * tileWidth;
             source.Y = xTilePos * tileHeight;
+
+            return source;
+        }
+        
+        public Rectangle GetDestinationRectangleForTile(TmxTileset tileset, TmxLayerTile tile)
+        {
+            Rectangle destination = new Rectangle();
+            int tileWidth = tileset.TileWidth;
+            int tileHeight = tileset.TileHeight;
+
+            destination.Width = tileWidth;
+            destination.Height = tileHeight;
+
             destination.X = tile.X * tileWidth;
             destination.Y = tile.Y * tileHeight;
+
+            return destination;
         }
     }
 }

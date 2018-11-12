@@ -33,7 +33,7 @@ namespace game.GameScreens
             @interface = new PlayerInterface(player, contentManager, ScreenManager.GraphicsDevice);
             blankTexture = contentManager.Load<Texture2D>("blank");
             weapon = contentManager.Load<Texture2D>("Sprites/gun_weapon");
-            mapRenderer = new RaycastedMapRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
+            mapRenderer = new RaycastedMapRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 90.0f);
             currentMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/test_fps.tmx");
         }
 
@@ -81,7 +81,7 @@ namespace game.GameScreens
             spriteBatch.Begin();
             
             // draw map
-            mapRenderer.Render(spriteBatch, currentMap, position, angle * (float) (Math.PI / 180));
+            mapRenderer.Render(spriteBatch, currentMap, position, angle * (float) (Math.PI / 180), "walls1");
 
             // draw sprites
 

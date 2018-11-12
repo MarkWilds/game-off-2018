@@ -5,7 +5,7 @@ namespace game
 {
     public class RayCaster
     {
-        public struct hitData
+        public struct HitData
         {
             public Vector2 normal;
             public Vector2 tileCoordinates;
@@ -14,7 +14,7 @@ namespace game
         }
 
         public static bool RayIntersectsGrid(Vector2 position, float angle, int cellSize,
-            out hitData hitData, Func<hitData, bool> isSolid, float MaxViewDistance = 1024)
+            out HitData hitData, Func<HitData, bool> isSolid, float maxViewDistance = 1024)
         {
             float cos = (float) Math.Cos(angle);
             float sin = (float) Math.Sin(angle);
@@ -37,10 +37,10 @@ namespace game
             float deltaVertical = Math.Abs(cellSize / cos);
             float deltaHorizontal = Math.Abs(cellSize / sin);
 
-            hitData = new hitData {normal = new Vector2(cos, sin), rayLength = 0.0f, tileCoordinates = tileCoords};
+            hitData = new HitData {normal = new Vector2(cos, sin), rayLength = 0.0f, tileCoordinates = tileCoords};
             while (true)
             {
-                if (hitData.rayLength >= MaxViewDistance)
+                if (hitData.rayLength >= maxViewDistance)
                     return false;
 
                 if (isSolid.Invoke(hitData))
@@ -53,6 +53,7 @@ namespace game
                     hitData.normal = -Vector2.UnitX * signX;
                     hitData.tileCoordinates = tileCoords;
                     hitData.cellFraction = (position.Y + tVertical * sin) % cellSize / cellSize;
+                    
                     tVertical += deltaVertical;
                 }
                 else
@@ -62,6 +63,7 @@ namespace game
                     hitData.normal = -Vector2.UnitY * signY;
                     hitData.tileCoordinates = tileCoords;
                     hitData.cellFraction = (position.X + tHorizontal * cos) % cellSize / cellSize;
+                    
                     tHorizontal += deltaHorizontal;
                 }
             }

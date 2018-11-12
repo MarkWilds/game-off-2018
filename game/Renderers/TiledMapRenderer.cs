@@ -26,7 +26,8 @@ namespace game
 
                     Texture2D tilesetTexture = map.Textures[tileset];
 
-                    map.GetSourceAndDestinationRectangles(tileset, tile, out source, out destination);
+                    source = map.GetSourceRectangleForTile(tileset, tile);
+                    destination = map.GetDestinationRectangleForTile(tileset, tile);
                     batch.Draw(tilesetTexture, destination, source, Color.White, 0, Vector2.Zero, SpriteEffects.None,
                         0);
                 }

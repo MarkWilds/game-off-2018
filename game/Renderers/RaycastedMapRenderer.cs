@@ -25,7 +25,7 @@ namespace game
         /// <param name="map">The map to draw</param>
         /// <param name="position">The position to draw from</param>
         /// <param name="orientation">The rotation to draw from</param>
-        public void Render(SpriteBatch spriteBatch, Map map, Vector2 position, float orientation)
+        public void Render(SpriteBatch spriteBatch, Map map, Vector2 position, float orientation, string wallsLayer)
         {
             TmxMap mapData = map.Data;
             if (!HasProperLayers(mapData))
@@ -33,25 +33,10 @@ namespace game
 
             int slices = viewport.Width;
             float halfFov = FOV / 2;
+            float distanceToProjectionPlane = slices / 2 * (float) Math.Tan(halfFov);
+            
             float sliceAngle = FOV / slices;
             float beginAngle = orientation - halfFov;
-
-            float distanceToProjectionPlane = slices / 2 * (float) Math.Tan(halfFov);
-
-            TmxLayer wallLayer = mapData.Layers["walls1"];
-            Func<RayCaster.hitData, bool> isTileSolid = data =>
-            {
-                Vector2 coordinates = data.tileCoordinates;
-                if (coordinates.X < 0 || coordinates.X >= mapData.Width ||
-                    coordinates.Y < 0 || coordinates.Y >= mapData.Height)
-                    return false;
-
-                int index = (int) (coordinates.Y * mapData.Width + coordinates.X);
-                TmxLayerTile tile = wallLayer.Tiles[index];
-
-                // if tileset is found it is solid
-                return map.GetTilesetForTile(tile) != null;
-            };
 
             // draw ceiling and floor
             spriteBatch.Draw(blankTexture, new Rectangle(0, 0, viewport.Width, viewport.Height / 2),
@@ -64,32 +49,30 @@ namespace game
             {
                 float angle = beginAngle + x * sliceAngle;
 
-                RayCaster.hitData castData;
-                if (!RayCaster.RayIntersectsGrid(position, angle, cellSize, out castData, isTileSolid))
+                RayCaster.HitData castData;
+                if (!RayCaster.RayIntersectsGrid(position, angle, cellSize, out castData,
+                    map.GetIsTileOccupiedFunction(wallsLayer)))
                     continue;
 
                 // get the texture slice
                 int tileIndex = (int) (castData.tileCoordinates.Y * mapData.Width + castData.tileCoordinates.X);
-
+                TmxLayer wallLayer = mapData.Layers[wallsLayer];
                 TmxLayerTile tile = wallLayer.Tiles[tileIndex];
                 TmxTileset tileset = map.GetTilesetForTile(tile);
                 if (tileset == null)
                     continue;
 
-                Rectangle textureRectangle = new Rectangle();
-                Rectangle wallRectangle = new Rectangle();
-                map.GetSourceAndDestinationRectangles(tileset, tile, out textureRectangle, out wallRectangle);
-
-                textureRectangle.X = (int) (textureRectangle.X +
-                                            (textureRectangle.Width * castData.cellFraction) % cellSize);
-                textureRectangle.Width = 1;
-
-                // get distance and fix fisheye       
-                double distance = castData.rayLength * Math.Cos(angle - orientation);
-
-                // get the size of the wall slice
+                // fix fisheye for distance and get slice height       
+                double distance = castData.rayLength; // * Math.Cos(angle - orientation);
                 int sliceHeight = (int) (cellSize * distanceToProjectionPlane / distance);
-                wallRectangle = new Rectangle(x, viewport.Height / 2 - sliceHeight / 2, 1, sliceHeight);
+
+                // get drawing rectangles
+                Rectangle wallRectangle = new Rectangle(x, viewport.Height / 2 - sliceHeight / 2, 1, sliceHeight);
+                Rectangle textureRectangle = map.GetSourceRectangleForTile(tileset, tile);
+
+                textureRectangle.X =
+                    (int) (textureRectangle.X + (textureRectangle.Width * castData.cellFraction) % cellSize);
+                textureRectangle.Width = 1;
 
                 // get texture tint
                 float dot = Vector2.Dot(castData.normal, Vector2.UnitY);
