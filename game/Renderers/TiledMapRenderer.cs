@@ -35,7 +35,6 @@ namespace game
                     {
                         rotation = -90;
                         offset.Y -= tileset.TileHeight;
-                        offset.X -= tilesetTexture.Width - tileset.TileWidth;
 
                         effect |= SpriteEffects.FlipHorizontally;
                     }
@@ -60,27 +59,14 @@ namespace game
 
                     batch.Draw(
                         tilesetTexture,
-                        new Vector2(tileset.TileOffset.X, tileset.TileOffset.Y) + new Vector2(tile.X * tileset.TileWidth, tile.Y * tileset.TileHeight) - offset,
+                        new Vector2(tileset.TileWidth * tile.X, tileset.TileHeight * tile.Y) - offset,
                         source,
                         Color.White,
                         (float)(Math.PI / 180) * rotation,
-                        -Vector2.UnitY * tileset.TileHeight + new Vector2(tilesetTexture.Width / 2, tilesetTexture.Height / 2),
+                        Vector2.Zero,
                         1,
                         effect,
                         0);
-
-
-                    //Batch.Draw(
-                    //    frame.Texture,
-                    //    pos,
-                    //    frame.TexturePosition,
-                    //    color,
-                    //    MathHelper.ToRadians(rotation),
-                    //    offset + frame.Origin,
-                    //    scale,
-                    //    effect,
-                    //    0
-                    //);
                 }
             }
         }
