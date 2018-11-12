@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Comora;
 using Microsoft.Xna.Framework;
@@ -26,9 +27,60 @@ namespace game
 
                     Texture2D tilesetTexture = map.Textures[tileset];
 
+                    var effect = SpriteEffects.None;
+                    var offset = Vector2.Zero;
+                    var rotation = 0;
+
+                    if (tile.DiagonalFlip)
+                    {
+                        rotation = -90;
+                        offset.Y -= tileset.TileHeight;
+                        offset.X -= tilesetTexture.Width - tileset.TileWidth;
+
+                        effect |= SpriteEffects.FlipHorizontally;
+                    }
+
+                    if (tile.HorizontalFlip)
+                    {
+                        if (tile.DiagonalFlip)
+                            effect ^= SpriteEffects.FlipVertically;
+                        else
+                            effect ^= SpriteEffects.FlipHorizontally;
+                    }
+
+                    if (tile.VerticalFlip)
+                    {
+                        if (!tile.DiagonalFlip)
+                            effect ^= SpriteEffects.FlipVertically;
+                        else
+                            effect ^= SpriteEffects.FlipHorizontally;
+                    }
+
                     map.GetSourceAndDestinationRectangles(tileset, tile, out source, out destination);
-                    batch.Draw(tilesetTexture, destination, source, Color.White, 0, Vector2.Zero, SpriteEffects.None,
+
+                    batch.Draw(
+                        tilesetTexture,
+                        new Vector2(tileset.TileOffset.X, tileset.TileOffset.Y) + new Vector2(tile.X * tileset.TileWidth, tile.Y * tileset.TileHeight) - offset,
+                        source,
+                        Color.White,
+                        (float)(Math.PI / 180) * rotation,
+                        -Vector2.UnitY * tileset.TileHeight + new Vector2(tilesetTexture.Width / 2, tilesetTexture.Height / 2),
+                        1,
+                        effect,
                         0);
+
+
+                    //Batch.Draw(
+                    //    frame.Texture,
+                    //    pos,
+                    //    frame.TexturePosition,
+                    //    color,
+                    //    MathHelper.ToRadians(rotation),
+                    //    offset + frame.Origin,
+                    //    scale,
+                    //    effect,
+                    //    0
+                    //);
                 }
             }
         }
