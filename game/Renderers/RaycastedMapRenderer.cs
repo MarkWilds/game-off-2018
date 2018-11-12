@@ -28,19 +28,16 @@ namespace game
         public void Render(SpriteBatch spriteBatch, Map map, Vector2 position, float orientation, string wallsLayer)
         {
             TmxMap mapData = map.Data;
-            if (!HasProperLayers(mapData))
-                throw new Exception("This map does not contain the proper layer!");
-
             int slices = viewport.Width;
             float halfFov = FOV / 2;
-            float distanceToProjectionPlane = slices / 2 * (float) Math.Tan(halfFov);
-            
+            float focalLength = slices / 2 / (float) Math.Tan(halfFov);
+
             float sliceAngle = FOV / slices;
             float beginAngle = orientation - halfFov;
 
             // draw ceiling and floor
             spriteBatch.Draw(blankTexture, new Rectangle(0, 0, viewport.Width, viewport.Height / 2),
-                Color.DarkSlateGray);
+                Color.FromNonPremultiplied(23, 14, 8, 255));
             spriteBatch.Draw(blankTexture, new Rectangle(0, viewport.Height / 2, viewport.Width, viewport.Height / 2),
                 Color.DarkKhaki);
 
@@ -62,9 +59,9 @@ namespace game
                 if (tileset == null)
                     continue;
 
-                // fix fisheye for distance and get slice height       
-                double distance = castData.rayLength; // * Math.Cos(angle - orientation);
-                int sliceHeight = (int) (cellSize * distanceToProjectionPlane / distance);
+                // fix fisheye for distance and get slice height
+                double distance = castData.rayLength * Math.Cos(angle - orientation);
+                int sliceHeight = (int) (cellSize * focalLength / distance);
 
                 // get drawing rectangles
                 Rectangle wallRectangle = new Rectangle(x, viewport.Height / 2 - sliceHeight / 2, 1, sliceHeight);
@@ -80,11 +77,6 @@ namespace game
 
                 spriteBatch.Draw(map.Textures[tileset], wallRectangle, textureRectangle, lightingTint);
             }
-        }
-
-        private bool HasProperLayers(TmxMap mapData)
-        {
-            return mapData.Layers["walls1"] != null;
         }
     }
 }

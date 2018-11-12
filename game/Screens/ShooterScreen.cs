@@ -33,7 +33,7 @@ namespace game.GameScreens
             @interface = new PlayerInterface(player, contentManager, ScreenManager.GraphicsDevice);
             blankTexture = contentManager.Load<Texture2D>("blank");
             weapon = contentManager.Load<Texture2D>("Sprites/gun_weapon");
-            mapRenderer = new RaycastedMapRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 90.0f);
+            mapRenderer = new RaycastedMapRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
             currentMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/test_fps.tmx");
         }
 
@@ -81,7 +81,7 @@ namespace game.GameScreens
             spriteBatch.Begin();
             
             // draw map
-            mapRenderer.Render(spriteBatch, currentMap, position, angle * (float) (Math.PI / 180), "walls1");
+            mapRenderer.Render(spriteBatch, currentMap, position, angle * (float) (Math.PI / 180.0f), "walls1");
 
             // draw sprites
 
@@ -98,7 +98,7 @@ namespace game.GameScreens
 
         private void RenderMinimap(SpriteBatch spriteBatch, Map map, TmxLayer wallLayer, Vector2 tilecoord, float angle)
         {
-            int miniCellSize = 8;
+            int miniCellSize = 6;
             int halfCellSize = miniCellSize / 2;
             if (!wallLayer.Visible)
                 return;

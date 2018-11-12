@@ -29,8 +29,8 @@ namespace game
             Vector2 maxBounds = tileCoords * cellVector + cellVector;
             
             // get the initial ray lengths for intersection with x and y axis
-            float tVertical = (signX < 0 ? minBounds.X - position.X : maxBounds.X - position.X) / cos;
-            float tHorizontal = (signY < 0 ? minBounds.Y - position.Y : maxBounds.Y - position.Y) / sin;
+            float tVertical = ((signX < 0 ? minBounds.X : maxBounds.X) - position.X) / cos;
+            float tHorizontal = ((signY < 0 ? minBounds.Y : maxBounds.Y) - position.Y) / sin;
 
             // get delta ray lengths(slope values) per increase in cellsize
             // needs to be positive always
@@ -38,11 +38,8 @@ namespace game
             float deltaHorizontal = Math.Abs(cellSize / sin);
 
             hitData = new HitData {normal = new Vector2(cos, sin), rayLength = 0.0f, tileCoordinates = tileCoords};
-            while (true)
+            while (hitData.rayLength < maxViewDistance)
             {
-                if (hitData.rayLength >= maxViewDistance)
-                    return false;
-
                 if (isSolid.Invoke(hitData))
                     return true;
 
@@ -67,6 +64,8 @@ namespace game
                     tHorizontal += deltaHorizontal;
                 }
             }
+            
+            return false;
         }
     }
 }
