@@ -18,6 +18,7 @@ namespace game.GameScreens
         public static Texture2D RifleTexture;
 
         private Player player;
+        private Car car;
         private Camera camera;
         private Map hubMap;
         private TiledMapRenderer mapRenderer;
@@ -39,8 +40,8 @@ namespace game.GameScreens
                 new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(512, 512))
             );
 
-            EntityManager.Instance.AddEntity(new Entity(Content.Load<Texture2D>("Sprites/Car"), 46, 24, new Vector2(400, 400),
-                (float) -Math.PI / 2));
+            car = new Car(300,.075f, Content.Load<Texture2D>("Sprites/Car"), 46, 24, new Vector2(400, 400), (float) -Math.PI / 2);
+            EntityManager.Instance.AddEntity(car);
 
             EntityManager.Instance.AddEntity(new AmmoPack(BulletType.AssaultRifle, 30, Content.Load<Texture2D>("Sprites/AmmoPack"), new Vector2(200, 300)));
             EntityManager.Instance.AddEntity(new HealthPack(25, Content.Load<Texture2D>("Sprites/HealthPack"), new Vector2(300, 300)));
@@ -59,7 +60,7 @@ namespace game.GameScreens
             EntityManager.Instance.Update(gameTime);
             ParticleSystem.Instance.Update(gameTime);
 
-            camera.Position = player.position;
+            camera.Position = car.position;
             camera.Position = new Vector2((int) camera.Position.X, (int) camera.Position.Y);
 
             if (InputManager.IsKeyPressed(Keys.F4))
