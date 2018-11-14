@@ -11,10 +11,11 @@ namespace game.Entities
         private float speed;
         private float timeBetweenShots = 1;
         private float timer;
-        private Entity target => EntityManager.Instance.GetPlayer() as Entity;
+        private IDamageable target => EntityManager.Instance.GetPlayer();
         private int damage = 10;
 
         public int Health { get; private set; } = 50;
+        public int MaxHealth { get; private set; } = 50;
 
         public Enemy(float speed, Texture2D texture, Vector2 position, float rotation = 0)
             : base(texture, 32, 32, position, rotation)

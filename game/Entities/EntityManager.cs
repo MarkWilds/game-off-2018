@@ -20,8 +20,14 @@ namespace game.Entities
         }
         private static EntityManager instance;
         private EntityManager() { }
+        private PlayerController playerController;
 
         private List<Entity> entities = new List<Entity>();
+
+        public void Initialize(PlayerController playerController)
+        {
+            this.playerController = playerController;
+        }
 
         public void Update(GameTime gameTime)
         {
@@ -72,7 +78,7 @@ namespace game.Entities
 
         public IControllable GetPlayer()
         {
-            return ((Player)entities.FirstOrDefault(ent => ent is Player)).playerController.ControlledEntity;
+            return playerController.ControlledEntity;
         }
     }
 }

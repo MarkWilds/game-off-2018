@@ -1,4 +1,5 @@
 ﻿using Comora;
+using game.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +11,7 @@ namespace game
 {
     class PlayerInterface
     {
-        private Player player;
+        private IDamageable controlledEntity;
         private ContentManager contentManager;
         private GraphicsDevice graphicsDevice;
 
@@ -19,7 +20,7 @@ namespace game
         private Rectangle healthBar;
         private Rectangle healtBarBackground;
         private int healthbarHeight = 25;
-        private int healthbarWidth = 200;
+        private int healthbarWidth => controlledEntity.MaxHealth;
         private int offsetX = 2;
         private int offsetY = 2;
 
@@ -31,9 +32,9 @@ namespace game
         private int textHeight = 30;
         private int textWidth;
 
-        public PlayerInterface(Player player, ContentManager contentManager, GraphicsDevice graphicsDevice)
+        public PlayerInterface(IControllable player, ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
-            this.player = player;
+            this.controlledEntity = player;
             this.contentManager = contentManager;
             this.graphicsDevice = graphicsDevice;
 
@@ -43,15 +44,28 @@ namespace game
             healtBarBackground = new Rectangle(offsetX, WindowHeight - offsetY - healthbarHeight, healthbarWidth, healthbarHeight);
         }
 
+        /// <summary>
+        /// Change the interface to fit with the new controlledEntity
+        /// </summary>
+        /// <param name="newControllable"></param>
+        public void ChangeInterface(IControllable newControllable)
+        {
+            controlledEntity = newControllable;
+            healtBarBackground = new Rectangle(offsetX, WindowHeight - offsetY - healthbarHeight, healthbarWidth, healthbarHeight);
+        }
+
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             DrawHealthBar(spriteBatch, gameTime);
-            DrawAmmo(spriteBatch, gameTime);
+
+            //If the player is controller it's character we can show the ammo display
+            if(controlledEntity is Player)
+                DrawAmmo(spriteBatch, gameTime);
         }
 
         private void DrawHealthBar(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            int width = (int)(healthbarWidth * ((float)player.Health / 100));
+            int width = (int)(healthbarWidth * ((float)controlledEntity.Health / controlledEntity.MaxHealth));
             healthBar = new Rectangle(offsetX, WindowHeight - offsetY - healthbarHeight, width, healthbarHeight);
 
             spriteBatch.Draw(blankTexture, healtBarBackground, Color.Black);
@@ -61,8 +75,9 @@ namespace game
         private void DrawAmmo(SpriteBatch spriteBatch, GameTime gameTime)
         {
             //Adjust the width to the amount of numbers in the text
-            textWidth = player.WeaponManager.CurrentWeaponAmmo.ToString().Length * 18;
-            spriteBatch.DrawString(spriteFont, player.WeaponManager.CurrentWeaponAmmo.ToString(), new Vector2(WindowWidth - textWidth - offsetX, WindowHeight - textHeight - offsetY), Color.Black);
+            var weaponManager = ((Player)controlledEntity).WeaponManager;
+            textWidth = weaponManager.CurrentWeaponAmmo.ToString().Length * 18;
+            spriteBatch.DrawString(spriteFont, weaponManager.CurrentWeaponAmmo.ToString(), new Vector2(WindowWidth - textWidth - offsetX, WindowHeight - textHeight - offsetY), Color.Black);
         }
     }
 }
