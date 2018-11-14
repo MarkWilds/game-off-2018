@@ -32,9 +32,9 @@ namespace game
         private int textHeight = 30;
         private int textWidth;
 
-        public PlayerInterface(IControllable player, ContentManager contentManager, GraphicsDevice graphicsDevice)
+        public PlayerInterface(IControllable controlledEntity, ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
-            this.controlledEntity = player;
+            this.controlledEntity = controlledEntity;
             this.contentManager = contentManager;
             this.graphicsDevice = graphicsDevice;
 
@@ -47,7 +47,6 @@ namespace game
         /// <summary>
         /// Change the interface to fit with the new controlledEntity
         /// </summary>
-        /// <param name="newControllable"></param>
         public void ChangeInterface(IControllable newControllable)
         {
             controlledEntity = newControllable;
@@ -58,7 +57,7 @@ namespace game
         {
             DrawHealthBar(spriteBatch, gameTime);
 
-            //If the player is controller it's character we can show the ammo display
+            //If the player is controlling it's character we can show the ammo display
             if(controlledEntity is Player)
                 DrawAmmo(spriteBatch, gameTime);
         }

@@ -56,7 +56,7 @@ namespace game
 
         public override void Update(GameTime gameTime)
         {
-            playerController.Update(gameTime);
+            playerController.HandleInput(gameTime);
 
             if (!IsVisible)
                 return;

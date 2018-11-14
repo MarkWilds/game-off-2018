@@ -17,7 +17,7 @@ namespace game.Entities
             ControlledEntity = controlledEntity;
         }
 
-        public void Update(GameTime gameTime)
+        public void HandleInput(GameTime gameTime)
         {
             ControlledEntity.HandleInput(gameTime);
         }

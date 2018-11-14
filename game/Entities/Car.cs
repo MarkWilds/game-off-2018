@@ -14,12 +14,11 @@ namespace game.Entities
         private float topSpeed;
         private float acceleration;
         private float turnAngle;
-        private bool isOn = false;
+        private bool started = false;
         private Player player;
 
         private Rectangle interactionBox;
         private ParticleEmitter exhaustParticles;
-        private Vector2 exhaustOffset;
 
         public int Health { get; private set; } = 150;
         public int MaxHealth { get; private set; } = 150;
@@ -30,24 +29,21 @@ namespace game.Entities
             this.acceleration = acceleration;
             turnAngle = .004f;
 
-            exhaustOffset = new Vector2(0, height);
-            exhaustParticles = new ParticleEmitter(false, true, 90, position + exhaustOffset, -Forward, .05f, 20, .45f, .4f, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
+            exhaustParticles = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, .4f, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
 
             player = EntityManager.Instance.GetPlayer() as Player;
         }
 
-        public void Enter()
+        public void Start()
         {
-            Console.WriteLine("Enter");
-            isOn = true;
+            started = true;
             player.playerController.ChangeControl(this);
             exhaustParticles.Start();
         }
 
-        public void Exit()
+        public void Stop()
         {
-            Console.WriteLine("Exit");
-            isOn = false;
+            started = false;
             player.playerController.ChangeControl(player);
             player.position = new Vector2(position.X + Width, position.Y + Height / 2);
             exhaustParticles.Stop();
@@ -70,7 +66,7 @@ namespace game.Entities
             position += direction * currentSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             //If the player isn't driving the car, slow it down
-            if (!isOn && currentSpeed != 0)
+            if (!started && currentSpeed != 0)
                 SlowDown(deltaTime);
 
             //Set particleEmitter position
@@ -86,9 +82,9 @@ namespace game.Entities
 
             if (interactionBox.Intersects(player.BoundingBox))
             {
-                if (InputManager.IsKeyPressed(Keys.F) && !isOn)
+                if (InputManager.IsKeyPressed(Keys.F) && !started)
                 {
-                    Enter();
+                    Start();
                 }
             }
         }
@@ -106,10 +102,8 @@ namespace game.Entities
             if (InputManager.IsKeyDown(Keys.D))
                 rotation += (turnAngle * (currentSpeed / topSpeed) * deltaTime);
 
-            if (InputManager.IsKeyPressed(Keys.F))
-            {
-                Exit();
-            }
+            if (InputManager.IsKeyPressed(Keys.F) && started)
+                Stop();
 
             //Not accelerating or braking
             if (!InputManager.IsKeyDown(Keys.W) && !InputManager.IsKeyDown(Keys.S))
@@ -121,8 +115,8 @@ namespace game.Entities
             Health -= amount;
             if (Health <= 0)
             {
-                if (isOn)
-                    Exit();
+                if (started)
+                    Stop();
                 Destroy();
             }
         }
