@@ -60,7 +60,7 @@ namespace game.Entities
         /// <summary>
         /// Destroy the entity deleting it from the game
         /// </summary>
-        public void Destroy()
+        public virtual void Destroy()
         {
             ShouldBeDestroyed = true;
         }

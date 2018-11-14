@@ -11,10 +11,11 @@ using System.Text;
 
 namespace game
 {
-    class Player : Entity, IDamageable
+    public class Player : Entity, IControlable
     {
         private float speed;
         public WeaponManager WeaponManager { get; private set; }
+        public PlayerController playerController { get; private set; }
 
         public int MaxHealth { get; private set; } = 100;
         public int Health { get; private set; }
@@ -29,6 +30,8 @@ namespace game
             animator.AddAnimation(new Animation(0, 1, 0)); //Idle
             animator.AddAnimation(new Animation(1, 3, 100)); //Running
 
+            playerController = new PlayerController(this);
+
             WeaponManager = new WeaponManager(this);
             WeaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture,
                 base.position + Forward));
@@ -38,6 +41,10 @@ namespace game
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            //If we aren't controlling the player we don't have to draw it
+            if (playerController.ControlledEntity != this)
+                return;
+
             base.Draw(spriteBatch, gameTime);
 
             WeaponManager.Draw(spriteBatch, gameTime);
@@ -45,14 +52,20 @@ namespace game
 
         public override void Update(GameTime gameTime)
         {
-            Move(gameTime);
-            Shoot();
+            playerController.Update(gameTime);
+
+            //No need to update if we aren't controlling this
+            if (playerController.ControlledEntity != this)
+                return;
 
             WeaponManager.Update(gameTime);
             base.Update(gameTime);
         }
 
-        private void Move(GameTime gameTime)
+        /// <summary>
+        /// Handles all player input, is controlled by the playercontroller
+        /// </summary>
+        public void HandleInput(GameTime gameTime)
         {
             Vector2 direction = new Vector2();
 
@@ -75,15 +88,20 @@ namespace game
 
             //Normalize vector to prevent faster movement when 2 directions are pressed
             if (direction.X != 0 || direction.Y != 0)
+            {
                 direction.Normalize();
+                position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            }
 
-            position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
-        }
-
-        private void Shoot()
-        {
+            //Shooting
             if (InputManager.IsMouseButtonPressed(MouseButton.Left))
                 WeaponManager.ShootCurrentWeapon();
+
+            //Weapon swap
+            if (InputManager.IsKeyPressed(Keys.E) || InputManager.ScrollWheelUp)
+                WeaponManager.NextWeapon();
+            if (InputManager.IsKeyPressed(Keys.Q) || InputManager.ScrollWheelDown)
+                WeaponManager.PreviousWeapon();
         }
 
         public void TakeDamage(int amount, Vector2 hitDirection)

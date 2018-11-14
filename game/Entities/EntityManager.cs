@@ -70,9 +70,9 @@ namespace game.Entities
             return entities.Where(entity => entity is IDamageable).ToArray();
         }
 
-        public Entity GetPlayer()
+        public IControlable GetPlayer()
         {
-            return entities.FirstOrDefault(ent => ent is Player);
+            return ((Player)entities.FirstOrDefault(ent => ent is Player)).playerController.ControlledEntity;
         }
     }
 }
