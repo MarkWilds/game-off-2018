@@ -70,7 +70,7 @@ namespace game.Entities
             return entities.Where(entity => entity is IDamageable).ToArray();
         }
 
-        public IControlable GetPlayer()
+        public IControllable GetPlayer()
         {
             return ((Player)entities.FirstOrDefault(ent => ent is Player)).playerController.ControlledEntity;
         }

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace game.Entities
 {
-    public class Car : Entity, IControlable
+    public class Car : Entity, IControllable
     {
         private float currentSpeed;
         private float topSpeed;
@@ -48,7 +48,7 @@ namespace game.Entities
             Console.WriteLine("Exit");
             isOn = false;
             player.playerController.ChangeControl(player);
-            player.position = position * 1.25f;
+            player.position = new Vector2(position.X + Width, position.Y + Height / 2);
             exhaustParticles.Stop();
         }
 

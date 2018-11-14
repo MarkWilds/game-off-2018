@@ -7,9 +7,12 @@ namespace game.Entities
 {
     public class PlayerController
     {
-        public IControlable ControlledEntity { get; private set; }
+        public delegate void ControlChanged(IControllable controlable);
+        public ControlChanged OnControlChanged;
 
-        public PlayerController(IControlable controlledEntity)
+        public IControllable ControlledEntity { get; private set; }
+
+        public PlayerController(IControllable controlledEntity)
         {
             ControlledEntity = controlledEntity;
         }
@@ -19,9 +22,10 @@ namespace game.Entities
             ControlledEntity.HandleInput(gameTime);
         }
 
-        public void ChangeControl(IControlable controlledEntity)
+        public void ChangeControl(IControllable controlledEntity)
         {
             ControlledEntity = controlledEntity;
+            OnControlChanged?.Invoke(controlledEntity);
         }
     }
 }

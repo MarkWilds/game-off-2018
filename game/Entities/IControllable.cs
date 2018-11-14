@@ -5,7 +5,7 @@ using System.Text;
 
 namespace game.Entities
 {
-    public interface IControlable : IDamageable
+    public interface IControllable : IDamageable
     {
         void HandleInput(GameTime gameTime);
     }

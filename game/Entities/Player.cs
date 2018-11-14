@@ -11,7 +11,7 @@ using System.Text;
 
 namespace game
 {
-    public class Player : Entity, IControlable
+    public class Player : Entity, IControllable
     {
         private float speed;
         public WeaponManager WeaponManager { get; private set; }
@@ -31,6 +31,11 @@ namespace game
             animator.AddAnimation(new Animation(1, 3, 100)); //Running
 
             playerController = new PlayerController(this);
+            playerController.OnControlChanged += (controlledEntity) => {
+                if (controlledEntity == this)
+                    IsVisible = true;
+                else IsVisible = false;
+            };
 
             WeaponManager = new WeaponManager(this);
             WeaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture,
@@ -41,8 +46,7 @@ namespace game
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            //If we aren't controlling the player we don't have to draw it
-            if (playerController.ControlledEntity != this)
+            if (!IsVisible)
                 return;
 
             base.Draw(spriteBatch, gameTime);
@@ -54,8 +58,7 @@ namespace game
         {
             playerController.Update(gameTime);
 
-            //No need to update if we aren't controlling this
-            if (playerController.ControlledEntity != this)
+            if (!IsVisible)
                 return;
 
             WeaponManager.Update(gameTime);
