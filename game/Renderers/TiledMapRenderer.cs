@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Comora;
 using Microsoft.Xna.Framework;
@@ -26,8 +27,45 @@ namespace game
 
                     Texture2D tilesetTexture = map.Textures[tileset];
 
+                    var effect = SpriteEffects.None;
+                    var offset = Vector2.Zero;
+                    var rotation = 0;
+
+                    if (tile.DiagonalFlip)
+                    {
+                        rotation = -90;
+                        offset.Y -= tileset.TileHeight;
+
+                        effect |= SpriteEffects.FlipHorizontally;
+                    }
+
+                    if (tile.HorizontalFlip)
+                    {
+                        if (tile.DiagonalFlip)
+                            effect ^= SpriteEffects.FlipVertically;
+                        else
+                            effect ^= SpriteEffects.FlipHorizontally;
+                    }
+
+                    if (tile.VerticalFlip)
+                    {
+                        if (!tile.DiagonalFlip)
+                            effect ^= SpriteEffects.FlipVertically;
+                        else
+                            effect ^= SpriteEffects.FlipHorizontally;
+                    }
+
                     map.GetSourceAndDestinationRectangles(tileset, tile, out source, out destination);
-                    batch.Draw(tilesetTexture, destination, source, Color.White, 0, Vector2.Zero, SpriteEffects.None,
+
+                    batch.Draw(
+                        tilesetTexture,
+                        new Vector2(tileset.TileWidth * tile.X, tileset.TileHeight * tile.Y) - offset,
+                        source,
+                        Color.White,
+                        MathHelper.ToRadians(rotation),
+                        Vector2.Zero,
+                        1,
+                        effect,
                         0);
                 }
             }

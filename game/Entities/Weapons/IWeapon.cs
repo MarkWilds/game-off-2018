@@ -8,7 +8,7 @@ using System.Text;
 
 namespace game
 {
-    interface IWeapon
+    public interface IWeapon
     {
         Entity Owner { get; set; }
         BulletType BulletType { get; }

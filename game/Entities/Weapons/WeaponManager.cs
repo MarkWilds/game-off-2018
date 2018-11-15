@@ -9,7 +9,7 @@ using System.Text;
 
 namespace game
 {
-    class WeaponManager
+    public class WeaponManager
     {
         public int CurrentWeaponAmmo => ammo[CurrentWeapon.BulletType];
 
@@ -65,11 +65,6 @@ namespace game
 
         public void Update(GameTime gameTime)
         {
-            if (InputManager.IsKeyPressed(Keys.E) || InputManager.ScrollWheelUp)
-                NextWeapon();
-            if (InputManager.IsKeyPressed(Keys.Q) || InputManager.ScrollWheelDown)
-                PreviousWeapon();
-
             CurrentWeapon.Update(gameTime);
         }
 
