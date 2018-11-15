@@ -16,14 +16,20 @@ namespace game.GameScreens
 
         private Texture2D blankTexture;
         private Vector2 position = new Vector2(32 + 16, 64 + 16);
-        private float movementSpeed = 64;
+        private float movementSpeed = 128;
         private float angle;
+
+        private MouseState previousState;
 
         public void Initialize(ContentManager contentManager)
         {
             blankTexture = contentManager.Load<Texture2D>("blank");
             renderer = new RaycastRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
             currentMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/test_fps.tmx");
+
+            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+            Mouse.SetPosition(viewport.Width / 2, viewport.Height / 2);
+            previousState = Mouse.GetState();
         }
 
         public void Update(GameTime gameTime)
@@ -59,7 +65,15 @@ namespace game.GameScreens
                 position += movementDirection * movementSpeed * (float) gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            angle += InputManager.MouseAxisX * 10.0f * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            MouseState currentState = Mouse.GetState();
+            if (currentState != previousState)
+            {
+                float deltaX = currentState.X - previousState.X;
+                angle += deltaX * 20.0f * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+            Mouse.SetPosition(viewport.Width / 2, viewport.Height / 2);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
