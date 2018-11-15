@@ -11,29 +11,18 @@ namespace game.GameScreens
     {
         public ScreenManager ScreenManager { get; set; }
 
-        private Player player;
-        private PlayerInterface @interface;
         private Map currentMap;
-        private RaycastRenderer _renderer;
+        private RaycastRenderer renderer;
 
         private Texture2D blankTexture;
-        private Texture2D weapon;
-
         private Vector2 position = new Vector2(32 + 16, 64 + 16);
         private float movementSpeed = 64;
-        private float angle = 0;
-
-        public ShooterScreen(Player player)
-        {
-            this.player = player;
-        }
+        private float angle;
 
         public void Initialize(ContentManager contentManager)
         {
-            @interface = new PlayerInterface(player, contentManager, ScreenManager.GraphicsDevice);
             blankTexture = contentManager.Load<Texture2D>("blank");
-            weapon = contentManager.Load<Texture2D>("Sprites/gun_weapon");
-            _renderer = new RaycastRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
+            renderer = new RaycastRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
             currentMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/test_fps.tmx");
         }
 
@@ -75,59 +64,14 @@ namespace game.GameScreens
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
-            int weaponW = 64 * 2;
-
             spriteBatch.Begin();
 
-            _renderer.ClearDepthBuffer();
-            _renderer.RenderMap(spriteBatch, currentMap, position, angle, 32, "walls1");
-            _renderer.RenderSprite(spriteBatch, new Vector2(128, 80), blankTexture, position, angle);
+            renderer.ClearDepthBuffer();
+            renderer.RenderMap(spriteBatch, currentMap, position, angle, 32, "walls1");
+            renderer.RenderSprite(spriteBatch, new Vector2(128, 80), blankTexture, new Rectangle(0, 0, 1, 1),
+                position, angle);
 
-            // draw HUD
-            @interface.Draw(spriteBatch, gameTime);
-
-            spriteBatch.Draw(weapon,
-                new Rectangle(viewport.Width / 2 - weaponW / 2, viewport.Height - weaponW, weaponW, weaponW),
-                new Rectangle(0, 0, 64, 64), Color.White);
-
-            RenderMinimap(spriteBatch, currentMap, currentMap.Data.Layers["walls1"],
-                new Vector2(position.X / 32, position.Y / 32), angle * (float) Math.PI / 180);
             spriteBatch.End();
-        }
-
-        private void RenderMinimap(SpriteBatch spriteBatch, Map map, TmxLayer wallLayer, Vector2 tilecoord, float angle)
-        {
-            int miniCellSize = 6;
-            int halfCellSize = miniCellSize / 2;
-            if (!wallLayer.Visible)
-                return;
-
-            foreach (TmxLayerTile tile in wallLayer.Tiles)
-            {
-                TmxTileset tileset = map.GetTilesetForTile(tile);
-                if (tileset == null)
-                    continue;
-
-                spriteBatch.Draw(blankTexture, new Rectangle(miniCellSize + tile.X * miniCellSize,
-                        miniCellSize + tile.Y * miniCellSize, miniCellSize, miniCellSize),
-                    new Rectangle(0, 0, 1, 1), Color.Black);
-            }
-
-            Rectangle needleDestination = new Rectangle(
-                (int) (miniCellSize + tilecoord.X * miniCellSize),
-                (int) (miniCellSize + tilecoord.Y * miniCellSize),
-                miniCellSize, 2);
-
-            spriteBatch.Draw(blankTexture, needleDestination, null, Color.Red, angle, new Vector2(0, 1),
-                SpriteEffects.None, 0);
-
-            Rectangle playerDestination = new Rectangle(
-                (int) (miniCellSize + tilecoord.X * miniCellSize - 2),
-                (int) (miniCellSize + tilecoord.Y * miniCellSize - 2),
-                halfCellSize, halfCellSize);
-
-            spriteBatch.Draw(blankTexture, playerDestination, Color.Black);
         }
 
         public void Dispose()

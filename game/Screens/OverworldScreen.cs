@@ -65,7 +65,7 @@ namespace game.GameScreens
 
             if (InputManager.IsKeyPressed(Keys.F4))
             {
-                ScreenManager.PushScreen(new ShooterScreen(player));
+                ScreenManager.PushScreen(new ShooterScreen());
             }
         }
 

@@ -35,8 +35,8 @@ namespace game
         /// <param name="texture">texture to draw</param>
         /// <param name="camera">camera position</param>
         /// <param name="orientation">camera angle in degrees</param>
-        public void RenderSprite(SpriteBatch spriteBatch, Vector2 position, Texture2D texture, Vector2 camera,
-            float orientation)
+        public void RenderSprite(SpriteBatch spriteBatch, Vector2 position, Texture2D texture, Rectangle source, 
+            Vector2 camera, float orientation)
         {
             int slices = viewport.Width;
             int halfSlice = slices / 2;
@@ -76,7 +76,7 @@ namespace game
 
                 spriteBatch.Draw(texture,
                     new Rectangle(x, viewport.Height / 2 - halfSprite, 1, spriteSize),
-                    Color.Red);
+                    source, Color.Red);
             }
         }
 
