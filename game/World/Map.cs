@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RoyT.AStar;
 using TiledSharp;
 
 namespace game
@@ -11,10 +14,44 @@ namespace game
         public TmxMap Data { get; private set; }
         public Dictionary<TmxTileset, Texture2D> Textures { get; private set; }
 
+        private Grid pathFindingGrid;
+
         private Map(TmxMap data, Dictionary<TmxTileset, Texture2D> textures)
         {
             this.Data = data;
             Textures = textures;
+
+            BuildPathFindingGrid();
+        }
+
+        private void BuildPathFindingGrid()
+        {
+            var collisionLayer = Data.Layers.FirstOrDefault(l => l.Name == "collision");
+            if (collisionLayer == default(TmxLayer))
+            {
+                Console.WriteLine("Map loaded without collision layer.");
+                return;
+            }
+
+            pathFindingGrid = new Grid(Data.Width, Data.Height);
+            foreach(var tile in collisionLayer.Tiles)
+            {
+                if(tile.Gid != 0)
+                    pathFindingGrid.BlockCell(new Position(tile.X, tile.Y));
+            }
+        }
+
+        public List<Vector2> GetPath(Position from, Position to)
+        {
+            var result = new List<Vector2>();
+            if (pathFindingGrid == null)
+                return result;
+
+            var path = pathFindingGrid.GetPath(from, to);
+            foreach (var node in path)
+                result.Add(new Vector2(node.X * 32 + 16, node.Y * 32 + 16));
+
+            return result;
         }
 
         public static Map LoadTiledMap(GraphicsDevice graphicsDevice, string pathToMap)
@@ -35,7 +72,7 @@ namespace game
                     tilesetTextureMap.Add(tileset, texture);
                 }
             }
-            
+
             return new Map(data, tilesetTextureMap);
         }
 

@@ -2,6 +2,7 @@
 using game.Entities.Animations;
 using game.GameScreens;
 using game.Particles;
+using game.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
