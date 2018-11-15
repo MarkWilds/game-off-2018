@@ -125,8 +125,8 @@ namespace game.Particles
         {
             //Random angle based on emit direction and maxAngle;
             var randomAngle = (float)(random.NextDouble() * 2 - 1) * (maxAngle /2);
-            var directionDeg = Math.Atan2(particleDirection.Y, particleDirection.X) * (180 / Math.PI) + randomAngle;
-            var directionRad = directionDeg / (180 / Math.PI);
+            var directionDeg = MathHelper.ToDegrees((float)Math.Atan2(particleDirection.Y, particleDirection.X)) + randomAngle;
+            var directionRad = MathHelper.ToRadians(directionDeg);
 
             //Calculate the new random direction from the direction and maxAngle
             var newDirection = new Vector2(
@@ -145,19 +145,30 @@ namespace game.Particles
                 particles[index].Draw(spriteBatch, gameTime);
         }
 
-        public void Pause()
-        {
-            paused = false;
-        }
-
-        public void Resume()
+        public void Stop()
         {
             paused = true;
+        }
+
+        public void Start()
+        {
+            paused = false;
         }
 
         public void Destroy()
         {
             particles.Clear();
+            ShouldBeDestroyed = true;
+        }
+
+        public void SetLocation(Vector2 newLocation)
+        {
+            emitLocation = newLocation;
+        }
+
+        public void SetDirection(Vector2 newDirection)
+        {
+            particleDirection = newDirection;
         }
     }
 }

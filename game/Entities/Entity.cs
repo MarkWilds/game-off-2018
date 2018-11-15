@@ -17,7 +17,7 @@ namespace game.Entities
         /// </summary>
         public Vector2 Forward => new Vector2((float) Math.Cos(rotation), (float) Math.Sin(rotation));
 
-        public Vector2 position;
+        public Vector2 position { get; set; }
         public float rotation;
 
         protected Animator animator;
@@ -26,7 +26,8 @@ namespace game.Entities
         public int Height;
         public int Width;
         public Vector2 Center => new Vector2(position.X - Width / 2, position.Y - Height / 2);
-        public Rectangle BoundingBox => new Rectangle((int) Center.X, (int) Center.Y, Width, Height);
+        public Rectangle BoundingBox => IsVisible ? new Rectangle((int)Center.X, (int)Center.Y, Width, Height) : new Rectangle();
+        protected bool IsVisible = true;
 
         public Entity(Texture2D texture, int width, int height, Vector2 position, float rotation = 0)
         {
@@ -39,6 +40,9 @@ namespace game.Entities
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            if (!IsVisible)
+                return;
+
             var sourceRect = new Rectangle(0,0, Width, Height);
             if(animator != null)
             {
@@ -53,6 +57,9 @@ namespace game.Entities
 
         public virtual void Update(GameTime gameTime)
         {
+            if (!IsVisible)
+                return;
+
             if (animator != null)
                 animator.Update(gameTime);
         }
@@ -60,7 +67,7 @@ namespace game.Entities
         /// <summary>
         /// Destroy the entity deleting it from the game
         /// </summary>
-        public void Destroy()
+        public virtual void Destroy()
         {
             ShouldBeDestroyed = true;
         }

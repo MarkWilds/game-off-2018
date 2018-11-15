@@ -62,7 +62,7 @@ namespace game
                         new Vector2(tileset.TileWidth * tile.X, tileset.TileHeight * tile.Y) - offset,
                         source,
                         Color.White,
-                        (float)(Math.PI / 180) * rotation,
+                        MathHelper.ToRadians(rotation),
                         Vector2.Zero,
                         1,
                         effect,
