@@ -38,7 +38,7 @@ namespace game
             this.contentManager = contentManager;
             this.graphicsDevice = graphicsDevice;
 
-            blankTexture = contentManager.Load<Texture2D>("blank");
+            blankTexture = contentManager.Load<Texture2D>("Sprites/Particles/blank");
             spriteFont = contentManager.Load<SpriteFont>("Arial");
 
             healtBarBackground = new Rectangle(offsetX, WindowHeight - offsetY - healthbarHeight, healthbarWidth, healthbarHeight);
