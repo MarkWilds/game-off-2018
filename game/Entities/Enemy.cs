@@ -49,7 +49,7 @@ namespace game.Entities
 
         private void RenderPath(SpriteBatch spriteBatch)
         {
-            var path = map.GetPath(tilePosition, target.tilePosition);
+            var path = map.GetPath(tilePosition, ((Entity)target).tilePosition);
             var lastNode = position;
             foreach (var node in path)
             {
@@ -60,7 +60,7 @@ namespace game.Entities
 
         private void MoveTowardsTarget(GameTime gameTime)
         {
-            var path = map.GetPath(tilePosition, target.tilePosition);
+            var path = map.GetPath(tilePosition, ((Entity)target).tilePosition);
             if (path.Count > 1)
             {
                 Vector2 direction = path[1] - position;
