@@ -44,6 +44,8 @@ namespace game
         public List<Vector2> GetPath(Position from, Position to)
         {
             var result = new List<Vector2>();
+            if (pathFindingGrid == null)
+                return result;
 
             var path = pathFindingGrid.GetPath(from, to);
             foreach (var node in path)
