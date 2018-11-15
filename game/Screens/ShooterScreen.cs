@@ -84,6 +84,8 @@ namespace game.GameScreens
             mapRenderer.Render(spriteBatch, currentMap, position, angle * (float) (Math.PI / 180.0f), "walls1");
 
             // draw sprites
+            
+            mapRenderer.RenderSprite(spriteBatch, position, angle * (float) (Math.PI / 180.0f), new Vector2(128, 80));
 
             // draw HUD
             @interface.Draw(spriteBatch, gameTime);

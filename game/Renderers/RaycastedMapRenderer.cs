@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TiledSharp;
+using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace game
 {
@@ -17,6 +18,32 @@ namespace game
             viewport = view;
             blankTexture = blank;
             FOV = (float) (fov * Math.PI / 180.0f);
+        }
+
+        public void RenderSprite(SpriteBatch spriteBatch, Vector2 camera, float orientation, Vector2 position)
+        {
+            int slices = viewport.Width;
+            int halfSlice = slices / 2;
+            float halfFov = FOV / 2;
+            float focalLength = halfSlice / (float) Math.Tan(halfFov);
+
+            Vector2 cameraForward = new Vector2((float) Math.Cos(orientation), (float) Math.Sin(orientation));
+            Vector2 spriteCameraSpace = position - camera;
+
+            float angleToSprite = (float) Math.Atan2(spriteCameraSpace.Y, spriteCameraSpace.X) - orientation;
+
+            if (Vector2.Dot(cameraForward, spriteCameraSpace) <= 0)
+                return;
+
+            float distanceToSprite = (float) (spriteCameraSpace.Length() * Math.Cos(angleToSprite));
+            int spriteDimensions = (int) (cellSize * focalLength / distanceToSprite);
+            int halfSprite = spriteDimensions / 2;
+            
+            int screenPosition = (int) (Math.Tan(angleToSprite) * focalLength + halfSlice - halfSprite);
+
+            spriteBatch.Draw(blankTexture,
+                new Rectangle(screenPosition, viewport.Height / 2 - halfSprite, spriteDimensions, spriteDimensions),
+                Color.Red);
         }
 
         /// <summarY>
