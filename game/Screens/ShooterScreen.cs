@@ -14,11 +14,11 @@ namespace game.GameScreens
         private Player player;
         private PlayerInterface @interface;
         private Map currentMap;
-        private RaycastedMapRenderer mapRenderer;
+        private RaycastRenderer _renderer;
 
         private Texture2D blankTexture;
         private Texture2D weapon;
-        
+
         private Vector2 position = new Vector2(32 + 16, 64 + 16);
         private float movementSpeed = 64;
         private float angle = 0;
@@ -33,7 +33,7 @@ namespace game.GameScreens
             @interface = new PlayerInterface(player, contentManager, ScreenManager.GraphicsDevice);
             blankTexture = contentManager.Load<Texture2D>("blank");
             weapon = contentManager.Load<Texture2D>("Sprites/gun_weapon");
-            mapRenderer = new RaycastedMapRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
+            _renderer = new RaycastRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
             currentMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/test_fps.tmx");
         }
 
@@ -77,22 +77,20 @@ namespace game.GameScreens
         {
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
             int weaponW = 64 * 2;
-            
-            spriteBatch.Begin();
-            
-            // draw map
-            mapRenderer.Render(spriteBatch, currentMap, position, angle * (float) (Math.PI / 180.0f), "walls1");
 
-            // draw sprites
-            
-            mapRenderer.RenderSprite(spriteBatch, position, angle * (float) (Math.PI / 180.0f), new Vector2(128, 80));
+            spriteBatch.Begin();
+
+            _renderer.ClearDepthBuffer();
+            _renderer.RenderMap(spriteBatch, currentMap, position, angle, 32, "walls1");
+            _renderer.RenderSprite(spriteBatch, new Vector2(128, 80), blankTexture, position, angle);
 
             // draw HUD
             @interface.Draw(spriteBatch, gameTime);
-            
-            spriteBatch.Draw(weapon, new Rectangle(viewport.Width / 2 - weaponW / 2, viewport.Height - weaponW, weaponW, weaponW),
+
+            spriteBatch.Draw(weapon,
+                new Rectangle(viewport.Width / 2 - weaponW / 2, viewport.Height - weaponW, weaponW, weaponW),
                 new Rectangle(0, 0, 64, 64), Color.White);
-            
+
             RenderMinimap(spriteBatch, currentMap, currentMap.Data.Layers["walls1"],
                 new Vector2(position.X / 32, position.Y / 32), angle * (float) Math.PI / 180);
             spriteBatch.End();

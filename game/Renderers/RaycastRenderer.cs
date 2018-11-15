@@ -6,61 +6,97 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace game
 {
-    public class RaycastedMapRenderer
+    public class RaycastRenderer
     {
         private readonly float FOV;
+        
         private Texture2D blankTexture;
         private Viewport viewport;
-        private int cellSize = 32;
+        private float[] zBuffer;
 
-        public RaycastedMapRenderer(Viewport view, Texture2D blank, float fov)
+        public RaycastRenderer(Viewport view, Texture2D blank, float fov)
         {
             viewport = view;
             blankTexture = blank;
             FOV = (float) (fov * Math.PI / 180.0f);
+            zBuffer = new float[viewport.Width];
         }
 
-        public void RenderSprite(SpriteBatch spriteBatch, Vector2 camera, float orientation, Vector2 position)
+        public void ClearDepthBuffer()
+        {
+            Array.Fill(zBuffer, float.MaxValue);
+        }
+
+        /// <summary>
+        /// Draws the sprite
+        /// </summary>
+        /// <param name="spriteBatch">batch to draw sprites with</param>
+        /// <param name="position">position of the sprite</param>
+        /// <param name="texture">texture to draw</param>
+        /// <param name="camera">camera position</param>
+        /// <param name="orientation">camera angle in degrees</param>
+        public void RenderSprite(SpriteBatch spriteBatch, Vector2 position, Texture2D texture, Vector2 camera,
+            float orientation)
         {
             int slices = viewport.Width;
             int halfSlice = slices / 2;
             float halfFov = FOV / 2;
+            float cameraAngle = orientation * (float)(Math.PI / 180.0f);
             float focalLength = halfSlice / (float) Math.Tan(halfFov);
 
-            Vector2 cameraForward = new Vector2((float) Math.Cos(orientation), (float) Math.Sin(orientation));
+            Vector2 cameraForward = new Vector2((float) Math.Cos(cameraAngle), (float) Math.Sin(cameraAngle));
             Vector2 spriteCameraSpace = position - camera;
-
-            float angleToSprite = (float) Math.Atan2(spriteCameraSpace.Y, spriteCameraSpace.X) - orientation;
 
             if (Vector2.Dot(cameraForward, spriteCameraSpace) <= 0)
                 return;
 
-            float distanceToSprite = (float) (spriteCameraSpace.Length() * Math.Cos(angleToSprite));
-            int spriteDimensions = (int) (cellSize * focalLength / distanceToSprite);
-            int halfSprite = spriteDimensions / 2;
-            
-            int screenPosition = (int) (Math.Tan(angleToSprite) * focalLength + halfSlice - halfSprite);
+            float angleToSprite = (float) Math.Atan2(spriteCameraSpace.Y, spriteCameraSpace.X) - cameraAngle;
+            float correctedDistance = (float) (spriteCameraSpace.Length() * Math.Cos(angleToSprite));
+            int spriteSize = (int) (texture.Width * focalLength / correctedDistance);
+            int spritePosition = (int) (Math.Tan(angleToSprite) * focalLength + halfSlice);
 
-            spriteBatch.Draw(blankTexture,
-                new Rectangle(screenPosition, viewport.Height / 2 - halfSprite, spriteDimensions, spriteDimensions),
-                Color.Red);
+            // draw slices for sprite
+            int halfSprite = spriteSize / 2;
+            int startPosition = spritePosition - halfSprite;
+            int endPosition = spritePosition + halfSprite;
+
+            if (endPosition < 0 || startPosition >= slices)
+                return;
+
+            if (startPosition < 0)
+                startPosition = 0;
+
+            if (endPosition >= slices)
+                endPosition = slices - 1;
+
+            for (int x = startPosition; x < endPosition; x++)
+            {
+                if (zBuffer[x] < correctedDistance)
+                    continue;
+
+                spriteBatch.Draw(texture,
+                    new Rectangle(x, viewport.Height / 2 - halfSprite, 1, spriteSize),
+                    Color.Red);
+            }
         }
 
         /// <summarY>
-        /// Draws the map with raycasting technique
+        /// Draws the map
         /// </summarY>
         /// <param name="map">The map to draw</param>
-        /// <param name="position">The position to draw from</param>
-        /// <param name="orientation">The rotation to draw from</param>
-        public void Render(SpriteBatch spriteBatch, Map map, Vector2 position, float orientation, string wallsLayer)
+        /// <param name="camera">The position to draw from</param>
+        /// <param name="orientation">The rotation to draw from in degrees</param>
+        public void RenderMap(SpriteBatch spriteBatch, Map map, Vector2 camera, float orientation, int cellSize,
+            string wallsLayer)
         {
             TmxMap mapData = map.Data;
             int slices = viewport.Width;
             float halfFov = FOV / 2;
             float focalLength = slices / 2 / (float) Math.Tan(halfFov);
+            float cameraAngle = orientation * (float)(Math.PI / 180.0f);
 
             float sliceAngle = FOV / slices;
-            float beginAngle = orientation - halfFov;
+            float beginAngle = cameraAngle - halfFov;
 
             // draw ceiling and floor
             spriteBatch.Draw(blankTexture, new Rectangle(0, 0, viewport.Width, viewport.Height / 2),
@@ -74,7 +110,7 @@ namespace game
                 float angle = beginAngle + x * sliceAngle;
 
                 RayCaster.HitData castData;
-                if (!RayCaster.RayIntersectsGrid(position, angle, cellSize, out castData,
+                if (!RayCaster.RayIntersectsGrid(camera, angle, cellSize, out castData,
                     map.GetIsTileOccupiedFunction(wallsLayer)))
                     continue;
 
@@ -87,8 +123,9 @@ namespace game
                     continue;
 
                 // fix fisheye for distance and get slice height
-                double distance = castData.rayLength * Math.Cos(angle - orientation);
+                float distance = (float) (castData.rayLength * Math.Cos(angle - cameraAngle));
                 int sliceHeight = (int) (cellSize * focalLength / distance);
+                zBuffer[x] = distance;
 
                 // get drawing rectangles
                 Rectangle wallRectangle = new Rectangle(x, viewport.Height / 2 - sliceHeight / 2, 1, sliceHeight);
