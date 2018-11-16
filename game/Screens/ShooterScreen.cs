@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,19 +13,26 @@ namespace game.GameScreens
     {
         public ScreenManager ScreenManager { get; set; }
 
-        private Texture2D blankTexture;
         private Map currentMap;
-        private RaycastedMapRenderer mapRenderer;
+        private RaycastRenderer renderer;
 
+        private Texture2D blankTexture;
         private Vector2 position = new Vector2(32 + 16, 64 + 16);
-        private float movementSpeed = 64;
+        private float movementSpeed = 128;
         private float angle;
+        private int cellSize = 32;
+
+        private MouseState previousState;
 
         public void Initialize(ContentManager contentManager)
         {
             blankTexture = contentManager.Load<Texture2D>("blank");
-            mapRenderer = new RaycastedMapRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 90.0f);
+            renderer = new RaycastRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
             currentMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/test_fps.tmx");
+
+            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+            Mouse.SetPosition(viewport.Width / 2, viewport.Height / 2);
+            previousState = Mouse.GetState();
         }
 
         public void Update(GameTime gameTime)
@@ -46,7 +55,6 @@ namespace game.GameScreens
             else if (InputManager.IsKeyDown(Keys.S))
                 verticalMovement = -1.0f;
 
-
             Vector2 forward = new Vector2((float) Math.Cos(angle * Math.PI / 180),
                 (float) Math.Sin(angle * Math.PI / 180));
             Vector2 right = new Vector2(-forward.Y, forward.X);
@@ -60,50 +68,49 @@ namespace game.GameScreens
                 position += movementDirection * movementSpeed * (float) gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            angle += InputManager.MouseAxisX * 10.0f * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            MouseState currentState = Mouse.GetState();
+            if (currentState != previousState)
+            {
+                float deltaX = currentState.X - previousState.X;
+                angle += deltaX * 20.0f * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+            Mouse.SetPosition(viewport.Width / 2, viewport.Height / 2);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             spriteBatch.Begin();
-            mapRenderer.Render(spriteBatch, currentMap, position, angle * (float) (Math.PI / 180));
-            RenderMinimap(spriteBatch, currentMap, currentMap.Data.Layers["walls1"], 
-                new Vector2(position.X / 32, position.Y / 32), angle * (float)Math.PI / 180);
+
+            renderer.ClearDepthBuffer();
+            renderer.RenderMap(spriteBatch, currentMap, position, angle, cellSize, "walls1");
+
+            RenderProps(spriteBatch);
+
             spriteBatch.End();
         }
-        
-        private void RenderMinimap(SpriteBatch spriteBatch, Map map, TmxLayer wallLayer, Vector2 tilecoord, float angle)
-        {
-            int miniCellSize = 8;
-            int halfCellSize = miniCellSize / 2;
-            if (!wallLayer.Visible)
-                return;
 
-            foreach (TmxLayerTile tile in wallLayer.Tiles)
+        private void RenderProps(SpriteBatch batch)
+        {
+            TmxLayer propsLayer = currentMap.Data.Layers["props"];
+            List<TmxLayerTile> propTiles = propsLayer.Tiles.Where(t => t.Gid > 0).ToList();
+
+            foreach (TmxLayerTile propTile in propTiles)
             {
-                TmxTileset tileset = map.GetTilesetForTile(tile);
+                TmxTileset tileset = currentMap.GetTilesetForTile(propTile);
                 if (tileset == null)
                     continue;
 
-                spriteBatch.Draw(blankTexture, new Rectangle(miniCellSize + tile.X * miniCellSize,
-                        miniCellSize + tile.Y * miniCellSize, miniCellSize, miniCellSize),
-                    new Rectangle(0, 0, 1, 1), Color.Black);
+                int halfCellSize = cellSize / 2;
+                Texture2D propTexture = currentMap.Textures[tileset];
+                Vector2 spritePosition = new Vector2(propTile.X * cellSize + halfCellSize,
+                    propTile.Y * cellSize + halfCellSize);
+                Rectangle source = currentMap.GetSourceRectangleForTile(tileset, propTile);
+
+                renderer.RenderSprite(batch, spritePosition, propTexture, source,
+                    position, angle);
             }
-
-            Rectangle needleDestination = new Rectangle(
-                (int) (miniCellSize + tilecoord.X * miniCellSize),
-                (int) (miniCellSize + tilecoord.Y * miniCellSize),
-                miniCellSize, 2);
-
-            spriteBatch.Draw(blankTexture, needleDestination, null, Color.Red, angle, new Vector2(0, 1),
-                SpriteEffects.None, 0);
-
-            Rectangle playerDestination = new Rectangle(
-                (int) (miniCellSize + tilecoord.X * miniCellSize - 2),
-                (int) (miniCellSize + tilecoord.Y * miniCellSize - 2),
-                halfCellSize, halfCellSize);
-
-            spriteBatch.Draw(blankTexture, playerDestination, Color.Black);
         }
 
         public void Dispose()

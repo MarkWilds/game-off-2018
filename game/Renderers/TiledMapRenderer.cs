@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Comora;
 using Microsoft.Xna.Framework;
@@ -19,7 +18,6 @@ namespace game
                 List<TmxLayerTile> visibleTiles = GetVisibleTilesForLayer(map, layer, camera);
                 foreach (TmxLayerTile tile in visibleTiles)
                 {
-                    Rectangle source, destination;
                     TmxTileset tileset = map.GetTilesetForTile(tile);
 
                     if (tileset == null)
@@ -55,8 +53,7 @@ namespace game
                             effect ^= SpriteEffects.FlipHorizontally;
                     }
 
-                    map.GetSourceAndDestinationRectangles(tileset, tile, out source, out destination);
-
+                    Rectangle source = map.GetSourceRectangleForTile(tileset, tile);
                     batch.Draw(
                         tilesetTexture,
                         new Vector2(tileset.TileWidth * tile.X, tileset.TileHeight * tile.Y) - offset,
