@@ -16,58 +16,75 @@ namespace game
                 if (!layer.Visible)
                     continue;
 
-                List<TmxLayerTile> visibleTiles = GetVisibleTilesForLayer(map, layer, camera);
-                foreach (TmxLayerTile tile in visibleTiles)
+                DrawTiles(map, batch, camera, layer);
+                DrawObjects(map, batch, layer);
+            }
+        }
+
+        private void DrawObjects(Map map, SpriteBatch batch, TmxLayer layer)
+        {
+            foreach (var item in map.Data.ObjectGroups[0].Objects)
+            {
+                if(item.Type != "" || item.Name != "" || item.Properties.Count > 0 || item.Id == 1)
                 {
-                    Rectangle source, destination;
-                    TmxTileset tileset = map.GetTilesetForTile(tile);
 
-                    if (tileset == null)
-                        continue;
+                }                
+            }
+        }
 
-                    Texture2D tilesetTexture = map.Textures[tileset];
+        private void DrawTiles(Map map, SpriteBatch batch, Camera camera, TmxLayer layer)
+        {
+            List<TmxLayerTile> visibleTiles = GetVisibleTilesForLayer(map, layer, camera);
+            foreach (TmxLayerTile tile in visibleTiles)
+            {
+                Rectangle source, destination;
+                TmxTileset tileset = map.GetTilesetForTile(tile);
 
-                    var effect = SpriteEffects.None;
-                    var offset = Vector2.Zero;
-                    var rotation = 0;
+                if (tileset == null)
+                    continue;
 
-                    if (tile.DiagonalFlip)
-                    {
-                        rotation = -90;
-                        offset.Y -= tileset.TileHeight;
+                Texture2D tilesetTexture = map.Textures[tileset];
 
-                        effect |= SpriteEffects.FlipHorizontally;
-                    }
+                var effect = SpriteEffects.None;
+                var offset = Vector2.Zero;
+                var rotation = 0;
 
-                    if (tile.HorizontalFlip)
-                    {
-                        if (tile.DiagonalFlip)
-                            effect ^= SpriteEffects.FlipVertically;
-                        else
-                            effect ^= SpriteEffects.FlipHorizontally;
-                    }
+                if (tile.DiagonalFlip)
+                {
+                    rotation = -90;
+                    offset.Y -= tileset.TileHeight;
 
-                    if (tile.VerticalFlip)
-                    {
-                        if (!tile.DiagonalFlip)
-                            effect ^= SpriteEffects.FlipVertically;
-                        else
-                            effect ^= SpriteEffects.FlipHorizontally;
-                    }
-
-                    map.GetSourceAndDestinationRectangles(tileset, tile, out source, out destination);
-
-                    batch.Draw(
-                        tilesetTexture,
-                        new Vector2(tileset.TileWidth * tile.X, tileset.TileHeight * tile.Y) - offset,
-                        source,
-                        Color.White,
-                        MathHelper.ToRadians(rotation),
-                        Vector2.Zero,
-                        1,
-                        effect,
-                        0);
+                    effect |= SpriteEffects.FlipHorizontally;
                 }
+
+                if (tile.HorizontalFlip)
+                {
+                    if (tile.DiagonalFlip)
+                        effect ^= SpriteEffects.FlipVertically;
+                    else
+                        effect ^= SpriteEffects.FlipHorizontally;
+                }
+
+                if (tile.VerticalFlip)
+                {
+                    if (!tile.DiagonalFlip)
+                        effect ^= SpriteEffects.FlipVertically;
+                    else
+                        effect ^= SpriteEffects.FlipHorizontally;
+                }
+
+                map.GetSourceAndDestinationRectangles(tileset, tile, out source, out destination);
+
+                batch.Draw(
+                    tilesetTexture,
+                    new Vector2(tileset.TileWidth * tile.X, tileset.TileHeight * tile.Y) - offset,
+                    source,
+                    Color.White,
+                    MathHelper.ToRadians(rotation),
+                    Vector2.Zero,
+                    1,
+                    effect,
+                    0);
             }
         }
 
