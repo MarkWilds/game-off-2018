@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="16" height="12" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="1">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="16" height="12" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="1">
  <tileset firstgid="1" name="basis" tilewidth="32" tileheight="32" tilecount="12" columns="4">
   <image source="../game/Content/Tilesets/fps_tileset.png" width="128" height="96"/>
+ </tileset>
+ <tileset firstgid="13" name="props" tilewidth="32" tileheight="32" tilecount="48" columns="8">
+  <image source="../game/Content/Tilesets/fps_props.png" width="256" height="192"/>
  </tileset>
  <layer id="1" name="walls1" width="16" height="12">
   <data encoding="csv">
@@ -13,8 +16,8 @@
 0,0,0,0,0,0,0,0,2,0,2,0,0,0,0,0,
 2,2,2,0,2,2,2,2,2,0,2,2,2,2,0,0,
 2,0,2,0,2,0,0,0,0,0,0,0,0,2,0,0,
-2,0,2,2,2,0,0,0,0,0,0,2,0,2,0,0,
-2,0,0,0,0,0,0,2,0,0,0,0,0,2,0,0,
+2,0,2,2,2,0,0,0,0,0,0,5,0,2,0,0,
+2,0,0,0,0,0,0,5,0,0,0,0,0,2,0,0,
 2,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,0
 </data>
@@ -32,6 +35,22 @@
 0,5,0,0,0,5,5,5,5,5,5,0,5,0,0,0,
 0,5,5,5,5,5,5,0,5,5,5,5,5,0,0,0,
 0,5,5,5,5,5,5,5,5,5,5,5,5,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="3" name="props" width="16" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,13,0,0,0,0,0,0,0,0,0,13,0,0,
+0,0,0,0,0,14,0,0,0,0,14,0,0,0,0,0,
+0,0,0,13,0,0,0,0,0,0,0,0,0,13,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,14,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,15,0,0,0,0,0,0,15,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,14,0,0,0,0,14,0,0,0,14,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,15,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>

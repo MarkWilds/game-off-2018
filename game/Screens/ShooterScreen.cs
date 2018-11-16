@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,6 +20,7 @@ namespace game.GameScreens
         private Vector2 position = new Vector2(32 + 16, 64 + 16);
         private float movementSpeed = 128;
         private float angle;
+        private int cellSize = 32;
 
         private MouseState previousState;
 
@@ -81,11 +84,33 @@ namespace game.GameScreens
             spriteBatch.Begin();
 
             renderer.ClearDepthBuffer();
-            renderer.RenderMap(spriteBatch, currentMap, position, angle, 32, "walls1");
-            renderer.RenderSprite(spriteBatch, new Vector2(128, 80), blankTexture, new Rectangle(0, 0, 1, 1),
-                position, angle);
+            renderer.RenderMap(spriteBatch, currentMap, position, angle, cellSize, "walls1");
+
+            RenderProps(spriteBatch);
 
             spriteBatch.End();
+        }
+
+        private void RenderProps(SpriteBatch batch)
+        {
+            TmxLayer propsLayer = currentMap.Data.Layers["props"];
+            List<TmxLayerTile> propTiles = propsLayer.Tiles.Where(t => t.Gid > 0).ToList();
+
+            foreach (TmxLayerTile propTile in propTiles)
+            {
+                TmxTileset tileset = currentMap.GetTilesetForTile(propTile);
+                if (tileset == null)
+                    continue;
+
+                int halfCellSize = cellSize / 2;
+                Texture2D propTexture = currentMap.Textures[tileset];
+                Vector2 spritePosition = new Vector2(propTile.X * cellSize + halfCellSize,
+                    propTile.Y * cellSize + halfCellSize);
+                Rectangle source = currentMap.GetSourceRectangleForTile(tileset, propTile);
+
+                renderer.RenderSprite(batch, spritePosition, propTexture, source,
+                    position, angle);
+            }
         }
 
         public void Dispose()

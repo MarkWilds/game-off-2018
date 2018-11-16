@@ -9,7 +9,7 @@ namespace game
     public class RaycastRenderer
     {
         private readonly float FOV;
-        
+
         private Texture2D blankTexture;
         private Viewport viewport;
         private float[] zBuffer;
@@ -35,13 +35,13 @@ namespace game
         /// <param name="texture">texture to draw</param>
         /// <param name="camera">camera position</param>
         /// <param name="orientation">camera angle in degrees</param>
-        public void RenderSprite(SpriteBatch spriteBatch, Vector2 position, Texture2D texture, Rectangle source, 
+        public void RenderSprite(SpriteBatch spriteBatch, Vector2 position, Texture2D texture, Rectangle source,
             Vector2 camera, float orientation)
         {
             int slices = viewport.Width;
             int halfSlice = slices / 2;
             float halfFov = FOV / 2;
-            float cameraAngle = orientation * (float)(Math.PI / 180.0f);
+            float cameraAngle = orientation * (float) (Math.PI / 180.0f);
             float focalLength = halfSlice / (float) Math.Tan(halfFov);
 
             Vector2 cameraForward = new Vector2((float) Math.Cos(cameraAngle), (float) Math.Sin(cameraAngle));
@@ -52,31 +52,44 @@ namespace game
 
             float angleToSprite = (float) Math.Atan2(spriteCameraSpace.Y, spriteCameraSpace.X) - cameraAngle;
             float correctedDistance = (float) (spriteCameraSpace.Length() * Math.Cos(angleToSprite));
-            int spriteSize = (int) (texture.Width * focalLength / correctedDistance);
+            int spriteSize = (int) (source.Width * focalLength / correctedDistance);
             int spritePosition = (int) (Math.Tan(angleToSprite) * focalLength + halfSlice);
 
             // draw slices for sprite
             int halfSprite = spriteSize / 2;
             int startPosition = spritePosition - halfSprite;
             int endPosition = spritePosition + halfSprite;
-
+            int tileStart = source.X;
+            
             if (endPosition < 0 || startPosition >= slices)
                 return;
 
             if (startPosition < 0)
                 startPosition = 0;
 
+            bool noOffsetNeeded = false;
             if (endPosition >= slices)
-                endPosition = slices - 1;
-
-            for (int x = startPosition; x < endPosition; x++)
             {
-                if (zBuffer[x] < correctedDistance)
+                endPosition = slices - 1;
+                noOffsetNeeded = true;
+            }
+
+            int spriteSizeRange = endPosition - startPosition;
+            float spritePart = source.Width / (float) spriteSize;
+            float sourceOffset = noOffsetNeeded ? 0 : source.Width - spriteSizeRange / (float)spriteSize * source.Width;
+            
+            source.Width = (int) Math.Ceiling(spritePart);
+            for (int x = 0; x < spriteSizeRange; x++)
+            {
+                int screenColumn = startPosition + x;
+                if (zBuffer[screenColumn] < correctedDistance)
                     continue;
 
+                source.X = tileStart + (int) (sourceOffset + x * spritePart);
+
                 spriteBatch.Draw(texture,
-                    new Rectangle(x, viewport.Height / 2 - halfSprite, 1, spriteSize),
-                    source, Color.Red);
+                    new Rectangle(screenColumn, viewport.Height / 2 - halfSprite, 1, spriteSize),
+                    source, Color.White);
             }
         }
 
@@ -93,7 +106,7 @@ namespace game
             int slices = viewport.Width;
             float halfFov = FOV / 2;
             float focalLength = slices / 2 / (float) Math.Tan(halfFov);
-            float cameraAngle = orientation * (float)(Math.PI / 180.0f);
+            float cameraAngle = orientation * (float) (Math.PI / 180.0f);
 
             float sliceAngle = FOV / slices;
             float beginAngle = cameraAngle - halfFov;
