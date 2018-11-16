@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Comora;
+using game.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TiledSharp;
@@ -17,18 +18,6 @@ namespace game
                     continue;
 
                 DrawTiles(map, batch, camera, layer);
-                DrawObjects(map, batch, layer);
-            }
-        }
-
-        private void DrawObjects(Map map, SpriteBatch batch, TmxLayer layer)
-        {
-            foreach (var item in map.Data.ObjectGroups[0].Objects)
-            {
-                if(item.Type != "" || item.Name != "" || item.Properties.Count > 0 || item.Id == 1)
-                {
-
-                }                
             }
         }
 

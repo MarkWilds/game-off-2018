@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using game.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TiledSharp;
@@ -35,7 +38,7 @@ namespace game
                     tilesetTextureMap.Add(tileset, texture);
                 }
             }
-            
+
             return new Map(data, tilesetTextureMap);
         }
 
@@ -73,6 +76,36 @@ namespace game
             source.Y = xTilePos * tileHeight;
             destination.X = tile.X * tileWidth;
             destination.Y = tile.Y * tileHeight;
+        }
+
+        public void LoadObjects()
+        {
+            foreach (var obj in Data.ObjectGroups[0].Objects)
+            {
+                var tile = obj.Tile;
+                Rectangle source, destination;
+                TmxTileset tileset = GetTilesetForTile(tile);
+
+                if (tileset == null)
+                    continue;
+
+                Texture2D tilesetTexture = Textures[tileset];
+                GetSourceAndDestinationRectangles(tileset, obj.Tile, out source, out destination);
+
+                CreateEntity(obj, source, tileset, tilesetTexture);
+            }
+        }
+
+        private static void CreateEntity(TmxObject obj, Rectangle source, TmxTileset tileset, Texture2D tilesetTexture)
+        {
+            var id = obj.Tile.Gid - tileset.FirstGid;
+            var type = tileset.Tiles[id].Type;
+            switch (type)
+            {
+                default:
+                    EntityManager.Instance.AddEntity(new Entity(tilesetTexture, tileset.TileWidth, tileset.TileHeight, new Vector2((int)(obj.X + obj.Width / 2), (int)(obj.Y - obj.Height / 2)), (int)obj.Rotation, source));
+                    break;
+            }
         }
     }
 }

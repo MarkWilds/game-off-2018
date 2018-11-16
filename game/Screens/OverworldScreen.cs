@@ -49,6 +49,7 @@ namespace game.GameScreens
             mapRenderer = new TiledMapRenderer();
             camera = new Camera(ScreenManager.GraphicsDevice);
             hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
+            hubMap.LoadObjects();
 
             //Create player interface
             playerInterface = new PlayerInterface(player, Content, ScreenManager.GraphicsDevice);
