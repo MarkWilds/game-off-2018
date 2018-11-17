@@ -98,8 +98,8 @@ namespace game
 
         private static void CreateEntity(TmxObject obj, Rectangle source, TmxTileset tileset, Texture2D tilesetTexture)
         {
-            var id = obj.Tile.Gid - tileset.FirstGid;
-            var type = tileset.Tiles[id].Type;
+            var tileId = obj.Tile.Gid - tileset.FirstGid;
+            var type = tileset.Tiles[tileId].Type;
             switch (type)
             {
                 default:

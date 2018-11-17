@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="220" height="220" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="53">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="220" height="220" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="59">
  <tileset firstgid="1" name="hub" tilewidth="32" tileheight="32" tilecount="64" columns="8">
   <image source="../game/Content/Tilesets/hub.png" width="256" height="256"/>
   <tile id="4" probability="0.1"/>
@@ -15,6 +15,7 @@
   <image source="../game/Content/Tilesets/LooseObjects.png" width="160" height="160"/>
   <tile id="0" type="Hay_Bale"/>
   <tile id="1" type="Piano"/>
+  <tile id="2" type="Bed"/>
   <tile id="5" type="Water_Trough"/>
  </tileset>
  <layer id="3" name="Ground_Buildings" width="220" height="220">
@@ -491,5 +492,8 @@
   <object id="45" gid="120" x="5492" y="1848.5" width="32" height="32" rotation="-90"/>
   <object id="50" gid="120" x="6113" y="449.5" width="32" height="32"/>
   <object id="51" gid="120" x="6145" y="449.5" width="32" height="32"/>
+  <object id="55" gid="117" x="6399.5" y="705" width="32" height="32"/>
+  <object id="57" gid="117" x="6240.5" y="703.5" width="32" height="32" rotation="90"/>
+  <object id="58" gid="117" x="6240.5" y="685.5" width="32" height="32" rotation="90"/>
  </objectgroup>
 </map>
