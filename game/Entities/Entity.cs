@@ -26,11 +26,11 @@ namespace game.Entities
         public int Height;
         public int Width;
         public Vector2 Center => new Vector2(position.X - Width / 2, position.Y - Height / 2);
-        public Rectangle BoundingBox => IsVisible ? new Rectangle((int)Center.X, (int)Center.Y, Width, Height) : new Rectangle();
+        public Rectangle BoundingBox => IsVisible ? new Rectangle((int)Center.X, (int)Center.Y, Width, Height) : default(Rectangle);
         protected bool IsVisible = true;
         private Rectangle source;
 
-        public Entity(Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = new Rectangle())
+        public Entity(Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle))
         {
             this.texture = texture;
             this.position = position;

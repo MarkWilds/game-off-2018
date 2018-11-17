@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using game.Entities;
+using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TiledSharp;
@@ -98,14 +99,42 @@ namespace game
 
         private static void CreateEntity(TmxObject obj, Rectangle source, TmxTileset tileset, Texture2D tilesetTexture)
         {
+            var random = new Random();
             var tileId = obj.Tile.Gid - tileset.FirstGid;
             var type = tileset.Tiles[tileId].Type;
+            var rotation = MathHelper.ToRadians((float)obj.Rotation);
+            var spawnPosition = GetObjectPosition(obj);
+
             switch (type)
             {
+                case "Ammo":
+                    var randomBulletType = (BulletType)random.Next(Enum.GetNames(typeof(BulletType)).Length);
+                    EntityManager.Instance.AddEntity(new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source));
+                    break;
+                case "Health":
+                    EntityManager.Instance.AddEntity(new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source));
+                    break;
                 default:
-                    EntityManager.Instance.AddEntity(new Entity(tilesetTexture, tileset.TileWidth, tileset.TileHeight, new Vector2((int)(obj.X + obj.Width / 2), (int)(obj.Y - obj.Height / 2)), (int)obj.Rotation, source));
+                    EntityManager.Instance.AddEntity(new Entity(tilesetTexture, tileset.TileWidth, tileset.TileHeight, spawnPosition, rotation, source));
                     break;
             }
+        }
+
+        private static Vector2 GetObjectPosition(TmxObject obj)
+        {
+            var position = new Vector2((int)(obj.X + obj.Width / 2), (int)(obj.Y - obj.Height / 2));
+
+            if (obj.Rotation == 90 || obj.Rotation == -270)
+                position.Y += (int)obj.Height;
+            if(obj.Rotation == 180 || obj.Rotation == -180)
+            {
+                position.Y += (int)obj.Height;
+                position.X -= (int)obj.Width;
+            }
+            if (obj.Rotation == 270 || obj.Rotation == -90)
+                position.X -= (int)obj.Width;
+
+            return position;
         }
     }
 }
