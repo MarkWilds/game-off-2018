@@ -32,6 +32,7 @@ namespace game.Entities
         public Rectangle BoundingBox => IsVisible ? new Rectangle((int)Center.X, (int)Center.Y, Width, Height) : default(Rectangle);
         protected bool IsVisible = true;
         private Rectangle source;
+        private Vector2 scale;
 
         public Entity(Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle))
         {
@@ -41,6 +42,7 @@ namespace game.Entities
             this.Width = width;
             this.Height = height;
             this.source = source;
+            this.scale = this.source == default(Rectangle) ? new Vector2(texture.Width / this.Width, texture.Height / this.Height) : new Vector2(this.Width / source.Width, this.Height / source.Height);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -57,10 +59,11 @@ namespace game.Entities
                 var framePos = animator.FramePosition;
                 source.X = (int)framePos.X;
                 source.Y = (int)framePos.Y;
+                scale = new Vector2(Width / source.Width, Height / source.Height);
             }
 
             spriteBatch.Draw(texture, position, source, Color.White, rotation,
-                new Vector2(Width / 2, Height / 2), 1, SpriteEffects.None, 0);
+                new Vector2(Width / 2, Height / 2), scale, SpriteEffects.None, 0);
         }
 
         public virtual void Update(GameTime gameTime)

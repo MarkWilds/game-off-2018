@@ -38,7 +38,7 @@ namespace game.GameScreens
             hubMap.LoadObjects();
 
             //Create the player
-            player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
+            player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(456, 456));
 
             //Initialize some systems
             ParticleSystem.Instance.Initialize(Content);
@@ -93,7 +93,7 @@ namespace game.GameScreens
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             //World
-            spriteBatch.Begin(camera);
+            spriteBatch.Begin(camera, samplerState: SamplerState.PointClamp);
             mapRenderer.Render(hubMap, spriteBatch, camera);
             EntityManager.Instance.Draw(spriteBatch, gameTime);
             ParticleSystem.Instance.Draw(spriteBatch, gameTime);

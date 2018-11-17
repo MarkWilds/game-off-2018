@@ -173,15 +173,14 @@ namespace game
             var random = new Random();
             var tileId = obj.Tile.Gid - tileset.FirstGid;
             var type = tileset.Tiles[tileId].Type;
-
             var rotation = MathHelper.ToRadians((float)obj.Rotation);
-            var spawnPosition = GetObjectPosition(obj);
+            var spawnPosition = GetObjectPosition(obj, source);
 
             switch (type)
             {
                 case "Dungeon_Entrance":
+                    EntityManager.Instance.AddEntity(new Entity(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source));
                     break;
-
                 case "Ammo":
                     var randomBulletType = (BulletType)random.Next(Enum.GetNames(typeof(BulletType)).Length);
                     EntityManager.Instance.AddEntity(new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source));
@@ -195,9 +194,10 @@ namespace game
             }
         }
 
-        private static Vector2 GetObjectPosition(TmxObject obj)
+        private static Vector2 GetObjectPosition(TmxObject obj, Rectangle source)
         {
-            var position = new Vector2((int)(obj.X + obj.Width / 2), (int)(obj.Y - obj.Height / 2));
+            var scale = new Vector2((float)(obj.Width / source.Width), (float)(obj.Height / source.Height));
+            var position = new Vector2((float)(obj.X + (scale.X * obj.Width / 2)), (float)(obj.Y - (obj.Height * scale.Y / 2) + (obj.Height * (scale.Y - 1))));
 
             if (obj.Rotation == 90 || obj.Rotation == -270)
                 position.Y += (int)obj.Height;
