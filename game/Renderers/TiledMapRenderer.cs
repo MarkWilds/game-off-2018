@@ -62,12 +62,12 @@ namespace game
                         effect ^= SpriteEffects.FlipHorizontally;
                 }
 
-                map.GetSourceAndDestinationRectangles(tileset, tile, out source, out destination);
+                var sourceRect = map.GetSourceRectangleForTile(tileset, tile);
 
                 batch.Draw(
                     tilesetTexture,
                     new Vector2(tileset.TileWidth * tile.X, tileset.TileHeight * tile.Y) - offset,
-                    source,
+                    sourceRect,
                     Color.White,
                     MathHelper.ToRadians(rotation),
                     Vector2.Zero,

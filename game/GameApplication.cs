@@ -21,9 +21,12 @@ namespace game
 
         public GameApplication()
         {
-            graphics = new GraphicsDeviceManager(this);
+            graphics = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth = 640, PreferredBackBufferHeight = 400
+            };
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+            IsMouseVisible = false;
         }
 
         protected override void LoadContent()

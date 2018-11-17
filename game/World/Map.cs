@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Linq;
 using game.Entities;
 using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RoyT.AStar;
 using TiledSharp;
 
 namespace game
@@ -15,10 +17,65 @@ namespace game
         public TmxMap Data { get; private set; }
         public Dictionary<TmxTileset, Texture2D> Textures { get; private set; }
 
+        private Grid pathFindingGrid;
+
         private Map(TmxMap data, Dictionary<TmxTileset, Texture2D> textures)
         {
             this.Data = data;
             Textures = textures;
+
+            BuildPathFindingGrid();
+        }
+
+        private void BuildPathFindingGrid()
+        {
+            var collisionLayer = Data.Layers.FirstOrDefault(l => l.Name == "collision");
+            if (collisionLayer == default(TmxLayer))
+            {
+                Console.WriteLine("Map loaded without collision layer.");
+                return;
+            }
+
+            pathFindingGrid = new Grid(Data.Width, Data.Height);
+            foreach(var tile in collisionLayer.Tiles)
+            {
+                if(tile.Gid != 0)
+                    pathFindingGrid.BlockCell(new Position(tile.X, tile.Y));
+            }
+        }
+
+        public List<Vector2> GetPath(Position from, Position to)
+        {
+            var result = new List<Vector2>();
+            if (pathFindingGrid == null)
+                return result;
+
+            var path = pathFindingGrid.GetPath(from, to);
+            foreach (var node in path)
+                result.Add(new Vector2(node.X * 32 + 16, node.Y * 32 + 16));
+
+            return result;
+        }
+
+        public Func<RayCaster.HitData, bool> GetIsTileOccupiedFunction(string layerName)
+        {
+            if (!Data.Layers.Contains(layerName))
+                throw new ArgumentException($"{layerName} does not exist in this map");
+ 
+            return hitData =>
+            {
+                Vector2 coordinates = hitData.tileCoordinates;
+                if (coordinates.X < 0 || coordinates.X >= Data.Width ||
+                    coordinates.Y < 0 || coordinates.Y >= Data.Height)
+                    return false;
+
+                int index = (int) (coordinates.Y * Data.Width + coordinates.X);
+                TmxLayer wallLayer = Data.Layers[layerName];
+                TmxLayerTile tile = wallLayer.Tiles[index];
+
+                // if tileset is found it is solid
+                return GetTilesetForTile(tile) != null;
+            };
         }
 
         public static Map LoadTiledMap(GraphicsDevice graphicsDevice, string pathToMap)
@@ -58,9 +115,9 @@ namespace game
             return null;
         }
 
-        public void GetSourceAndDestinationRectangles(TmxTileset tileset, TmxLayerTile tile,
-            out Rectangle source, out Rectangle destination)
+        public Rectangle GetSourceRectangleForTile(TmxTileset tileset, TmxLayerTile tile)
         {
+            Rectangle source = new Rectangle();
             int tileWidth = tileset.TileWidth;
             int tileHeight = tileset.TileHeight;
             int tilesInHorizontalAxis = tileset.Image.Width.GetValueOrDefault() / tileWidth;
@@ -70,13 +127,28 @@ namespace game
             int xTilePos = tileIndex / tilesInHorizontalAxis;
             int yTilePos = tileIndex - xTilePos * tilesInHorizontalAxis;
 
-            source.Width = destination.Width = tileWidth;
-            source.Height = destination.Height = tileHeight;
+            source.Width = tileWidth;
+            source.Height = tileHeight;
 
             source.X = yTilePos * tileWidth;
             source.Y = xTilePos * tileHeight;
+
+            return source;
+        }
+        
+        public Rectangle GetDestinationRectangleForTile(TmxTileset tileset, TmxLayerTile tile)
+        {
+            Rectangle destination = new Rectangle();
+            int tileWidth = tileset.TileWidth;
+            int tileHeight = tileset.TileHeight;
+
+            destination.Width = tileWidth;
+            destination.Height = tileHeight;
+
             destination.X = tile.X * tileWidth;
             destination.Y = tile.Y * tileHeight;
+
+            return destination;
         }
 
         public void LoadObjects()
@@ -84,14 +156,13 @@ namespace game
             foreach (var obj in Data.ObjectGroups[0].Objects)
             {
                 var tile = obj.Tile;
-                Rectangle source, destination;
                 TmxTileset tileset = GetTilesetForTile(tile);
 
                 if (tileset == null)
                     continue;
 
                 Texture2D tilesetTexture = Textures[tileset];
-                GetSourceAndDestinationRectangles(tileset, obj.Tile, out source, out destination);
+                var source = GetSourceRectangleForTile(tileset, obj.Tile);
 
                 CreateEntity(obj, source, tileset, tilesetTexture);
             }

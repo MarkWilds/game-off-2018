@@ -30,9 +30,15 @@ namespace game.GameScreens
             BulletTexture = Content.Load<Texture2D>("Sprites/Bullet");
             PistolTexture = Content.Load<Texture2D>("Sprites/Pistol");
             RifleTexture = Content.Load<Texture2D>("Sprites/Rifle");
+            
+            //Initialize map and camera
+            mapRenderer = new TiledMapRenderer();
+            camera = new Camera(ScreenManager.GraphicsDevice);
+            hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
+            hubMap.LoadObjects();
 
             //Create the player
-            player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(456, 456));
+            player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
 
             //Initialize some systems
             ParticleSystem.Instance.Initialize(Content);
@@ -40,16 +46,14 @@ namespace game.GameScreens
 
             //Add new entities
             EntityManager.Instance.AddEntity(player);
-            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"), new Vector2(712, 712)));
-            EntityManager.Instance.AddEntity(new Car(1500, .75f, Content.Load<Texture2D>("Sprites/Car"), 46, 24, new Vector2(600, 600), (float)-Math.PI / 2));
-            EntityManager.Instance.AddEntity(new AmmoPack(BulletType.AssaultRifle, 30, Content.Load<Texture2D>("Sprites/AmmoPack"), new Vector2(400, 500)));
-            EntityManager.Instance.AddEntity(new HealthPack(25, Content.Load<Texture2D>("Sprites/HealthPack"), new Vector2(500, 500)));
-
-            //Initialize map and camera
-            mapRenderer = new TiledMapRenderer();
-            camera = new Camera(ScreenManager.GraphicsDevice);
-            hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
-            hubMap.LoadObjects();
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Car(300, .075f, Content.Load<Texture2D>("Sprites/Car"), 46, 24,
+                new Vector2(400, 400), (float) -Math.PI / 2));
+            EntityManager.Instance.AddEntity(new AmmoPack(BulletType.AssaultRifle, 30,
+                Content.Load<Texture2D>("Sprites/AmmoPack"), new Vector2(200, 300)));
+            EntityManager.Instance.AddEntity(new HealthPack(25, Content.Load<Texture2D>("Sprites/HealthPack"),
+                new Vector2(300, 300)));
 
             //Create player interface
             playerInterface = new PlayerInterface(player, Content, ScreenManager.GraphicsDevice);
