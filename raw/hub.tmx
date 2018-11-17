@@ -534,8 +534,8 @@
   <object id="98" gid="92" x="5568" y="3168" width="32" height="32" rotation="-90"/>
   <object id="99" gid="92" x="5344" y="3232" width="32" height="32"/>
   <object id="100" gid="91" x="5344" y="2976" width="32" height="32"/>
-  <object id="105" gid="93" x="576" y="704" width="160" height="160"/>
-  <object id="107" gid="93" x="896" y="672" width="128" height="128"/>
+  <object id="105" gid="93" x="713.22" y="721.601" width="160" height="160" rotation="-75.3815"/>
+  <object id="107" gid="93" x="896" y="544" width="128" height="128" rotation="90"/>
   <object id="108" gid="93" x="1216" y="640" width="96" height="96"/>
   <object id="109" gid="93" x="1216" y="640" width="96" height="96"/>
   <object id="110" gid="93" x="1440" y="608" width="64" height="64"/>

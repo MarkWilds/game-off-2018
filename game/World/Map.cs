@@ -200,16 +200,22 @@ namespace game
             var position = new Vector2((float)(obj.X + (scale.X * obj.Width / 2)), (float)(obj.Y - (obj.Height * scale.Y / 2) + (obj.Height * (scale.Y - 1))));
 
             if (obj.Rotation == 90 || obj.Rotation == -270)
-                position.Y += (int)obj.Height;
+            {
+                position.Y += (int)source.Height * scale.Y;
+                position.X -= (int)obj.Width * (scale.X - 1);
+            }
 
             else if(obj.Rotation == 180 || obj.Rotation == -180)
             {
-                position.Y += (int)obj.Height;
-                position.X -= (int)obj.Width;
+                position.Y += (int)((source.Height * scale.Y) - (obj.Height * (scale.Y - 1)));
+                position.X -= (int)((source.Width * scale.X) + (obj.Width * (scale.X -1)));
             }
 
             else if(obj.Rotation == 270 || obj.Rotation == -90)
-                position.X -= (int)obj.Width;
+            {
+                position.X -= (int)source.Width * scale.X;
+                position.Y -= (int)obj.Height * (scale.Y - 1);
+            }
 
             return position;
         }
