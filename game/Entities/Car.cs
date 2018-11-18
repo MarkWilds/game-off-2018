@@ -23,7 +23,8 @@ namespace game.Entities
         public int Health { get; private set; } = 150;
         public int MaxHealth { get; private set; } = 150;
 
-        public Car(float topSpeed, float acceleration, Texture2D texture, int width, int height, Vector2 position, float rotation = 0) : base(texture, width, height, position, rotation)
+        public Car(float topSpeed, float acceleration, Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle)) 
+            : base(texture, width, height, position, rotation, source)
         {
             this.topSpeed = topSpeed;
             this.acceleration = acceleration;

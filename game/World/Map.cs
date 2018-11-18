@@ -18,6 +18,7 @@ namespace game
         public Dictionary<TmxTileset, Texture2D> Textures { get; private set; }
 
         private Grid pathFindingGrid;
+        private ScreenManager screenManager;
 
         private Map(TmxMap data, Dictionary<TmxTileset, Texture2D> textures)
         {
@@ -151,8 +152,10 @@ namespace game
             return destination;
         }
 
-        public void LoadObjects()
+        public void LoadObjects(ScreenManager screenManager)
         {
+            this.screenManager = screenManager;
+
             foreach (var obj in Data.ObjectGroups[0].Objects)
             {
                 var tile = obj.Tile;
@@ -164,11 +167,11 @@ namespace game
                 Texture2D tilesetTexture = Textures[tileset];
                 var source = GetSourceRectangleForTile(tileset, obj.Tile);
 
-                CreateEntity(obj, source, tileset, tilesetTexture);
+                CreateObject(obj, source, tileset, tilesetTexture);
             }
         }
 
-        private static void CreateEntity(TmxObject obj, Rectangle source, TmxTileset tileset, Texture2D tilesetTexture)
+        private void CreateObject(TmxObject obj, Rectangle source, TmxTileset tileset, Texture2D tilesetTexture)
         {
             var random = new Random();
             var tileId = obj.Tile.Gid - tileset.FirstGid;
@@ -179,7 +182,7 @@ namespace game
             switch (type)
             {
                 case "Dungeon_Entrance":
-                    EntityManager.Instance.AddEntity(new Entity(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source));
+                    EntityManager.Instance.AddEntity(new DungeonEntrance(screenManager, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source));
                     break;
                 case "Ammo":
                     var randomBulletType = (BulletType)random.Next(Enum.GetNames(typeof(BulletType)).Length);

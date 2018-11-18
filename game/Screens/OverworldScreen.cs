@@ -35,7 +35,6 @@ namespace game.GameScreens
             mapRenderer = new TiledMapRenderer();
             camera = new Camera(ScreenManager.GraphicsDevice);
             hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
-            hubMap.LoadObjects();
 
             //Create the player
             player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(456, 456));
@@ -43,17 +42,14 @@ namespace game.GameScreens
             //Initialize some systems
             ParticleSystem.Instance.Initialize(Content);
             EntityManager.Instance.Initialize(player.playerController);
+            hubMap.LoadObjects(ScreenManager);
 
             //Add new entities
             EntityManager.Instance.AddEntity(player);
             EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
                 new Vector2(512, 512), hubMap));
-            EntityManager.Instance.AddEntity(new Car(300, .075f, Content.Load<Texture2D>("Sprites/Car"), 46, 24,
-                new Vector2(400, 400), (float) -Math.PI / 2));
-            EntityManager.Instance.AddEntity(new AmmoPack(BulletType.AssaultRifle, 30,
-                Content.Load<Texture2D>("Sprites/AmmoPack"), new Vector2(200, 300)));
-            EntityManager.Instance.AddEntity(new HealthPack(25, Content.Load<Texture2D>("Sprites/HealthPack"),
-                new Vector2(300, 300)));
+            EntityManager.Instance.AddEntity(new Car(2000, 1f, Content.Load<Texture2D>("Sprites/Car"), 46, 24,
+                new Vector2(500, 500), (float) -Math.PI / 2));
 
             //Create player interface
             playerInterface = new PlayerInterface(player, Content, ScreenManager.GraphicsDevice);
