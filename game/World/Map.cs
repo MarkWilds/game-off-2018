@@ -6,22 +6,49 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RoyT.AStar;
 using TiledSharp;
+using game.World;
 
-namespace game
+namespace game.World
 {
     public class Map
     {
+        private class ScoutsOrder
+        {
+            public IScout Scout;
+            public Position from;
+            public Position to;
+        }
+
         public TmxMap Data { get; private set; }
         public Dictionary<TmxTileset, Texture2D> Textures { get; private set; }
 
+        private Queue<ScoutsOrder> pathQueue;
         private Grid pathFindingGrid;
 
         private Map(TmxMap data, Dictionary<TmxTileset, Texture2D> textures)
         {
-            this.Data = data;
+            Data = data;
             Textures = textures;
+            pathQueue = new Queue<ScoutsOrder>();
 
             BuildPathFindingGrid();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            //Handle pathfinding queue
+            if (pathQueue.Count == 0)
+                return;
+
+            var orderHandleCount = pathQueue.Count == 1 ? 1 : pathQueue.Count / 32 + 1;
+            Console.WriteLine($"Handling {orderHandleCount} orders");
+            while (orderHandleCount > 0)
+            {
+                var order = pathQueue.Dequeue();
+                var path = GetPath(order.from, order.to);
+                order.Scout.RecievePath(path);
+                --orderHandleCount;
+            }
         }
 
         private void BuildPathFindingGrid()
@@ -41,15 +68,23 @@ namespace game
             }
         }
 
-        public List<Vector2> GetPath(Position from, Position to)
+        public void RequestPath(IScout scout, Position from, Position to)
+        {
+            pathQueue.Enqueue(new ScoutsOrder() { Scout = scout, from = from, to = to });
+        }
+
+        private List<Vector2> GetPath(Position from, Position to)
         {
             var result = new List<Vector2>();
             if (pathFindingGrid == null)
-                return result;
+                return null;
 
             var path = pathFindingGrid.GetPath(from, to);
             foreach (var node in path)
                 result.Add(new Vector2(node.X * 32 + 16, node.Y * 32 + 16));
+
+            if (path.Count() == 0)
+                return null;
 
             return result;
         }

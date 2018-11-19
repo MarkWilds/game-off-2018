@@ -3,6 +3,7 @@ using Comora;
 using game.Entities;
 using game.Particles;
 using game.Weapons;
+using game.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -34,7 +35,7 @@ namespace game.GameScreens
             //Initialize map and camera
             mapRenderer = new TiledMapRenderer();
             camera = new Camera(ScreenManager.GraphicsDevice);
-            hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
+            hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/path_debug.tmx");
 
             //Create the player
             player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
@@ -45,6 +46,74 @@ namespace game.GameScreens
 
             //Add new entities
             EntityManager.Instance.AddEntity(player);
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
+            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
+                new Vector2(512, 512), hubMap));
             EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
                 new Vector2(512, 512), hubMap));
             EntityManager.Instance.AddEntity(new Car(300, .075f, Content.Load<Texture2D>("Sprites/Car"), 46, 24,
@@ -61,6 +130,8 @@ namespace game.GameScreens
 
         public void Update(GameTime gameTime)
         {
+            hubMap.Update(gameTime);
+
             UpdatePlayerLookDirection();
 
             EntityManager.Instance.Update(gameTime);

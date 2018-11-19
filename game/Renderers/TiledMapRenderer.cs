@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Comora;
+using game.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TiledSharp;

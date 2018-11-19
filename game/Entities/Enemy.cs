@@ -1,13 +1,15 @@
 ﻿using game.Core;
 using game.GameScreens;
 using game.Particles;
+using game.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace game.Entities
 {
-    class Enemy : Entity, IDamageable
+    class Enemy : Entity, IDamageable, IScout
     {
         private float speed;
         private float timeBetweenShots = 1;
@@ -15,6 +17,9 @@ namespace game.Entities
         private IDamageable target => EntityManager.Instance.GetPlayer();
         private int damage = 10;
         private Map map;
+
+        private bool hasRunningPathRequest = false;
+        private List<Vector2> path;
 
         public int Health { get; private set; } = 50;
         public int MaxHealth { get; private set; } = 50;
@@ -35,21 +40,34 @@ namespace game.Entities
             if (Vector2.Distance(position, target.position) < 10)
                 Shoot();
             else
-                MoveTowardsTarget(gameTime);
+            {
+                if(path != null)
+                    MoveTowardsTarget(gameTime);
+
+                if (hasRunningPathRequest)
+                    return;
+                else
+                {
+                    map.RequestPath(this, tilePosition, ((Entity)target).tilePosition);
+                    hasRunningPathRequest = true;
+                }
+            }
+                
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (target == null)
+            base.Draw(spriteBatch, gameTime);
+
+            if (path == null)
                 return;
 
-            base.Draw(spriteBatch, gameTime);
             RenderPath(spriteBatch);
         }
 
         private void RenderPath(SpriteBatch spriteBatch)
         {
-            var path = map.GetPath(tilePosition, ((Entity)target).tilePosition);
+            //var path = map.GetPath(tilePosition, ((Entity)target).tilePosition);
             var lastNode = position;
             foreach (var node in path)
             {
@@ -60,7 +78,6 @@ namespace game.Entities
 
         private void MoveTowardsTarget(GameTime gameTime)
         {
-            var path = map.GetPath(tilePosition, ((Entity)target).tilePosition);
             if (path.Count > 1)
             {
                 Vector2 direction = path[1] - position;
@@ -97,6 +114,12 @@ namespace game.Entities
         private void Die()
         {
             Destroy();
+        }
+
+        public void RecievePath(List<Vector2> path)
+        {
+            hasRunningPathRequest = false;
+            this.path = path;
         }
     }
 }
