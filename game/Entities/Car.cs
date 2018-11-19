@@ -46,7 +46,7 @@ namespace game.Entities
         {
             started = false;
             player.playerController.ChangeControl(player);
-            player.position = new Vector2(position.X + Width, position.Y + Height / 2);
+            player.position = new Vector2(position.X + Width * 4, position.Y + Height / 2);
             exhaustParticles.Stop();
         }
 

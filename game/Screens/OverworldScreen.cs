@@ -46,10 +46,6 @@ namespace game.GameScreens
 
             //Add new entities
             EntityManager.Instance.AddEntity(player);
-            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
-                new Vector2(512, 512), hubMap));
-            EntityManager.Instance.AddEntity(new Car(2000, 1f, Content.Load<Texture2D>("Sprites/Car"), 46, 24,
-                new Vector2(500, 500), (float) -Math.PI / 2));
 
             //Create player interface
             playerInterface = new PlayerInterface(player, Content, ScreenManager.GraphicsDevice);

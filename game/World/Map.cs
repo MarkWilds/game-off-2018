@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RoyT.AStar;
 using TiledSharp;
+using game.GameScreens;
 
 namespace game
 {
@@ -178,23 +179,32 @@ namespace game
             var type = tileset.Tiles[tileId].Type;
             var rotation = MathHelper.ToRadians((float)obj.Rotation);
             var spawnPosition = GetObjectPosition(obj, source);
+            Entity entity;
 
             switch (type)
             {
+                case "Car":
+                    entity = new Car(300, .75f, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    break;
+                case "Enemy_Spawn":
+                    entity = new Enemy(128, tilesetTexture, spawnPosition, this, rotation, source);
+                    break;
                 case "Dungeon_Entrance":
-                    EntityManager.Instance.AddEntity(new DungeonEntrance(screenManager, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source));
+                    entity = new DungeonEntrance(new ShooterScreen(), screenManager, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
                 case "Ammo":
                     var randomBulletType = (BulletType)random.Next(Enum.GetNames(typeof(BulletType)).Length);
-                    EntityManager.Instance.AddEntity(new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source));
+                    entity = new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source);
                     break;
                 case "Health":
-                    EntityManager.Instance.AddEntity(new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source));
+                    entity = new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source);
                     break;
                 default:
-                    EntityManager.Instance.AddEntity(new Entity(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source));
+                    entity = new Entity(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
             }
+
+            EntityManager.Instance.AddEntity(entity);
         }
 
         private static Vector2 GetObjectPosition(TmxObject obj, Rectangle source)

@@ -19,8 +19,8 @@ namespace game.Entities
         public int Health { get; private set; } = 50;
         public int MaxHealth { get; private set; } = 50;
 
-        public Enemy(float speed, Texture2D texture, Vector2 position, Map map)
-            : base(texture, 32, 32, position, 0)
+        public Enemy(float speed, Texture2D texture, Vector2 position, Map map, float rotation = 0, Rectangle source = default(Rectangle))
+            : base(texture, 32, 32, position, rotation, source)
         {
             this.speed = speed;
             this.map = map;

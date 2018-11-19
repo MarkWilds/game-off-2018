@@ -11,11 +11,13 @@ namespace game.Entities
     {
         private ScreenManager screenManager;
         private Player player;
+        private IGameScreen screenToLoad;
 
-        public DungeonEntrance(ScreenManager screenManager, Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle)) 
+        public DungeonEntrance(IGameScreen screenToLoad, ScreenManager screenManager, Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle)) 
             : base(texture, width, height, position, rotation, source)
         {
             this.screenManager = screenManager;
+            this.screenToLoad = screenToLoad;
             player = EntityManager.Instance.GetPlayer() as Player;
         }
 
@@ -23,7 +25,7 @@ namespace game.Entities
         {
             base.Update(gameTime);
             if (BoundingBox.Intersects(player.BoundingBox)) {
-                screenManager.PushScreen(new ShooterScreen());
+                screenManager.PushScreen(screenToLoad);
             }
         }
     }
