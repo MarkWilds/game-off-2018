@@ -59,7 +59,7 @@ namespace game.GameScreens
             EntityManager.Instance.Update(gameTime);
             ParticleSystem.Instance.Update(gameTime);
 
-            camera.Position = ((Entity)(player.playerController.ControlledEntity)).position;
+            camera.Position = player.playerController.ControlledEntity.position;
             camera.Position = new Vector2((int) camera.Position.X, (int) camera.Position.Y);
 
             if (InputManager.IsKeyPressed(Keys.F4))

@@ -24,16 +24,16 @@ namespace game.Entities
             => new Position((int)Math.Floor(position.X / 32), (int)Math.Floor(position.Y / 32));
 
         protected Animator animator;
-        private Texture2D texture;
+        protected Texture2D texture;
         
         public int Height;
         public int Width;
         public Vector2 Center => new Vector2(position.X - Width / 2, position.Y - Height / 2);
-        public Vector2 Origin => new Vector2(Width / 2, Height / 2);
-        public Rectangle BoundingBox => IsVisible ? new Rectangle((int)Center.X, (int)Center.Y, (int)(Width * scale.X), (int)(Height * scale.Y)) : default(Rectangle);
+        public Vector2 Origin => new Vector2(source.Width / 2, source.Height / 2);
+        public Rectangle BoundingBox => IsVisible ? new Rectangle((int)Center.X, (int)Center.Y, Width, Height) : default(Rectangle);
         protected bool IsVisible = true;
-        private Rectangle source;
-        private Vector2 scale;
+        protected Rectangle source;
+        private Vector2 scale => this.source == default(Rectangle) ? new Vector2(this.Width / texture.Width, this.Height / texture.Height) : new Vector2(this.Width / source.Width, this.Height / source.Height);
 
         public Entity(Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle))
         {
@@ -43,7 +43,6 @@ namespace game.Entities
             this.Width = width;
             this.Height = height;
             this.source = source;
-            this.scale = this.source == default(Rectangle) ? new Vector2(this.Width / texture.Width, this.Height / texture.Height) : new Vector2(this.Width / source.Width, this.Height / source.Height);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -60,7 +59,6 @@ namespace game.Entities
                 var framePos = animator.FramePosition;
                 source.X = (int)framePos.X;
                 source.Y = (int)framePos.Y;
-                scale = new Vector2(Width / source.Width, Height / source.Height);
             }
 
             spriteBatch.Draw(texture, position, source, Color.White, rotation, Origin, scale, SpriteEffects.None, 0);
