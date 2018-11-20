@@ -2,6 +2,7 @@
 using Comora;
 using game.Entities;
 using game.Particles;
+using game.Screens;
 using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -70,9 +71,9 @@ namespace game.GameScreens
             camera.Position = ((Entity)(player.playerController.ControlledEntity)).position;
             camera.Position = new Vector2((int) camera.Position.X, (int) camera.Position.Y);
 
-            if (InputManager.IsKeyPressed(Keys.F4))
+            if (InputManager.IsKeyPressed(Keys.Escape))
             {
-                ScreenManager.PushScreen(new ShooterScreen());
+                ScreenManager.PushScreen(new PauseScreen());
             }
         }
 
@@ -92,6 +93,8 @@ namespace game.GameScreens
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
+
             //World
             spriteBatch.Begin(camera);
             mapRenderer.Render(hubMap, spriteBatch, camera);

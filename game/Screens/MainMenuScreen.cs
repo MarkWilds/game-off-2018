@@ -50,6 +50,8 @@ namespace game.Screens
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
+
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             foreach (Button button in buttons)
@@ -70,7 +72,6 @@ namespace game.Screens
 
         public void Dispose()
         {
-            buttons.Clear();
         }
     }
 }

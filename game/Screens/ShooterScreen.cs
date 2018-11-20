@@ -81,6 +81,8 @@ namespace game.GameScreens
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
+
             spriteBatch.Begin();
 
             renderer.ClearDepthBuffer();
