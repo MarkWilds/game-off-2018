@@ -35,6 +35,7 @@ namespace game.GameScreens
             mapRenderer = new TiledMapRenderer();
             camera = new Camera(ScreenManager.GraphicsDevice);
             hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
+            ScreenManager.Game.IsMouseVisible = false;
 
             //Create the player
             player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));

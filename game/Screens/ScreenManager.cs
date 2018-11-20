@@ -10,13 +10,15 @@ namespace game
         private readonly SpriteBatch spriteBatch;
         private readonly ContentManager contentManager;
         public readonly GraphicsDevice GraphicsDevice;
+        public readonly Game Game;
         private List<IGameScreen> activeGameScreens = new List<IGameScreen>();
 
-        public ScreenManager(SpriteBatch spriteBatch, ContentManager contentManager, GraphicsDevice graphicsDevice)
+        public ScreenManager(SpriteBatch spriteBatch, ContentManager contentManager, GraphicsDevice graphicsDevice, Game game)
         {
             this.spriteBatch = spriteBatch;
             this.contentManager = contentManager;
             this.GraphicsDevice = graphicsDevice;
+            this.Game = game;
         }
 
         private IGameScreen CurrentScreen => activeGameScreens[activeGameScreens.Count - 1];
@@ -64,6 +66,11 @@ namespace game
         {
             if (!IsScreenListEmpty)
                 CurrentScreen.Draw(spriteBatch, gameTime);
+        }
+
+        public void ExitGame()
+        {
+            Game.Exit();
         }
     }
 }

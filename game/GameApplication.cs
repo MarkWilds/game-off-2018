@@ -1,5 +1,6 @@
 ﻿using System;
 using game.GameScreens;
+using game.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -26,15 +27,14 @@ namespace game
                 PreferredBackBufferWidth = 640, PreferredBackBufferHeight = 400
             };
             Content.RootDirectory = "Content";
-            IsMouseVisible = false;
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            screenManager = new ScreenManager(spriteBatch, Content, GraphicsDevice);
+            screenManager = new ScreenManager(spriteBatch, Content, GraphicsDevice, this);
 
-            screenManager.ChangeScreen(new OverworldScreen());
+            screenManager.ChangeScreen(new MainMenuScreen());
         }
 
         protected override void Update(GameTime gameTime)
