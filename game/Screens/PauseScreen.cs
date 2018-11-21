@@ -5,6 +5,7 @@ using game.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace game.Screens
 {
@@ -49,7 +50,7 @@ namespace game.Screens
 
         private void ResumeGame(object sender, EventArgs e)
         {
-            ScreenManager.PopScreen();
+            CloseMenu();
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -72,6 +73,15 @@ namespace game.Screens
             {
                 button.Update(gameTime);
             }
+
+            if (InputManager.IsKeyPressed(Keys.Escape))
+                CloseMenu();
+        }
+
+        private void CloseMenu()
+        {
+            ScreenManager.Game.IsMouseVisible = false;
+            ScreenManager.PopScreen();
         }
 
         public void Dispose()

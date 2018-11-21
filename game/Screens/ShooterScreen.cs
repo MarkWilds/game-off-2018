@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using game.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,6 +27,8 @@ namespace game.GameScreens
 
         public void Initialize(ContentManager contentManager)
         {
+            ScreenManager.Game.IsMouseVisible = false;
+
             blankTexture = contentManager.Load<Texture2D>("blank");
             renderer = new RaycastRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
             currentMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/test_fps.tmx");
@@ -77,6 +80,11 @@ namespace game.GameScreens
 
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
             Mouse.SetPosition(viewport.Width / 2, viewport.Height / 2);
+
+            if (InputManager.IsKeyPressed(Keys.Escape))
+            {
+                ScreenManager.PushScreen(new PauseScreen());
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

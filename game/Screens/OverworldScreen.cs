@@ -75,6 +75,11 @@ namespace game.GameScreens
             {
                 ScreenManager.PushScreen(new PauseScreen());
             }
+
+            if (InputManager.IsKeyPressed(Keys.F4))
+            {
+                ScreenManager.PushScreen(new ShooterScreen());
+            }
         }
 
         private void UpdatePlayerLookDirection()
