@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Comora;
 using game.Entities;
+using game.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TiledSharp;

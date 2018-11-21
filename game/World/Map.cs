@@ -1,32 +1,67 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Linq;
 using game.Entities;
+using game.GameScreens;
 using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RoyT.AStar;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using TiledSharp;
-using game.GameScreens;
 
-namespace game
+namespace game.World
 {
     public class Map
     {
+        private class ScoutsOrder
+        {
+            public IScout Scout;
+            public Position from;
+            public Position to;
+        }
+
         public TmxMap Data { get; private set; }
         public Dictionary<TmxTileset, Texture2D> Textures { get; private set; }
 
+        private Queue<ScoutsOrder> pathQueue;
         private Grid pathFindingGrid;
         private ScreenManager screenManager;
 
         private Map(TmxMap data, Dictionary<TmxTileset, Texture2D> textures)
         {
-            this.Data = data;
+            Data = data;
             Textures = textures;
+            pathQueue = new Queue<ScoutsOrder>();
 
             BuildPathFindingGrid();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            //Handle pathfinding queue
+            if (pathQueue.Count == 0)
+                return;
+
+            var orderHandleCount = pathQueue.Count == 1 ? 1 : pathQueue.Count / 32 + 1;
+            //Console.WriteLine($"Handling {orderHandleCount} orders");
+            while (orderHandleCount > 0)
+            {
+                HandlePathRequest(pathQueue.Dequeue());
+                --orderHandleCount;
+            }
+        }
+
+        private void HandlePathRequest(ScoutsOrder order)
+        {
+            var path = GetPath(order.from, order.to);
+            var pathQueue = new Queue<Vector2>();
+            if (path != null && path.Count > 1)
+            {
+                for (int i = 0; i < path.Count - 1; ++i)
+                    pathQueue.Enqueue(path[i + 1]);
+            }
+            order.Scout.RecievePath(pathQueue);
         }
 
         private void BuildPathFindingGrid()
@@ -39,22 +74,30 @@ namespace game
             }
 
             pathFindingGrid = new Grid(Data.Width, Data.Height);
-            foreach(var tile in collisionLayer.Tiles)
+            foreach (var tile in collisionLayer.Tiles)
             {
-                if(tile.Gid != 0)
+                if (tile.Gid != 0)
                     pathFindingGrid.BlockCell(new Position(tile.X, tile.Y));
             }
         }
 
-        public List<Vector2> GetPath(Position from, Position to)
+        public void RequestPath(IScout scout, Position from, Position to)
+        {
+            pathQueue.Enqueue(new ScoutsOrder() { Scout = scout, from = from, to = to });
+        }
+
+        private List<Vector2> GetPath(Position from, Position to)
         {
             var result = new List<Vector2>();
             if (pathFindingGrid == null)
-                return result;
+                return null;
 
             var path = pathFindingGrid.GetPath(from, to);
             foreach (var node in path)
                 result.Add(new Vector2(node.X * 32 + 16, node.Y * 32 + 16));
+
+            if (path.Count() == 0)
+                return null;
 
             return result;
         }
@@ -63,7 +106,7 @@ namespace game
         {
             if (!Data.Layers.Contains(layerName))
                 throw new ArgumentException($"{layerName} does not exist in this map");
- 
+
             return hitData =>
             {
                 Vector2 coordinates = hitData.tileCoordinates;
@@ -71,7 +114,7 @@ namespace game
                     coordinates.Y < 0 || coordinates.Y >= Data.Height)
                     return false;
 
-                int index = (int) (coordinates.Y * Data.Width + coordinates.X);
+                int index = (int)(coordinates.Y * Data.Width + coordinates.X);
                 TmxLayer wallLayer = Data.Layers[layerName];
                 TmxLayerTile tile = wallLayer.Tiles[index];
 
@@ -137,7 +180,7 @@ namespace game
 
             return source;
         }
-        
+
         public Rectangle GetDestinationRectangleForTile(TmxTileset tileset, TmxLayerTile tile)
         {
             Rectangle destination = new Rectangle();
@@ -218,13 +261,13 @@ namespace game
                 position.X -= (int)obj.Width * (scale.X - 1);
             }
 
-            else if(obj.Rotation == 180 || obj.Rotation == -180)
+            else if (obj.Rotation == 180 || obj.Rotation == -180)
             {
                 position.Y += (int)((source.Height * scale.Y) - (obj.Height * (scale.Y - 1)));
-                position.X -= (int)((source.Width * scale.X) + (obj.Width * (scale.X -1)));
+                position.X -= (int)((source.Width * scale.X) + (obj.Width * (scale.X - 1)));
             }
 
-            else if(obj.Rotation == 270 || obj.Rotation == -90)
+            else if (obj.Rotation == 270 || obj.Rotation == -90)
             {
                 position.X -= (int)source.Width * scale.X;
                 position.Y -= (int)obj.Height * (scale.Y - 1);
