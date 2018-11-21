@@ -44,10 +44,8 @@ namespace game.Particles
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Rectangle sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
-
-            spriteBatch.Draw(texture, position, sourceRectangle, startColor, angle, origin, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(texture, position, null, startColor, angle, origin, scale, SpriteEffects.None, 0f);
         }
     }
 }

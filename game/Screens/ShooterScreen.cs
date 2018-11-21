@@ -46,6 +46,16 @@ namespace game.GameScreens
                 ScreenManager.PopScreen();
             }
 
+            MouseState currentState = Mouse.GetState();
+            if (currentState != previousState)
+            {
+                float deltaX = currentState.X - previousState.X;
+                angle += deltaX * 20.0f * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
+            Mouse.SetPosition(viewport.Width / 2, viewport.Height / 2);
+
             float verticalMovement = 0.0f;
             float horizontalMovement = 0.0f;
 
@@ -69,22 +79,22 @@ namespace game.GameScreens
             {
                 movementDirection.Normalize();
 
-                position += movementDirection * movementSpeed * (float) gameTime.ElapsedGameTime.TotalSeconds;
-            }
+                Vector2 velocity = movementDirection * movementSpeed * (float) gameTime.ElapsedGameTime.TotalSeconds;
 
-            MouseState currentState = Mouse.GetState();
-            if (currentState != previousState)
-            {
-                float deltaX = currentState.X - previousState.X;
-                angle += deltaX * 20.0f * (float) gameTime.ElapsedGameTime.TotalSeconds;
-            }
+                // do collision detection
+                RayCaster.HitData hitData;
+                float dirAngle = (float) Math.Atan2(velocity.Y, velocity.X);
+                if (RayCaster.RayIntersectsGrid(position, dirAngle, 32, out hitData,
+                    currentMap.GetIsTileOccupiedFunction("walls1"), 16))
+                {
+                    if (hitData.rayLength >= 0)
+                    {
+                        float vel = velocity.Length();
+                        velocity.Normalize();
+                    }
+                }
 
-            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
-            Mouse.SetPosition(viewport.Width / 2, viewport.Height / 2);
-
-            if (InputManager.IsKeyPressed(Keys.Escape))
-            {
-                ScreenManager.PushScreen(new PauseScreen());
+                position += velocity;
             }
         }
 

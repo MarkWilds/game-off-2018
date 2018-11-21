@@ -17,6 +17,7 @@ namespace game.Entities
         /// The forward vector of the entity
         /// </summary>
         public Vector2 Forward => new Vector2((float) Math.Cos(rotation), (float) Math.Sin(rotation));
+        public Vector2 Right => new Vector2(-Forward.Y, Forward.X);
 
         public Vector2 position { get; set; }
         public float rotation;
