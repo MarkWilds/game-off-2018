@@ -39,22 +39,15 @@ namespace game.GameScreens
             ScreenManager.Game.IsMouseVisible = false;
 
             //Create the player
-            player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
+            player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(456, 456));
 
             //Initialize some systems
             ParticleSystem.Instance.Initialize(Content);
             EntityManager.Instance.Initialize(player.playerController);
+            hubMap.LoadObjects(ScreenManager);
 
             //Add new entities
             EntityManager.Instance.AddEntity(player);
-            EntityManager.Instance.AddEntity(new Enemy(256, Content.Load<Texture2D>("Sprites/Enemy"),
-                new Vector2(512, 512), hubMap));
-            EntityManager.Instance.AddEntity(new Car(300, .075f, Content.Load<Texture2D>("Sprites/Car"), 46, 24,
-                new Vector2(400, 400), (float) -Math.PI / 2));
-            EntityManager.Instance.AddEntity(new AmmoPack(BulletType.AssaultRifle, 30,
-                Content.Load<Texture2D>("Sprites/AmmoPack"), new Vector2(200, 300)));
-            EntityManager.Instance.AddEntity(new HealthPack(25, Content.Load<Texture2D>("Sprites/HealthPack"),
-                new Vector2(300, 300)));
 
             //Create player interface
             playerInterface = new PlayerInterface(player, Content, ScreenManager.GraphicsDevice);
@@ -68,7 +61,7 @@ namespace game.GameScreens
             EntityManager.Instance.Update(gameTime);
             ParticleSystem.Instance.Update(gameTime);
 
-            camera.Position = ((Entity)(player.playerController.ControlledEntity)).position;
+            camera.Position = player.playerController.ControlledEntity.position;
             camera.Position = new Vector2((int) camera.Position.X, (int) camera.Position.Y);
 
             if (InputManager.IsKeyPressed(Keys.Escape))
@@ -101,7 +94,7 @@ namespace game.GameScreens
             ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             //World
-            spriteBatch.Begin(camera);
+            spriteBatch.Begin(camera, samplerState: SamplerState.PointClamp);
             mapRenderer.Render(hubMap, spriteBatch, camera);
             EntityManager.Instance.Draw(spriteBatch, gameTime);
             ParticleSystem.Instance.Draw(spriteBatch, gameTime);

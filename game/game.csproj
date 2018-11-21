@@ -65,6 +65,9 @@
     <None Update="Content\Sprites\Rifle.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Content\Tilesets\Buildings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Content\Tilesets\fps_props.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -74,10 +77,16 @@
     <None Update="Content\Tilesets\debug.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Content\Tilesets\GroundedObjects.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Content\Tilesets\hub.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Content\Sprites\gun_weapon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Tilesets\LooseObjects.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -17,8 +17,8 @@ namespace game
         public int MaxHealth { get; private set; } = 100;
         public int Health { get; private set; }
 
-        public Player(float speed, Texture2D texture, Vector2 position, float rotation = 0)
-            : base(texture, 32, 32, position, rotation)
+        public Player(float speed, Texture2D texture, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle))
+            : base(texture, 32, 32, position, rotation, source)
         {
             this.speed = speed;
             Health = MaxHealth;
