@@ -32,8 +32,8 @@ namespace game.Entities
             this.acceleration = acceleration;
             turnAngle = .004f;
 
-            exhaustParticles = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 1f, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
-            exhaustParticles2 = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 1f, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
+            exhaustParticles = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 0.25f * scale.X, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent, 0.25f);
+            exhaustParticles2 = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 0.25f * scale.X, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent, 0.25f);
 
             player = EntityManager.Instance.GetPlayer() as Player;
         }
@@ -79,8 +79,8 @@ namespace game.Entities
                 SlowDown(deltaTime);
 
             //Set particleEmitter position
-            exhaustParticles.SetLocation(position - Forward * 64 + Right * 24);
-            exhaustParticles2.SetLocation(position - Forward * 64 - Right * 24);
+            exhaustParticles.SetLocation(position - Forward * Height * 0.98f + Right * Width / 6);
+            exhaustParticles2.SetLocation(position - Forward * Height * 0.98f - Right * Width / 6);
             exhaustParticles.SetDirection(-Forward);
             exhaustParticles2.SetDirection(-Forward);
 

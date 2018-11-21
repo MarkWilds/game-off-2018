@@ -18,9 +18,10 @@ namespace game.Particles
         private float scale;
         public float lifeSpan;
         private float speed;
+        private float layerDepth;
 
         public Particle(Texture2D texture, Vector2 position, Vector2 velocity, float particleSpeed, float angle, float angularVelocity, 
-            float scale, float lifeSpan, Color startColor, Color endColor)
+            float scale, float lifeSpan, Color startColor, Color endColor, float layerDepth = 0)
         {
             this.texture = texture;
             this.position = position;
@@ -32,6 +33,7 @@ namespace game.Particles
             this.lifeSpan = lifeSpan;
             this.speed = particleSpeed;
             this.endColor = endColor;
+            this.layerDepth = layerDepth;
         }
 
         public void Update(GameTime gameTime)
@@ -45,7 +47,7 @@ namespace game.Particles
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
-            spriteBatch.Draw(texture, position, null, startColor, angle, origin, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(texture, position, null, startColor, angle, origin, scale, SpriteEffects.None, layerDepth);
         }
     }
 }

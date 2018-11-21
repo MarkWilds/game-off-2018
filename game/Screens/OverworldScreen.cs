@@ -97,7 +97,7 @@ namespace game.GameScreens
             ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             //World
-            spriteBatch.Begin(camera, samplerState: SamplerState.PointClamp);
+            spriteBatch.Begin(camera, samplerState: SamplerState.PointClamp, sortMode: SpriteSortMode.FrontToBack);
             mapRenderer.Render(hubMap, spriteBatch, camera);
             EntityManager.Instance.Draw(spriteBatch, gameTime);
             ParticleSystem.Instance.Draw(spriteBatch, gameTime);
