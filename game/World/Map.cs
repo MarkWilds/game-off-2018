@@ -229,9 +229,9 @@ namespace game.World
                 case "Car":
                     entity = new Car(300, .75f, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
-//                case "Enemy_Spawn":
-//                    entity = new Enemy(128, tilesetTexture, spawnPosition, this, rotation, source);
-//                    break;
+                case "Enemy_Spawn":
+                    entity = new Enemy(128, tilesetTexture, spawnPosition, this, rotation, source);
+                    break;
                 case "Dungeon_Entrance":
                     entity = new DungeonEntrance(new ShooterScreen(), screenManager, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
