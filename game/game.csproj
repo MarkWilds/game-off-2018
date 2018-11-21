@@ -29,6 +29,9 @@
     <None Update="Content\Maps\test_fps.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Content\Sprites\Button.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Content\Sprites\Particles\blank.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

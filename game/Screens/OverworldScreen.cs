@@ -2,6 +2,7 @@
 using Comora;
 using game.Entities;
 using game.Particles;
+using game.Screens;
 using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -35,6 +36,7 @@ namespace game.GameScreens
             mapRenderer = new TiledMapRenderer();
             camera = new Camera(ScreenManager.GraphicsDevice);
             hubMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/hub.tmx");
+            ScreenManager.Game.IsMouseVisible = false;
 
             //Create the player
             player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(256, 256));
@@ -69,6 +71,11 @@ namespace game.GameScreens
             camera.Position = ((Entity)(player.playerController.ControlledEntity)).position;
             camera.Position = new Vector2((int) camera.Position.X, (int) camera.Position.Y);
 
+            if (InputManager.IsKeyPressed(Keys.Escape))
+            {
+                ScreenManager.PushScreen(new PauseScreen());
+            }
+
             if (InputManager.IsKeyPressed(Keys.F4))
             {
                 ScreenManager.PushScreen(new ShooterScreen());
@@ -91,6 +98,8 @@ namespace game.GameScreens
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
+
             //World
             spriteBatch.Begin(camera);
             mapRenderer.Render(hubMap, spriteBatch, camera);
@@ -110,6 +119,8 @@ namespace game.GameScreens
 
         public void Dispose()
         {
+            EntityManager.Instance.ClearEntities();
+            ParticleSystem.Instance.ClearParticles();
         }
     }
 }
