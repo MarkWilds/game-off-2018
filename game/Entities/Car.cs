@@ -19,6 +19,7 @@ namespace game.Entities
 
         private Rectangle interactionBox;
         private ParticleEmitter exhaustParticles;
+        private ParticleEmitter exhaustParticles2;
         private float interactionTimerCooldown = .5f;
 
         public int Health { get; private set; } = 150;
@@ -31,7 +32,8 @@ namespace game.Entities
             this.acceleration = acceleration;
             turnAngle = .004f;
 
-            exhaustParticles = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, .4f, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
+            exhaustParticles = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 1f, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
+            exhaustParticles2 = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 1f, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
 
             player = EntityManager.Instance.GetPlayer() as Player;
         }
@@ -41,6 +43,7 @@ namespace game.Entities
             started = true;
             player.playerController.ChangeControl(this);
             exhaustParticles.Start();
+            exhaustParticles2.Start();
             interactionTimerCooldown = .5f;
         }
 
@@ -50,6 +53,7 @@ namespace game.Entities
             player.playerController.ChangeControl(player);
             player.position = new Vector2(position.X + Width, position.Y + Height / 2);
             exhaustParticles.Stop();
+            exhaustParticles2.Stop();
             interactionTimerCooldown = .5f;
         }
 
@@ -75,8 +79,10 @@ namespace game.Entities
                 SlowDown(deltaTime);
 
             //Set particleEmitter position
-            exhaustParticles.SetLocation(position);
+            exhaustParticles.SetLocation(position - Forward * 64 + Right * 24);
+            exhaustParticles2.SetLocation(position - Forward * 64 - Right * 24);
             exhaustParticles.SetDirection(-Forward);
+            exhaustParticles2.SetDirection(-Forward);
 
             CheckTrigger();
         }
