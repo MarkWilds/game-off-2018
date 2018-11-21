@@ -80,5 +80,10 @@ namespace game.Entities
         {
             return playerController.ControlledEntity;
         }
+
+        public void ClearEntities()
+        {
+            entities.Clear();
+        }
     }
 }

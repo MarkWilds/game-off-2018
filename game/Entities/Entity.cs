@@ -24,21 +24,25 @@ namespace game.Entities
             => new Position((int)Math.Floor(position.X / 32), (int)Math.Floor(position.Y / 32));
 
         protected Animator animator;
-        private Texture2D texture;
+        protected Texture2D texture;
         
         public int Height;
         public int Width;
         public Vector2 Center => new Vector2(position.X - Width / 2, position.Y - Height / 2);
-        public Rectangle BoundingBox => IsVisible ? new Rectangle((int)Center.X, (int)Center.Y, Width, Height) : new Rectangle();
+        public Vector2 Origin => new Vector2(source.Width / 2, source.Height / 2);
+        public Rectangle BoundingBox => IsVisible ? new Rectangle((int)Center.X, (int)Center.Y, Width, Height) : default(Rectangle);
         protected bool IsVisible = true;
+        protected Rectangle source;
+        private Vector2 scale => this.source == default(Rectangle) ? new Vector2(this.Width / texture.Width, this.Height / texture.Height) : new Vector2(this.Width / source.Width, this.Height / source.Height);
 
-        public Entity(Texture2D texture, int width, int height, Vector2 position, float rotation = 0)
+        public Entity(Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle))
         {
             this.texture = texture;
             this.position = position;
             this.rotation = rotation;
             this.Width = width;
             this.Height = height;
+            this.source = source;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -46,16 +50,18 @@ namespace game.Entities
             if (!IsVisible)
                 return;
 
-            var sourceRect = new Rectangle(0,0, Width, Height);
+            //if we dont have a source rectangle we can assume we dont use a spritesheet
+            if(source == new Rectangle())
+                source = new Rectangle(0,0, Width, Height);
+
             if(animator != null)
             {
                 var framePos = animator.FramePosition;
-                sourceRect.X = (int)framePos.X;
-                sourceRect.Y = (int)framePos.Y;
+                source.X = (int)framePos.X;
+                source.Y = (int)framePos.Y;
             }
 
-            spriteBatch.Draw(texture, position, sourceRect, Color.White, rotation,
-                new Vector2(Width / 2, Height / 2), 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(texture, position, source, Color.White, rotation, Origin, scale, SpriteEffects.None, 0);
         }
 
         public virtual void Update(GameTime gameTime)
