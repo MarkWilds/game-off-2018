@@ -7,6 +7,6 @@ namespace game.World
 {
     public interface IScout
     {
-        void RecievePath(List<Vector2> path);
+        void RecievePath(Queue<Vector2> path);
     }
 }

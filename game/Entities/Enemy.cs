@@ -19,7 +19,7 @@ namespace game.Entities
         private Map map;
 
         private bool hasRunningPathRequest = false;
-        private List<Vector2> path;
+        private Queue<Vector2> path;
 
         public int Health { get; private set; } = 50;
         public int MaxHealth { get; private set; } = 50;
@@ -41,7 +41,7 @@ namespace game.Entities
                 Shoot();
             else
             {
-                if(path != null)
+                if(path != null && path.Count > 1)
                     MoveTowardsTarget(gameTime);
 
                 if (hasRunningPathRequest)
@@ -58,7 +58,7 @@ namespace game.Entities
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             base.Draw(spriteBatch, gameTime);
-
+            return;
             if (path == null)
                 return;
 
@@ -78,11 +78,15 @@ namespace game.Entities
 
         private void MoveTowardsTarget(GameTime gameTime)
         {
-            if (path.Count > 1)
+            if (path.Count > 0)
             {
-                Vector2 direction = path[1] - position;
+                var point = path.Peek();
+                Vector2 direction = point - position;
                 direction.Normalize();
                 position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (Vector2.Distance(position, point) < 5)
+                    path.Dequeue();
             }
         }
 
@@ -116,7 +120,7 @@ namespace game.Entities
             Destroy();
         }
 
-        public void RecievePath(List<Vector2> path)
+        public void RecievePath(Queue<Vector2> path)
         {
             hasRunningPathRequest = false;
             this.path = path;

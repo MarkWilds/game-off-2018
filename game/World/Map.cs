@@ -1,16 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Linq;
 using game.Entities;
+using game.GameScreens;
 using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RoyT.AStar;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using TiledSharp;
-using game.GameScreens;
-using game.World;
 
 namespace game.World
 {
@@ -46,14 +44,24 @@ namespace game.World
                 return;
 
             var orderHandleCount = pathQueue.Count == 1 ? 1 : pathQueue.Count / 32 + 1;
-            Console.WriteLine($"Handling {orderHandleCount} orders");
+            //Console.WriteLine($"Handling {orderHandleCount} orders");
             while (orderHandleCount > 0)
             {
-                var order = pathQueue.Dequeue();
-                var path = GetPath(order.from, order.to);
-                order.Scout.RecievePath(path);
+                HandlePathRequest(pathQueue.Dequeue());
                 --orderHandleCount;
             }
+        }
+
+        private void HandlePathRequest(ScoutsOrder order)
+        {
+            var path = GetPath(order.from, order.to);
+            var pathQueue = new Queue<Vector2>();
+            if (path != null && path.Count > 1)
+            {
+                for (int i = 0; i < path.Count - 1; ++i)
+                    pathQueue.Enqueue(path[i + 1]);
+            }
+            order.Scout.RecievePath(pathQueue);
         }
 
         private void BuildPathFindingGrid()
@@ -66,9 +74,9 @@ namespace game.World
             }
 
             pathFindingGrid = new Grid(Data.Width, Data.Height);
-            foreach(var tile in collisionLayer.Tiles)
+            foreach (var tile in collisionLayer.Tiles)
             {
-                if(tile.Gid != 0)
+                if (tile.Gid != 0)
                     pathFindingGrid.BlockCell(new Position(tile.X, tile.Y));
             }
         }
@@ -98,7 +106,7 @@ namespace game.World
         {
             if (!Data.Layers.Contains(layerName))
                 throw new ArgumentException($"{layerName} does not exist in this map");
- 
+
             return hitData =>
             {
                 Vector2 coordinates = hitData.tileCoordinates;
@@ -106,7 +114,7 @@ namespace game.World
                     coordinates.Y < 0 || coordinates.Y >= Data.Height)
                     return false;
 
-                int index = (int) (coordinates.Y * Data.Width + coordinates.X);
+                int index = (int)(coordinates.Y * Data.Width + coordinates.X);
                 TmxLayer wallLayer = Data.Layers[layerName];
                 TmxLayerTile tile = wallLayer.Tiles[index];
 
@@ -172,7 +180,7 @@ namespace game.World
 
             return source;
         }
-        
+
         public Rectangle GetDestinationRectangleForTile(TmxTileset tileset, TmxLayerTile tile)
         {
             Rectangle destination = new Rectangle();
@@ -253,13 +261,13 @@ namespace game.World
                 position.X -= (int)obj.Width * (scale.X - 1);
             }
 
-            else if(obj.Rotation == 180 || obj.Rotation == -180)
+            else if (obj.Rotation == 180 || obj.Rotation == -180)
             {
                 position.Y += (int)((source.Height * scale.Y) - (obj.Height * (scale.Y - 1)));
-                position.X -= (int)((source.Width * scale.X) + (obj.Width * (scale.X -1)));
+                position.X -= (int)((source.Width * scale.X) + (obj.Width * (scale.X - 1)));
             }
 
-            else if(obj.Rotation == 270 || obj.Rotation == -90)
+            else if (obj.Rotation == 270 || obj.Rotation == -90)
             {
                 position.X -= (int)source.Width * scale.X;
                 position.Y -= (int)obj.Height * (scale.Y - 1);
