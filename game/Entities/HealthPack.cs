@@ -11,8 +11,8 @@ namespace game.Entities
     {
         private int healAmount;
 
-        public HealthPack(int amount, Texture2D texture, Vector2 position, float rotation = 0) 
-            : base(texture, 16, 16, position, rotation)
+        public HealthPack(int amount, Texture2D texture, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle)) 
+            : base(texture, 16, 16, position, rotation, source)
         {
             this.healAmount = amount;
         }

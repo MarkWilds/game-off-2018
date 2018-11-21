@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Linq;
+using game.Entities;
+using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RoyT.AStar;
 using TiledSharp;
+using game.GameScreens;
 
 namespace game
 {
@@ -15,6 +19,7 @@ namespace game
         public Dictionary<TmxTileset, Texture2D> Textures { get; private set; }
 
         private Grid pathFindingGrid;
+        private ScreenManager screenManager;
 
         private Map(TmxMap data, Dictionary<TmxTileset, Texture2D> textures)
         {
@@ -146,6 +151,86 @@ namespace game
             destination.Y = tile.Y * tileHeight;
 
             return destination;
+        }
+
+        public void LoadObjects(ScreenManager screenManager)
+        {
+            this.screenManager = screenManager;
+
+            foreach (var obj in Data.ObjectGroups[0].Objects)
+            {
+                var tile = obj.Tile;
+                TmxTileset tileset = GetTilesetForTile(tile);
+
+                if (tileset == null)
+                    continue;
+
+                Texture2D tilesetTexture = Textures[tileset];
+                var source = GetSourceRectangleForTile(tileset, obj.Tile);
+
+                CreateObject(obj, source, tileset, tilesetTexture);
+            }
+        }
+
+        private void CreateObject(TmxObject obj, Rectangle source, TmxTileset tileset, Texture2D tilesetTexture)
+        {
+            var random = new Random();
+            var tileId = obj.Tile.Gid - tileset.FirstGid;
+            var type = tileset.Tiles[tileId].Type;
+            var rotation = MathHelper.ToRadians((float)obj.Rotation);
+            var spawnPosition = GetObjectPosition(obj, source);
+            Entity entity;
+
+            switch (type)
+            {
+                case "Car":
+                    entity = new Car(300, .75f, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    break;
+                case "Enemy_Spawn":
+                    entity = new Enemy(128, tilesetTexture, spawnPosition, this, rotation, source);
+                    break;
+                case "Dungeon_Entrance":
+                    entity = new DungeonEntrance(new ShooterScreen(), screenManager, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    break;
+                case "Ammo":
+                    var randomBulletType = (BulletType)random.Next(Enum.GetNames(typeof(BulletType)).Length);
+                    entity = new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source);
+                    break;
+                case "Health":
+                    entity = new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source);
+                    break;
+                default:
+                    entity = new Entity(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    break;
+            }
+
+            EntityManager.Instance.AddEntity(entity);
+        }
+
+        private static Vector2 GetObjectPosition(TmxObject obj, Rectangle source)
+        {
+            var scale = new Vector2((float)(obj.Width / source.Width), (float)(obj.Height / source.Height));
+            var position = new Vector2((float)(obj.X + (scale.X * obj.Width / 2)), (float)(obj.Y - (obj.Height * scale.Y / 2) + (obj.Height * (scale.Y - 1))));
+
+            if (obj.Rotation == 90 || obj.Rotation == -270)
+            {
+                position.Y += (int)source.Height * scale.Y;
+                position.X -= (int)obj.Width * (scale.X - 1);
+            }
+
+            else if(obj.Rotation == 180 || obj.Rotation == -180)
+            {
+                position.Y += (int)((source.Height * scale.Y) - (obj.Height * (scale.Y - 1)));
+                position.X -= (int)((source.Width * scale.X) + (obj.Width * (scale.X -1)));
+            }
+
+            else if(obj.Rotation == 270 || obj.Rotation == -90)
+            {
+                position.X -= (int)source.Width * scale.X;
+                position.Y -= (int)obj.Height * (scale.Y - 1);
+            }
+
+            return position;
         }
     }
 }
