@@ -114,6 +114,8 @@ namespace game.GameScreens
 
         public void Dispose()
         {
+            EntityManager.Instance.ClearEntities();
+            ParticleSystem.Instance.ClearParticles();
         }
     }
 }

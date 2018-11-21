@@ -67,5 +67,10 @@ namespace game.Particles
         {
             emitters.Add(emitter);
         }
+
+        public void ClearParticles()
+        {
+            emitters.Clear();
+        }
     }
 }
