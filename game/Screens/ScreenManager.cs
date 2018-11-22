@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace game
 {
@@ -46,8 +47,11 @@ namespace game
         {
             screen.ScreenManager = this;
             activeGameScreens.Add(screen);
-
+            
             screen.Initialize(contentManager);
+
+            Mouse.SetCursor(screen.CursorInfo.CursorTexture);
+            Game.IsMouseVisible = screen.CursorInfo.ShowCursor;
         }
 
         public void PopScreen()

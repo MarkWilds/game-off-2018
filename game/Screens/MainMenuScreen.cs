@@ -6,6 +6,7 @@ using game.Interface;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace game.Screens
 {
@@ -16,6 +17,7 @@ namespace game.Screens
         private Vector2 screenCenter => new Vector2(screenWidth / 2, screenHeight / 2);
 
         public ScreenManager ScreenManager { get; set; }
+        public CursorInfo CursorInfo { get; private set; }
 
         private List<Button> buttons;
         private Button startGameButton;
@@ -23,7 +25,7 @@ namespace game.Screens
 
         public void Initialize(ContentManager contentManager)
         {
-            ScreenManager.Game.IsMouseVisible = true;
+            CursorInfo = new CursorInfo(MouseCursor.Arrow, true);
 
             startGameButton = new Button(contentManager.Load<SpriteFont>("Arial"), contentManager.Load<Texture2D>("Sprites/Button"), new Vector2(screenCenter.X, screenCenter.Y - 50), "Start Game", Color.Black);
             exitGameButton = new Button(contentManager.Load<SpriteFont>("Arial"), contentManager.Load<Texture2D>("Sprites/Button"), new Vector2(screenCenter.X, screenCenter.Y + 50), "Exit Game", Color.Black);
