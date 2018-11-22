@@ -1,4 +1,5 @@
 ﻿using game.Entities;
+using game.Sound;
 using game.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,6 +14,7 @@ namespace game
         private float secondBetweenShots = .1f;
         private Texture2D bulletTexture;
         private float timer;
+        public string GunShotSound { get; private set; } = "GunShot";
 
         public Entity Owner { get; set; }
         public BulletType BulletType => BulletType.AssaultRifle;
@@ -30,6 +32,7 @@ namespace game
                 return false;
 
             EntityManager.Instance.AddEntity(new Bullet(Damage, bulletTexture, position + (Forward * Height / 2), Forward, Owner.rotation));
+            AudioManager.Instance.PlaySoundEffect(GunShotSound);
             timer = 0;
 
             return true;

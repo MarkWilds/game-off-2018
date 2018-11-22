@@ -227,7 +227,7 @@ namespace game.World
             switch (type)
             {
                 case "Car":
-                    entity = new Car(300, .75f, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    entity = new Car(500, .65f, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
                 case "Enemy_Spawn":
                     entity = new Enemy(128, tilesetTexture, spawnPosition, this, rotation, source);

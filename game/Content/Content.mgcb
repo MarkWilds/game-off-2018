@@ -20,6 +20,18 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial.spritefont
 
+#begin Audio/car.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/car.wav
+
+#begin Audio/GunShot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/GunShot.wav
+
 #begin blank.png
 /importer:TextureImporter
 /processor:TextureProcessor

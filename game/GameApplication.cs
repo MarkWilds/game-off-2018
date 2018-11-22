@@ -1,6 +1,7 @@
 ﻿using System;
 using game.GameScreens;
 using game.Screens;
+using game.Sound;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -33,6 +34,7 @@ namespace game
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             screenManager = new ScreenManager(spriteBatch, Content, GraphicsDevice, this);
+            AudioManager.Instance.Initialize(Content);
 
             screenManager.ChangeScreen(new MainMenuScreen());
         }

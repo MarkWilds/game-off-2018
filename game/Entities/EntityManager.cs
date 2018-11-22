@@ -83,6 +83,10 @@ namespace game.Entities
 
         public void ClearEntities()
         {
+            foreach (var item in entities)
+            {
+                item.Destroy();
+            }
             entities.Clear();
         }
     }

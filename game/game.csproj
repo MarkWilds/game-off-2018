@@ -26,6 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Content\Audio\GunShot.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Update="Content\Maps\test_fps.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

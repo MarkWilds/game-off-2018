@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using game.Particles;
+using game.Sound;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -21,6 +23,7 @@ namespace game.Entities
         private ParticleEmitter exhaustParticles;
         private ParticleEmitter exhaustParticles2;
         private float interactionTimerCooldown = .5f;
+        private SoundEffectWrapper carSound;
 
         public int Health { get; private set; } = 150;
         public int MaxHealth { get; private set; } = 150;
@@ -36,6 +39,9 @@ namespace game.Entities
             exhaustParticles2 = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 0.25f * scale.X, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent, 0.25f);
 
             player = EntityManager.Instance.GetPlayer() as Player;
+            carSound = new SoundEffectWrapper("car", true, true);
+            carSound.Volume = .05f;
+            carSound.Stop();
         }
 
         public void Start()
@@ -45,6 +51,7 @@ namespace game.Entities
             exhaustParticles.Start();
             exhaustParticles2.Start();
             interactionTimerCooldown = .5f;
+            carSound.Play();
         }
 
         public void Stop()
@@ -55,6 +62,7 @@ namespace game.Entities
             exhaustParticles.Stop();
             exhaustParticles2.Stop();
             interactionTimerCooldown = .5f;
+            carSound.Stop();
         }
 
         public override void Update(GameTime gameTime)
@@ -84,6 +92,11 @@ namespace game.Entities
             exhaustParticles.SetDirection(-Forward);
             exhaustParticles2.SetDirection(-Forward);
 
+            if(currentSpeed >= 0)
+                carSound.Pitch = (currentSpeed / topSpeed) - .75f;
+
+            carSound.Update(gameTime);
+            
             CheckTrigger();
         }
 
@@ -136,6 +149,7 @@ namespace game.Entities
 
         public override void Destroy()
         {
+            carSound.Stop();
             exhaustParticles.Destroy();
             SpawnExplosion();
             base.Destroy();
