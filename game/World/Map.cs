@@ -253,24 +253,23 @@ namespace game.World
         private static Vector2 GetObjectPosition(TmxObject obj, Rectangle source)
         {
             var scale = new Vector2((float)(obj.Width / source.Width), (float)(obj.Height / source.Height));
-            var position = new Vector2((float)(obj.X + (scale.X * obj.Width / 2)), (float)(obj.Y - (obj.Height * scale.Y / 2) + (obj.Height * (scale.Y - 1))));
+            var position = new Vector2((float)(obj.X + (source.Width * scale.X / 2)),
+                                        (float)(obj.Y - (source.Height * scale.Y / 2)));
 
             if (obj.Rotation == 90 || obj.Rotation == -270)
             {
-                position.Y += (int)source.Height * scale.Y;
-                position.X -= (int)obj.Width * (scale.X - 1);
+                position.Y += (int)obj.Height;
             }
 
             else if (obj.Rotation == 180 || obj.Rotation == -180)
             {
-                position.Y += (int)((source.Height * scale.Y) - (obj.Height * (scale.Y - 1)));
-                position.X -= (int)((source.Width * scale.X) + (obj.Width * (scale.X - 1)));
+                position.Y += (int)obj.Height;
+                position.X -= (int)obj.Width;
             }
 
             else if (obj.Rotation == 270 || obj.Rotation == -90)
             {
-                position.X -= (int)source.Width * scale.X;
-                position.Y -= (int)obj.Height * (scale.Y - 1);
+                position.X -= (int)obj.Width;
             }
 
             return position;

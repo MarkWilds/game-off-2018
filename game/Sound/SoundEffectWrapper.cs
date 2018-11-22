@@ -40,7 +40,7 @@ namespace game.Sound
             if (Pitch >= 1.0f || Pitch <= -1.0f || !randPitch)
                 return;
 
-            Pitch = (float)random.Next(-5, 5) / 100 + Pitch;
+            Pitch = (float)random.Next(-7, 7) / 100 + Pitch;
         }
 
         public void Play()

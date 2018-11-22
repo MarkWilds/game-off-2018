@@ -92,11 +92,10 @@ namespace game.Entities
             exhaustParticles2.SetDirection(-Forward);
 
             if (currentSpeed >= 0)
-                carSound.Pitch = (currentSpeed / topSpeed) - .75f;
+                carSound.Pitch = (currentSpeed / topSpeed) - .5f;
             else if (currentSpeed < 0)
-                carSound.Pitch = (currentSpeed / topSpeed) + 1 - .75f;
+                carSound.Pitch = (currentSpeed / topSpeed);
 
-            Console.WriteLine(currentSpeed);
             carSound.Update(gameTime);
             
             CheckCollisions();
