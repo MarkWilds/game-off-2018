@@ -227,20 +227,20 @@ namespace game.World
             switch (type)
             {
                 case "Car":
-                    entity = new Car(300, .75f, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    entity = new Car(500, 75f, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
                 case "Enemy_Spawn":
-                    entity = new Enemy(128, tilesetTexture, spawnPosition, this, rotation, source);
+                    entity = new Enemy(128, tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, this, rotation, source);
                     break;
                 case "Dungeon_Entrance":
                     entity = new DungeonEntrance(new ShooterScreen(), screenManager, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
                 case "Ammo":
                     var randomBulletType = (BulletType)random.Next(Enum.GetNames(typeof(BulletType)).Length);
-                    entity = new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source);
+                    entity = new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, rotation, source);
                     break;
                 case "Health":
-                    entity = new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source);
+                    entity = new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, rotation, source);
                     break;
                 default:
                     entity = new Entity(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
@@ -253,24 +253,23 @@ namespace game.World
         private static Vector2 GetObjectPosition(TmxObject obj, Rectangle source)
         {
             var scale = new Vector2((float)(obj.Width / source.Width), (float)(obj.Height / source.Height));
-            var position = new Vector2((float)(obj.X + (scale.X * obj.Width / 2)), (float)(obj.Y - (obj.Height * scale.Y / 2) + (obj.Height * (scale.Y - 1))));
+            var position = new Vector2((float)(obj.X + (source.Width * scale.X / 2)),
+                                        (float)(obj.Y - (source.Height * scale.Y / 2)));
 
             if (obj.Rotation == 90 || obj.Rotation == -270)
             {
-                position.Y += (int)source.Height * scale.Y;
-                position.X -= (int)obj.Width * (scale.X - 1);
+                position.Y += (int)obj.Height;
             }
 
             else if (obj.Rotation == 180 || obj.Rotation == -180)
             {
-                position.Y += (int)((source.Height * scale.Y) - (obj.Height * (scale.Y - 1)));
-                position.X -= (int)((source.Width * scale.X) + (obj.Width * (scale.X - 1)));
+                position.Y += (int)obj.Height;
+                position.X -= (int)obj.Width;
             }
 
             else if (obj.Rotation == 270 || obj.Rotation == -90)
             {
-                position.X -= (int)source.Width * scale.X;
-                position.Y -= (int)obj.Height * (scale.Y - 1);
+                position.X -= (int)obj.Width;
             }
 
             return position;

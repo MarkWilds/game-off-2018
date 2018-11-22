@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="180" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="30" nextobjectid="172">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="180" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="30" nextobjectid="191">
  <tileset firstgid="1" name="hub" tilewidth="32" tileheight="32" tilecount="64" columns="8">
   <image source="../Tilesets/hub.png" width="256" height="256"/>
   <tile id="4" probability="0.1"/>
@@ -315,7 +315,7 @@
   <object id="44" gid="95" x="4600" y="2075.5" width="32" height="32"/>
   <object id="45" gid="95" x="4212" y="1848.5" width="32" height="32" rotation="-90"/>
   <object id="50" gid="95" x="4833" y="449.5" width="32" height="32"/>
-  <object id="51" gid="95" x="4865" y="449.5" width="32" height="32"/>
+  <object id="51" gid="95" x="4865" y="480" width="63" height="62.5"/>
   <object id="55" gid="92" x="5120" y="736" width="64" height="64"/>
   <object id="58" gid="92" x="4895" y="655" width="96" height="96" rotation="90"/>
   <object id="60" gid="92" x="4992" y="1120" width="64" height="64"/>
@@ -354,22 +354,9 @@
   <object id="99" gid="92" x="4032" y="3264" width="64" height="64"/>
   <object id="100" gid="91" x="4032" y="3008" width="64" height="64"/>
   <object id="113" gid="93" x="5184" y="416" width="32" height="32" rotation="180"/>
-  <object id="129" gid="114" x="4672" y="3264" width="32" height="32"/>
-  <object id="130" gid="114" x="4768" y="3264" width="32" height="32"/>
-  <object id="131" gid="114" x="4256" y="3008" width="32" height="32"/>
   <object id="132" gid="114" x="4032" y="2400" width="32" height="32"/>
-  <object id="133" gid="114" x="4096" y="2240" width="32" height="32"/>
-  <object id="134" gid="114" x="3104" y="1632" width="32" height="32"/>
-  <object id="135" gid="114" x="3168" y="1696" width="32" height="32"/>
-  <object id="136" gid="114" x="3232" y="1792" width="32" height="32"/>
-  <object id="137" gid="114" x="768" y="832" width="32" height="32"/>
-  <object id="138" gid="114" x="960" y="704" width="32" height="32"/>
-  <object id="139" gid="114" x="1234" y="940" width="32" height="32"/>
   <object id="140" gid="101" x="832" y="736" width="32" height="32"/>
   <object id="141" gid="101" x="736" y="896" width="32" height="32"/>
-  <object id="142" gid="101" x="3104" y="1760" width="32" height="32"/>
-  <object id="143" gid="101" x="3200" y="1696" width="32" height="32"/>
-  <object id="144" gid="101" x="3296" y="1792" width="32" height="32"/>
   <object id="145" gid="101" x="4224" y="2304" width="32" height="32"/>
   <object id="146" gid="101" x="4032" y="2400" width="32" height="32"/>
   <object id="147" gid="101" x="4512" y="2432" width="32" height="32"/>
@@ -394,8 +381,23 @@
   <object id="166" gid="101" x="5152" y="544" width="32" height="32"/>
   <object id="167" gid="101" x="4864" y="736" width="32" height="32"/>
   <object id="168" gid="101" x="4800" y="960" width="32" height="32"/>
-  <object id="169" gid="105" x="736" y="544" width="128" height="64"/>
-  <object id="171" gid="105" x="4672" y="448" width="32" height="32" rotation="90"/>
+  <object id="169" gid="105" x="736" y="544" width="64" height="32"/>
+  <object id="171" gid="105" x="4672" y="416" width="64" height="32" rotation="90"/>
+  <object id="172" gid="96" x="448" y="512" width="32" height="32"/>
+  <object id="173" gid="96" x="448" y="544" width="32" height="32"/>
+  <object id="174" gid="96" x="448" y="576" width="32" height="32"/>
+  <object id="175" gid="96" x="576" y="672" width="32" height="32"/>
+  <object id="176" gid="96" x="544" y="672" width="32" height="32"/>
+  <object id="177" gid="96" x="448" y="672" width="32" height="32"/>
+  <object id="178" gid="96" x="480" y="672" width="32" height="32"/>
+  <object id="179" gid="96" x="512" y="672" width="32" height="32"/>
+  <object id="180" gid="97" x="640" y="416" width="32" height="32"/>
+  <object id="181" gid="97" x="672" y="416" width="32" height="32"/>
+  <object id="182" gid="97" x="704" y="416" width="32" height="32"/>
+  <object id="183" gid="97" x="736" y="416" width="32" height="32"/>
+  <object id="184" gid="97" x="768" y="416" width="32" height="32"/>
+  <object id="185" gid="97" x="800" y="416" width="32" height="32"/>
+  <object id="186" gid="97" x="832" y="416" width="32" height="32"/>
  </objectgroup>
  <layer id="29" name="collision" width="180" height="130" visible="0">
   <data encoding="csv">

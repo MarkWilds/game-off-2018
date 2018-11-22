@@ -1,6 +1,7 @@
 ﻿using game.Core;
 using game.GameScreens;
 using game.Particles;
+using game.Sound;
 using game.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +10,7 @@ using System.Collections.Generic;
 
 namespace game.Entities
 {
-    class Enemy : Entity, IDamageable, IScout
+    public class Enemy : Entity, IDamageable, IScout
     {
         private float speed;
         private float timeBetweenShots = 1;
@@ -24,8 +25,8 @@ namespace game.Entities
         public int Health { get; private set; } = 50;
         public int MaxHealth { get; private set; } = 50;
 
-        public Enemy(float speed, Texture2D texture, Vector2 position, Map map, float rotation = 0, Rectangle source = default(Rectangle))
-            : base(texture, 32, 32, position, rotation, source)
+        public Enemy(float speed, Texture2D texture, Vector2 position, int width, int height, Map map, float rotation = 0, Rectangle source = default(Rectangle))
+            : base(texture, width, height, position, rotation, source)
         {
             this.speed = speed;
             this.map = map;
@@ -37,7 +38,7 @@ namespace game.Entities
             timer += (float) gameTime.ElapsedGameTime.TotalSeconds;
 
             LookAtTarget();
-            if (Vector2.Distance(position, target.position) < 10)
+            if (Vector2.Distance(position, target.position) < 125)
                 Shoot();
             else
             {
@@ -98,6 +99,7 @@ namespace game.Entities
             EntityManager.Instance.AddEntity(new Bullet(damage, OverworldScreen.BulletTexture,
                 position + (Forward * Height), Forward, rotation));
             timer = 0;
+            AudioManager.Instance.PlaySoundEffect("GunShot");
         }
 
         private void LookAtTarget()

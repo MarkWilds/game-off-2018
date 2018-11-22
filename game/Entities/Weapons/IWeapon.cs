@@ -10,6 +10,7 @@ namespace game
         Entity Owner { get; set; }
         BulletType BulletType { get; }
         int Damage { get; }
+        string GunShotSound { get; }
 
         bool Shoot();
         void Draw(SpriteBatch spriteBatch, GameTime gameTime);
