@@ -62,7 +62,7 @@ namespace game.Entities
                 source.Y = (int)framePos.Y;
             }
 
-            spriteBatch.Draw(texture, position, source, Color.White, rotation, Origin, scale, SpriteEffects.None, 1f);
+            spriteBatch.Draw(texture, position, source, Color.White, rotation, Origin, scale, SpriteEffects.None, 0);
         }
 
         public virtual void Update(GameTime gameTime)

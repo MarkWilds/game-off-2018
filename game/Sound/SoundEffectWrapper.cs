@@ -16,11 +16,15 @@ namespace game.Sound
         public float Pan { get { return soundEffectInstance.Pan; } set { soundEffectInstance.Pan = value; } }
         public float Volume { get { return soundEffectInstance.Volume; } set { soundEffectInstance.Volume = value; } }
 
-        public SoundEffectWrapper(string soundName, bool looped, bool randomizePitch)
+        public SoundEffectWrapper(string soundName, bool looped, bool autoStart, float volume, bool randomizePitch)
         {
             this.randPitch = randomizePitch;
-            soundEffectInstance = AudioManager.Instance.GetSoundEffectInstance(soundName, looped);
             random = new Random();
+
+            soundEffectInstance = AudioManager.Instance.GetSoundEffectInstance(soundName, looped);
+            this.Volume = volume;
+
+            if (!autoStart) soundEffectInstance.Stop();
         }
 
         public void Update(GameTime gameTime)
@@ -28,6 +32,9 @@ namespace game.Sound
             RandomizePitch();
         }
 
+        /// <summary>
+        /// Randomize the pitch of the sound effect to give it a little more realism
+        /// </summary>
         private void RandomizePitch()
         {
             if (Pitch >= 1.0f || Pitch <= -1.0f || !randPitch)

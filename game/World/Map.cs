@@ -227,7 +227,7 @@ namespace game.World
             switch (type)
             {
                 case "Car":
-                    entity = new Car(500, .65f, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    entity = new Car(500, 75f, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
                 case "Enemy_Spawn":
                     entity = new Enemy(128, tilesetTexture, spawnPosition, this, rotation, source);
@@ -237,10 +237,10 @@ namespace game.World
                     break;
                 case "Ammo":
                     var randomBulletType = (BulletType)random.Next(Enum.GetNames(typeof(BulletType)).Length);
-                    entity = new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source);
+                    entity = new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, rotation, source);
                     break;
                 case "Health":
-                    entity = new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, rotation, source);
+                    entity = new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, rotation, source);
                     break;
                 default:
                     entity = new Entity(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);

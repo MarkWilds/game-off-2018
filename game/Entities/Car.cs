@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using game.Particles;
 using game.Sound;
@@ -33,15 +34,13 @@ namespace game.Entities
         {
             this.topSpeed = topSpeed;
             this.acceleration = acceleration;
-            turnAngle = .004f;
+            turnAngle = 6f;
 
-            exhaustParticles = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 0.25f * scale.X, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent, 0.25f);
-            exhaustParticles2 = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 0.25f * scale.X, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent, 0.25f);
+            exhaustParticles = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 0.25f * scale.X, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
+            exhaustParticles2 = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 0.25f * scale.X, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
 
             player = EntityManager.Instance.GetPlayer() as Player;
-            carSound = new SoundEffectWrapper("car", true, true);
-            carSound.Volume = .05f;
-            carSound.Stop();
+            carSound = new SoundEffectWrapper("car", true, false, .05f, true);
         }
 
         public void Start()
@@ -67,20 +66,20 @@ namespace game.Entities
 
         public override void Update(GameTime gameTime)
         {
-            var deltaTime = (float)gameTime.ElapsedGameTime.Milliseconds;
-            interactionTimerCooldown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            interactionTimerCooldown -= deltaTime;
             base.Update(gameTime);
 
             interactionBox = new Rectangle(BoundingBox.X - Width, BoundingBox.Y - Height, BoundingBox.Width * 2, BoundingBox.Height * 2);
 
-            currentSpeed = Math.Clamp(currentSpeed, -topSpeed / 2, topSpeed);
+            currentSpeed = Math.Clamp(currentSpeed, -topSpeed / 3, topSpeed);
 
             var direction = new Vector2(
                 (float)Math.Cos(rotation),
                 (float)Math.Sin(rotation));
 
             //Move car
-            position += direction * currentSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            position += direction * currentSpeed * deltaTime;
 
             //If the player isn't driving the car, slow it down
             if (!started && currentSpeed != 0)
@@ -92,15 +91,18 @@ namespace game.Entities
             exhaustParticles.SetDirection(-Forward);
             exhaustParticles2.SetDirection(-Forward);
 
-            if(currentSpeed >= 0)
+            if (currentSpeed >= 0)
                 carSound.Pitch = (currentSpeed / topSpeed) - .75f;
+            else if (currentSpeed < 0)
+                carSound.Pitch = (currentSpeed / topSpeed) + 1 - .75f;
 
+            Console.WriteLine(currentSpeed);
             carSound.Update(gameTime);
             
-            CheckTrigger();
+            CheckCollisions();
         }
 
-        private void CheckTrigger()
+        private void CheckCollisions()
         {
             if (player == null) return;
 
@@ -111,11 +113,26 @@ namespace game.Entities
                     Start();
                 }
             }
+
+            if (currentSpeed < topSpeed - 100)
+                return;
+
+            var nearbyEnemies = EntityManager.Instance.GetDamageableEntities().Where(e => Vector2.Distance(position, e.position) < 10).ToArray();
+            for (int i = 0; i < nearbyEnemies.Length; i++)
+            {
+                if (nearbyEnemies[i] == this)
+                    return;
+
+                if (nearbyEnemies[i].BoundingBox.Intersects(BoundingBox))
+                {
+                    ((IDamageable)nearbyEnemies[i]).TakeDamage((int)currentSpeed, Forward);
+                }
+            }
         }
 
         public void HandleInput(GameTime gameTime)
         {
-            var deltaTime = gameTime.ElapsedGameTime.Milliseconds;
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (InputManager.IsKeyDown(Keys.W))
                 currentSpeed += (acceleration * deltaTime);
@@ -163,13 +180,13 @@ namespace game.Entities
 
         private void SlowDown(float deltaTime)
         {
-            if (currentSpeed > 0)
+            if (currentSpeed > 0.1f)
                 currentSpeed -= (acceleration * deltaTime);
-            else if (currentSpeed < 0)
+            else if (currentSpeed < -0.1f)
                 currentSpeed += (acceleration * deltaTime);
 
             //Stop the car if the currentspeed is really low
-            if (currentSpeed <= 0.1f && currentSpeed >= -0.1f)
+            if (currentSpeed <= 1f && currentSpeed >= -1f)
                 currentSpeed = 0;
         }
     }

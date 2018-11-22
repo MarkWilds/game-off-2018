@@ -22,7 +22,6 @@ namespace game.Particles
         private float maxAngle;
         private float particleSpeed;
         private EmitType emitType;
-        private float layerDepth;
 
         private float emitterLifeTime;
         private float particlesPerFrame;
@@ -49,7 +48,7 @@ namespace game.Particles
         /// <param name="endColor">The color of the particle at the end</param>
         public ParticleEmitter(bool autoStart, bool repeat, int maxParticles, Vector2 emitLocation, Vector2 direction, 
             float particleSpeed, float maxAngle, float particleLifeTime, float particleScale, ParticleShape particleShape, 
-            EmitType emitType, Color startColor, Color endColor, float layerDepth = 0)
+            EmitType emitType, Color startColor, Color endColor)
         {
             this.repeat = repeat;
             this.maxParticles = maxParticles;
@@ -64,7 +63,6 @@ namespace game.Particles
             this.startColor = startColor;
             this.endColor = endColor;
             this.paused = !autoStart;
-            this.layerDepth = layerDepth;
             random = new Random();
 
             if (repeat == false)
@@ -139,7 +137,7 @@ namespace game.Particles
             //Randomize the speed
             var randomSpeed = random.NextDouble() * particleSpeed + particleSpeed / 2;
 
-            return new Particle(particleTexture, emitLocation, newDirection, (float)randomSpeed, 0, 0, particleScale, particleLifeTime, startColor, endColor, layerDepth);
+            return new Particle(particleTexture, emitLocation, newDirection, (float)randomSpeed, 0, 0, particleScale, particleLifeTime, startColor, endColor);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
