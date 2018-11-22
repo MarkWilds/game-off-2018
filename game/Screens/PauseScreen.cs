@@ -12,6 +12,7 @@ namespace game.Screens
     public class PauseScreen : IGameScreen
     {
         public ScreenManager ScreenManager { get; set; }
+        public CursorInfo CursorInfo { get; private set; }
 
         private float screenWidth => ScreenManager.GraphicsDevice.Viewport.Width;
         private float screenHeight => ScreenManager.GraphicsDevice.Viewport.Height;
@@ -27,8 +28,6 @@ namespace game.Screens
 
         public void Initialize(ContentManager contentManager)
         {
-            ScreenManager.Game.IsMouseVisible = true;
-
             resumeGame = new Button(contentManager.Load<SpriteFont>("Arial"), contentManager.Load<Texture2D>("Sprites/Button"), new Vector2(screenCenter.X, screenCenter.Y - 50), "Resume", Color.Black);
             exitGame = new Button(contentManager.Load<SpriteFont>("Arial"), contentManager.Load<Texture2D>("Sprites/Button"), new Vector2(screenCenter.X, screenCenter.Y + 50), "Exit", Color.Black);
             backgroundTexture = contentManager.Load<Texture2D>("blank");
@@ -41,6 +40,8 @@ namespace game.Screens
                 resumeGame,
                 exitGame
             };
+
+            CursorInfo = new CursorInfo(MouseCursor.Arrow, true);
         }
 
         private void ExitGame(object sender, EventArgs e)

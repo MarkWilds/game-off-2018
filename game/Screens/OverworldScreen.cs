@@ -1,6 +1,7 @@
 ﻿using System;
 using Comora;
 using game.Entities;
+using game.Interface;
 using game.Particles;
 using game.Screens;
 using game.Weapons;
@@ -26,13 +27,16 @@ namespace game.GameScreens
         private PlayerInterface playerInterface;
 
         public ScreenManager ScreenManager { get; set; }
+        public CursorInfo CursorInfo { get; private set; }
 
         public void Initialize(ContentManager Content)
         {
             BulletTexture = Content.Load<Texture2D>("Sprites/Bullet");
             PistolTexture = Content.Load<Texture2D>("Sprites/Pistol");
             RifleTexture = Content.Load<Texture2D>("Sprites/Rifle");
-            
+
+            CursorInfo = new CursorInfo(MouseCursor.FromTexture2D(Content.Load<Texture2D>("Sprites/CrossHair"), 0, 0), true);
+
             //Initialize map and camera
             mapRenderer = new TiledMapRenderer();
             camera = new Camera(ScreenManager.GraphicsDevice);

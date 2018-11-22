@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using game.Interface;
 using game.Screens;
 using game.World;
 using Microsoft.Xna.Framework;
@@ -14,6 +15,7 @@ namespace game.GameScreens
     public class ShooterScreen : IGameScreen
     {
         public ScreenManager ScreenManager { get; set; }
+        public CursorInfo CursorInfo { get; private set; }
 
         private Map currentMap;
         private RaycastRenderer renderer;
@@ -28,8 +30,6 @@ namespace game.GameScreens
 
         public void Initialize(ContentManager contentManager)
         {
-            ScreenManager.Game.IsMouseVisible = false;
-
             blankTexture = contentManager.Load<Texture2D>("blank");
             renderer = new RaycastRenderer(ScreenManager.GraphicsDevice.Viewport, blankTexture, 60.0f);
             currentMap = Map.LoadTiledMap(ScreenManager.GraphicsDevice, "Content/maps/test_fps.tmx");
@@ -37,6 +37,8 @@ namespace game.GameScreens
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
             Mouse.SetPosition(viewport.Width / 2, viewport.Height / 2);
             previousState = Mouse.GetState();
+
+            CursorInfo = new CursorInfo(MouseCursor.Arrow, false);
         }
 
         public void Update(GameTime gameTime)
