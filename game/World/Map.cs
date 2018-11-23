@@ -218,8 +218,7 @@ namespace game.World
         private void CreateObject(TmxObject obj, Rectangle source, TmxTileset tileset, Texture2D tilesetTexture)
         {
             var random = new Random();
-            var tileId = obj.Tile.Gid - tileset.FirstGid;
-            var type = tileset.Tiles[tileId].Type;
+            var type = tileset.Tiles[obj.Tile.Gid - tileset.FirstGid].Type;
             var rotation = MathHelper.ToRadians((float)obj.Rotation);
             var spawnPosition = GetObjectPosition(obj, source);
             Entity entity;
@@ -227,10 +226,10 @@ namespace game.World
             switch (type)
             {
                 case "Car":
-                    entity = new Car(500, 75f, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    entity = new Car(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
                 case "Enemy_Spawn":
-                    entity = new Enemy(128, tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, this, rotation, source);
+                    entity = new Enemy(tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, this, rotation, source);
                     break;
                 case "Dungeon_Entrance":
                     entity = new DungeonEntrance(new ShooterScreen(), screenManager, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
