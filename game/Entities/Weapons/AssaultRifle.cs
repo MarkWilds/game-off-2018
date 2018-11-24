@@ -32,7 +32,7 @@ namespace game
                 return false;
 
             EntityManager.Instance.AddEntity(new Bullet(Damage, bulletTexture, position + (Forward * Height / 2), Forward, Owner.rotation));
-            AudioManager.Instance.PlaySoundEffect(GunShotSound);
+            AudioManager.Instance.PlaySoundEffect(GunShotSound, .08f);
             timer = 0;
 
             return true;

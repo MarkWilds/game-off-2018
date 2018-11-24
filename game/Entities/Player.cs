@@ -2,6 +2,7 @@
 using game.Entities.Animations;
 using game.GameScreens;
 using game.Particles;
+using game.Sound;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -108,6 +109,7 @@ namespace game
         {
             Health -= amount;
             new ParticleEmitter(true, false, 25, position, -hitDirection, .05f, 180, .25f, 1, ParticleShape.Square, EmitType.Burst, Color.Red, Color.Red);
+            AudioManager.Instance.PlaySoundEffect("hitsound", .3f);
             if (Health <= 0)
                 Die();
         }

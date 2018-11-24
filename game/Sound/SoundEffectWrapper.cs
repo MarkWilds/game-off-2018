@@ -21,10 +21,8 @@ namespace game.Sound
             this.randPitch = randomizePitch;
             random = new Random();
 
-            soundEffectInstance = AudioManager.Instance.GetSoundEffectInstance(soundName, looped);
+            soundEffectInstance = AudioManager.Instance.GetSoundEffectInstance(soundName, looped, autoStart);
             this.Volume = volume;
-
-            if (!autoStart) soundEffectInstance.Stop();
         }
 
         public void Update(GameTime gameTime)

@@ -13,7 +13,7 @@ namespace game.Entities
 {
     public class Car : Entity, IControllable
     {
-        private bool started = false;
+        private bool IsPlayerDriving = false;
         private Player player;
 
         private Rectangle interactionBox => new Rectangle(BoundingBox.X - Width, BoundingBox.Y - Height, BoundingBox.Width * 2, BoundingBox.Height * 2);
@@ -41,21 +41,21 @@ namespace game.Entities
 
         public void Start()
         {
-            started = true;
+            IsPlayerDriving = true;
             player.playerController.ChangeControl(this);
-            exhaustParticles.Start();
-            exhaustParticles2.Start();
+            exhaustParticles.Paused = false;
+            exhaustParticles2.Paused = false;
             interactionTimerCooldown = .5f;
             carSound.Play();
         }
 
-        public void Stop()
+        public void ShutDown()
         {
-            started = false;
+            IsPlayerDriving = false;
             player.playerController.ChangeControl(player);
             player.position = new Vector2(position.X + Width, position.Y + Height / 2);
-            exhaustParticles.Stop();
-            exhaustParticles2.Stop();
+            exhaustParticles.Paused = true;
+            exhaustParticles2.Paused = true;
             interactionTimerCooldown = .5f;
             carSound.Stop();
         }
@@ -85,11 +85,11 @@ namespace game.Entities
 
         private void UpdateExhaustParticles()
         {
-            exhaustParticles.SetLocation(position - Forward * Height * 0.98f + Right * Width / 6);
-            exhaustParticles2.SetLocation(position - Forward * Height * 0.98f - Right * Width / 6);
+            exhaustParticles.Position = position - Forward * Height * 0.98f + Right * Width / 6;
+            exhaustParticles2.Position = position - Forward * Height * 0.98f - Right * Width / 6;
 
-            exhaustParticles.SetDirection(-Forward);
-            exhaustParticles2.SetDirection(-Forward);
+            exhaustParticles.ParticleDirection = -Forward;
+            exhaustParticles2.ParticleDirection = -Forward;
         }
 
         private void HandleMovement(float deltaTime)
@@ -100,8 +100,7 @@ namespace game.Entities
                 (float)Math.Cos(rotation),
                 (float)Math.Sin(rotation));
 
-            //If the player isn't driving the car, slow it down
-            if (!started && currentSpeed != 0)
+            if (!IsPlayerDriving && currentSpeed != 0)
                 SlowDown(deltaTime);
 
             position += direction * currentSpeed * deltaTime;
@@ -147,7 +146,7 @@ namespace game.Entities
                 rotation += (turnAngle * (currentSpeed / topSpeed) * deltaTime);
 
             if (InputManager.IsKeyPressed(Keys.F) && interactionTimerCooldown <= 0f)
-                Stop();
+                ShutDown();
 
             //Not accelerating or braking
             if (!InputManager.IsKeyDown(Keys.W) && !InputManager.IsKeyDown(Keys.S))
@@ -159,8 +158,8 @@ namespace game.Entities
             Health -= amount;
             if (Health <= 0)
             {
-                if (started)
-                    Stop();
+                if (IsPlayerDriving)
+                    ShutDown();
 
                 Destroy();
             }

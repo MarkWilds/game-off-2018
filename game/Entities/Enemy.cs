@@ -100,7 +100,7 @@ namespace game.Entities
             EntityManager.Instance.AddEntity(new Bullet(damage, OverworldScreen.BulletTexture,
                 position + (Forward * Height), Forward, rotation));
             timer = 0;
-            AudioManager.Instance.PlaySoundEffect("GunShot");
+            AudioManager.Instance.PlaySoundEffect("GunShot", .08f);
         }
 
         private void LookAtTarget()

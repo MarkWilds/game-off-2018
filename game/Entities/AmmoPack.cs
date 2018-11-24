@@ -35,7 +35,7 @@ namespace game.Entities
             if (player.BoundingBox.Intersects(this.BoundingBox))
             {
                 player.WeaponManager.AddAmmo(bulletType, amount);
-                AudioManager.Instance.PlaySoundEffect("Pickup");
+                AudioManager.Instance.PlaySoundEffect("Pickup", .1f);
                 Destroy();
             }
         }

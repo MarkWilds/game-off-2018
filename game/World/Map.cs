@@ -241,6 +241,9 @@ namespace game.World
                 case "Health":
                     entity = new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, rotation, source);
                     break;
+                case "Gas":
+                    entity = new GasStation(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    break;
                 default:
                     entity = new Entity(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;

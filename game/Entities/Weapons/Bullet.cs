@@ -1,4 +1,5 @@
 ﻿using game.Entities;
+using game.Particles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -19,6 +20,8 @@ namespace game
         {
             this.direction = direction;
             this.damage = damage;
+
+            new ParticleEmitter(true, false, 5, position, -Forward * Height, .03f, 180, .25f, .25f, ParticleShape.Circle, EmitType.Burst, Color.Gray, Color.Transparent);
         }
 
         public override void Update(GameTime gameTime)

@@ -32,6 +32,12 @@
 /processorParam:Quality=Best
 /build:Audio/GunShot.wav
 
+#begin Audio/hitsound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/hitsound.wav
+
 #begin Audio/Pickup.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
