@@ -101,10 +101,10 @@ namespace game.GameScreens
         {
             ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //Camera shake
+            //Camera shakes
             var offset = StaticScreenShaker.Instance.GetOffset();
             var shakeMat = Matrix.CreateTranslation(offset.X, offset.Y, 0);
-            var mat = camera.ViewportOffset.InvertAbsolute + shakeMat;
+            var mat = camera.ViewportOffset.InvertAbsolute * shakeMat;
             spriteBatch.Begin(transformMatrix: mat, samplerState: SamplerState.PointClamp);
             
             //World

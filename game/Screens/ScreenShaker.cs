@@ -41,7 +41,7 @@ namespace game.Screens
             if (_milliseconds <= 0)
                 return;
 
-            _radius -= .25f;
+            _radius -= _radius / 3;
             _angle += (150 + (new Random().Next(60)));
             _milliseconds -= time.ElapsedGameTime.Milliseconds;
         }

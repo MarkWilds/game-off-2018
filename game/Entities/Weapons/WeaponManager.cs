@@ -77,7 +77,7 @@ namespace game
             if (CurrentWeapon.Shoot())
             {
                 ammo[CurrentWeapon.BulletType]--;
-                StaticScreenShaker.Instance.Shake(100, 10);
+                StaticScreenShaker.Instance.Shake(100, 5);
             }
         }
 
