@@ -22,9 +22,6 @@ namespace game.Screens
             if (_radius < radius)
                 _radius = radius;
 
-            if (_radius < radius)
-                _radius = radius;
-
             if (_milliseconds < milliseconds)
                 _milliseconds = milliseconds;
         }
@@ -39,16 +36,18 @@ namespace game.Screens
         public void Update(GameTime time)
         {
             if (_milliseconds <= 0)
+                _radius = _radius - (time.ElapsedGameTime.Milliseconds / 100f);
+            
+            if (_radius <= 0)
                 return;
 
-            _radius -= _radius / 3;
             _angle += (150 + (new Random().Next(60)));
             _milliseconds -= time.ElapsedGameTime.Milliseconds;
         }
 
         public Vector2 GetOffset()
         {
-            if (_milliseconds <= 0)
+            if (_radius <= 0 && _milliseconds <= 0)
                 return new Vector2();
             
             var offset = new Vector2((float)(Math.Sin(_angle) * _radius), (float)(Math.Cos(_angle) * _radius));

@@ -74,11 +74,11 @@ namespace game
             if (ammo[CurrentWeapon.BulletType] <= 0)
                 return;
 
-            if (CurrentWeapon.Shoot())
-            {
-                ammo[CurrentWeapon.BulletType]--;
-                StaticScreenShaker.Instance.Shake(100, 5);
-            }
+            if (!CurrentWeapon.Shoot())
+                return;
+            
+            ammo[CurrentWeapon.BulletType]--;
+            StaticScreenShaker.Instance.Shake(100, 5);
         }
 
         public void AddAmmo(BulletType type, int amount)
