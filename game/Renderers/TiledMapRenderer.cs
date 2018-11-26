@@ -18,99 +18,90 @@ namespace game
                 if (!layer.Visible)
                     continue;
 
-                DrawTiles(map, batch, camera, layer);
+                DrawVisibleTiles(batch, map, layer, camera);
             }
         }
 
-        private void DrawTiles(Map map, SpriteBatch batch, Camera camera, TmxLayer layer)
+        private void DrawVisibleTiles(SpriteBatch batch, Map map, TmxLayer layer, Camera camera)
         {
-            List<TmxLayerTile> visibleTiles = GetVisibleTilesForLayer(map, layer, camera);
-            foreach (TmxLayerTile tile in visibleTiles)
-            {
-                Rectangle source, destination;
-                TmxTileset tileset = map.GetTilesetForTile(tile);
-
-                if (tileset == null)
-                    continue;
-
-                Texture2D tilesetTexture = map.Textures[tileset];
-
-                var effect = SpriteEffects.None;
-                var offset = Vector2.Zero;
-                var rotation = 0;
-
-                if (tile.DiagonalFlip)
-                {
-                    rotation = -90;
-                    offset.Y -= tileset.TileHeight;
-
-                    effect |= SpriteEffects.FlipHorizontally;
-                }
-
-                if (tile.HorizontalFlip)
-                {
-                    if (tile.DiagonalFlip)
-                        effect ^= SpriteEffects.FlipVertically;
-                    else
-                        effect ^= SpriteEffects.FlipHorizontally;
-                }
-
-                if (tile.VerticalFlip)
-                {
-                    if (!tile.DiagonalFlip)
-                        effect ^= SpriteEffects.FlipVertically;
-                    else
-                        effect ^= SpriteEffects.FlipHorizontally;
-                }
-
-                var sourceRect = map.GetSourceRectangleForTile(tileset, tile);
-
-                batch.Draw(
-                    tilesetTexture,
-                    new Vector2(tileset.TileWidth * tile.X, tileset.TileHeight * tile.Y) - offset,
-                    sourceRect,
-                    Color.White,
-                    MathHelper.ToRadians(rotation),
-                    Vector2.Zero,
-                    1,
-                    effect,
-                    0);
-            }
-        }
-
-        public List<TmxLayerTile> GetVisibleTilesForLayer(Map map, TmxLayer layer, Camera camera)
-        {
-            List<TmxLayerTile> indexList = new List<TmxLayerTile>();
-            TmxMap data = map.Data;
+            TmxMap mapData = map.Data;
             Rectangle cameraBounds = camera.GetBounds();
 
             // calculate how many tiles to draw
-            int cameraTilesWidth = ((int) camera.Width / data.TileWidth) + 2;
-            int cameraTilesHeight = ((int) camera.Height / data.TileHeight) + 2;
+            int cameraTilesWidth = ((int) camera.Width / mapData.TileWidth) + 2;
+            int cameraTilesHeight = ((int) camera.Height / mapData.TileHeight) + 2;
 
             // get camera position in tiles
-            int xCameraStartTile = (int) ((camera.Position.X - cameraBounds.Width / 2) / data.TileWidth);
-            int yCameraStartTile = (int) ((camera.Position.Y - cameraBounds.Height / 2) / data.TileHeight);
+            int xCameraStartTile = (int) ((camera.Position.X - cameraBounds.Width / 2) / mapData.TileWidth);
+            int yCameraStartTile = (int) ((camera.Position.Y - cameraBounds.Height / 2) / mapData.TileHeight);
 
             int xCameraEndTile = xCameraStartTile + cameraTilesWidth;
             int yCameraEndTile = yCameraStartTile + cameraTilesHeight;
 
             // clamp values
-            ClampValue(ref xCameraStartTile, data.Width);
-            ClampValue(ref xCameraEndTile, data.Width);
-            ClampValue(ref yCameraStartTile, data.Height);
-            ClampValue(ref yCameraEndTile, data.Height);
+            ClampValue(ref xCameraStartTile, mapData.Width);
+            ClampValue(ref xCameraEndTile, mapData.Width);
+            ClampValue(ref yCameraStartTile, mapData.Height);
+            ClampValue(ref yCameraEndTile, mapData.Height);
 
             for (int y = yCameraStartTile; y < yCameraEndTile; y++)
             {
                 for (int x = xCameraStartTile; x < xCameraEndTile; x++)
                 {
-                    TmxLayerTile tile = layer.Tiles[y * data.Width + x];
-                    indexList.Add(tile);
+                    TmxLayerTile tile = layer.Tiles[y * mapData.Width + x];
+                    DrawTile(batch, map, tile);
                 }
             }
+        }
 
-            return indexList;
+        private void DrawTile(SpriteBatch batch, Map map, TmxLayerTile tile)
+        {
+            TmxTileset tileset = map.GetTilesetForTile(tile);
+            if (tileset == null)
+                return;
+
+            Texture2D tilesetTexture = map.Textures[tileset];
+
+            var effect = SpriteEffects.None;
+            var offset = Vector2.Zero;
+            var rotation = 0.0f;
+
+            if (tile.DiagonalFlip)
+            {
+                rotation = -MathHelper.PiOver2;
+                offset.Y -= tileset.TileHeight;
+
+                effect |= SpriteEffects.FlipHorizontally;
+            }
+
+            if (tile.HorizontalFlip)
+            {
+                if (tile.DiagonalFlip)
+                    effect ^= SpriteEffects.FlipVertically;
+                else
+                    effect ^= SpriteEffects.FlipHorizontally;
+            }
+
+            if (tile.VerticalFlip)
+            {
+                if (!tile.DiagonalFlip)
+                    effect ^= SpriteEffects.FlipVertically;
+                else
+                    effect ^= SpriteEffects.FlipHorizontally;
+            }
+
+            var sourceRect = map.GetSourceRectangleForTile(tileset, tile);
+
+            batch.Draw(
+                tilesetTexture,
+                new Vector2(tileset.TileWidth * tile.X, tileset.TileHeight * tile.Y) - offset,
+                sourceRect,
+                Color.White,
+                rotation,
+                Vector2.Zero,
+                1,
+                effect,
+                0);
         }
 
         private void ClampValue(ref int value, int maxValue)

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using game.Screens;
 
 namespace game.Entities
 {
@@ -25,7 +26,8 @@ namespace game.Entities
         public int MaxHealth { get; private set; } = 50;
         private float speed = 128;
 
-        public Enemy(Texture2D texture, Vector2 position, int width, int height, Map map, float rotation = 0, Rectangle source = default(Rectangle))
+        public Enemy(Texture2D texture, Vector2 position, int width, int height, Map map,
+            float rotation = 0, Rectangle source = default(Rectangle))
             : base(texture, width, height, position, rotation, source)
         {
             this.map = map;
@@ -42,54 +44,51 @@ namespace game.Entities
                 Shoot();
             else
             {
-                if(path != null && path.Count > 1)
+                if (path != null && path.Count > 1)
                     MoveTowardsTarget(gameTime);
 
                 if (hasRunningPathRequest)
                     return;
 
-                else if(target != null && Vector2.Distance(position, target.position) < 300)
-                {
-                    map.RequestPath(this, tilePosition, ((Entity)target).tilePosition);
-                    hasRunningPathRequest = true;
-                }
-            }
-                
-        }
-
-        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            base.Draw(spriteBatch, gameTime);
-            return;
-            if (path == null)
-                return;
-
-            RenderPath(spriteBatch);
-        }
-
-        private void RenderPath(SpriteBatch spriteBatch)
-        {
-            //var path = map.GetPath(tilePosition, ((Entity)target).tilePosition);
-            var lastNode = position;
-            foreach (var node in path)
-            {
-                spriteBatch.DrawLine(node, lastNode, Color.Red);
-                lastNode = node;
+                map.RequestPath(this, tilePosition, ((Entity) target).tilePosition);
+                hasRunningPathRequest = true;
             }
         }
+
+// Render code for debugging paths
+//        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+//        {
+//            base.Draw(spriteBatch, gameTime);
+//
+//            if (path == null)
+//                return;
+//
+//            RenderPath(spriteBatch);
+//        }
+//
+//        private void RenderPath(SpriteBatch spriteBatch)
+//        {
+//            //var path = map.GetPath(tilePosition, ((Entity)target).tilePosition);
+//            var lastNode = position;
+//            foreach (var node in path)
+//            {
+//                spriteBatch.DrawLine(node, lastNode, Color.Red);
+//                lastNode = node;
+//            }
+//        }
 
         private void MoveTowardsTarget(GameTime gameTime)
         {
-            if (path.Count > 0)
-            {
-                var point = path.Peek();
-                Vector2 direction = point - position;
-                direction.Normalize();
-                position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
+            if (path.Count <= 0)
+                return;
+            
+            var point = path.Peek();
+            var direction = point - position;
+            direction.Normalize();
+            position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (Vector2.Distance(position, point) < 5)
-                    path.Dequeue();
-            }
+            if (Vector2.Distance(position, point) < 5)
+                path.Dequeue();
         }
 
         private void Shoot()

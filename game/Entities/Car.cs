@@ -36,7 +36,7 @@ namespace game.Entities
             exhaustParticles2 = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 0.25f * scale.X, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
 
             player = EntityManager.Instance.GetPlayer() as Player;
-            carSound = new SoundEffectWrapper("car", true, false, .05f, true);
+            carSound = new SoundEffectWrapper("car", true, false, .025f, true);
         }
 
         public void Start()

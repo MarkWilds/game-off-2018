@@ -44,7 +44,7 @@ namespace game.GameScreens
             ScreenManager.Game.IsMouseVisible = false;
 
             //Create the player
-            player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(456, 456));
+            player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(456, 456), hubMap);
 
             //Initialize some systems
             ParticleSystem.Instance.Initialize(Content);
@@ -62,6 +62,7 @@ namespace game.GameScreens
         public void Update(GameTime gameTime)
         {
             hubMap.Update(gameTime);
+            StaticScreenShaker.Instance.Update(gameTime);
 
             UpdatePlayerLookDirection();
 
@@ -100,8 +101,14 @@ namespace game.GameScreens
         {
             ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            //Camera shakes
+            var offset = StaticScreenShaker.Instance.GetOffset();
+            var shakeMat = Matrix.CreateTranslation(offset.X, offset.Y, 0);
+            var mat = camera.ViewportOffset.InvertAbsolute * shakeMat;
+            spriteBatch.Begin(transformMatrix: mat, samplerState: SamplerState.PointClamp);
+            
             //World
-            spriteBatch.Begin(camera, samplerState: SamplerState.PointClamp);
+            //spriteBatch.Begin(camera, samplerState: SamplerState.PointClamp);
             mapRenderer.Render(hubMap, spriteBatch, camera);
             EntityManager.Instance.Draw(spriteBatch, gameTime);
             ParticleSystem.Instance.Draw(spriteBatch, gameTime);

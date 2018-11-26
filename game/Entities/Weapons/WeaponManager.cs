@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using game.Screens;
 
 namespace game
 {
@@ -73,8 +74,11 @@ namespace game
             if (ammo[CurrentWeapon.BulletType] <= 0)
                 return;
 
-            if(CurrentWeapon.Shoot())
+            if (CurrentWeapon.Shoot())
+            {
                 ammo[CurrentWeapon.BulletType]--;
+                StaticScreenShaker.Instance.Shake(100, 5);
+            }
         }
 
         public void AddAmmo(BulletType type, int amount)

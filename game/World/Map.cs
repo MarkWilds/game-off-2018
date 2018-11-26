@@ -61,6 +61,7 @@ namespace game.World
                 for (int i = 0; i < path.Count - 1; ++i)
                     pathQueue.Enqueue(path[i + 1]);
             }
+
             order.Scout.RecievePath(pathQueue);
         }
 
@@ -83,7 +84,7 @@ namespace game.World
 
         public void RequestPath(IScout scout, Position from, Position to)
         {
-            pathQueue.Enqueue(new ScoutsOrder() { Scout = scout, from = from, to = to });
+            pathQueue.Enqueue(new ScoutsOrder() {Scout = scout, from = from, to = to});
         }
 
         private List<Vector2> GetPath(Position from, Position to)
@@ -114,7 +115,7 @@ namespace game.World
                     coordinates.Y < 0 || coordinates.Y >= Data.Height)
                     return false;
 
-                int index = (int)(coordinates.Y * Data.Width + coordinates.X);
+                int index = (int) (coordinates.Y * Data.Width + coordinates.X);
                 TmxLayer wallLayer = Data.Layers[layerName];
                 TmxLayerTile tile = wallLayer.Tiles[index];
 
@@ -181,19 +182,52 @@ namespace game.World
             return source;
         }
 
-        public Rectangle GetDestinationRectangleForTile(TmxTileset tileset, TmxLayerTile tile)
+        public Vector2 Move(Vector2 velocity, Entity entity, string collisionLayer = "collision")
         {
-            Rectangle destination = new Rectangle();
-            int tileWidth = tileset.TileWidth;
-            int tileHeight = tileset.TileHeight;
+            TmxLayer layer = Data.Layers[collisionLayer];
 
-            destination.Width = tileWidth;
-            destination.Height = tileHeight;
+            Vector2 newPosition = entity.position + velocity;
+            Rectangle sweptBounds = new Rectangle((int) (newPosition.X - entity.Width / 2),
+                (int) (newPosition.Y - entity.Height / 2),
+                entity.Width, entity.Height);
 
-            destination.X = tile.X * tileWidth;
-            destination.Y = tile.Y * tileHeight;
+            // create swept rectangle
+            sweptBounds = Rectangle.Union(sweptBounds, entity.BoundingBox);
 
-            return destination;
+            int minTileX = sweptBounds.Left / Data.TileWidth;
+            int minTileY = sweptBounds.Top / Data.TileHeight;
+
+            int maxTileX = sweptBounds.Right / Data.TileWidth + 1;
+            int maxTileY = sweptBounds.Bottom / Data.TileHeight + 1;
+
+            for (int y = minTileY; y < maxTileY; y++)
+            {
+                for (int x = minTileX; x < maxTileX; x++)
+                {
+                    if (x < 0 || x >= Data.Width ||
+                        y < 0 || y >= Data.Height)
+                        continue;
+
+                    TmxLayerTile tile = layer.Tiles[y * Data.Width + x];
+                    if (GetTilesetForTile(tile) == null)
+                        continue;
+
+                    Rectangle tileBounds = GetTileBounds(x, y);
+                    Rectangle intersection = Rectangle.Intersect(tileBounds, sweptBounds);
+
+                    if (intersection.Width < intersection.Height)
+                        velocity.X += -Math.Sign(velocity.X) * intersection.Width;
+                    else
+                        velocity.Y += -Math.Sign(velocity.Y) * intersection.Height;
+                }
+            }
+
+            return velocity;
+        }
+
+        private Rectangle GetTileBounds(int x, int y)
+        {
+            return new Rectangle(x * Data.TileWidth, y * Data.TileHeight, Data.TileWidth, Data.TileHeight);
         }
 
         public void LoadObjects(ScreenManager screenManager)
@@ -226,26 +260,32 @@ namespace game.World
             switch (type)
             {
                 case "Car":
-                    entity = new Car(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    entity = new Car(tilesetTexture, (int) obj.Width, (int) obj.Height, spawnPosition,
+                        rotation, source);
                     break;
                 case "Enemy_Spawn":
-                    entity = new Enemy(tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, this, rotation, source);
+                    entity = new Enemy(tilesetTexture, spawnPosition, (int) obj.Width, (int) obj.Height, this,
+                        rotation, source);
                     break;
                 case "Dungeon_Entrance":
-                    entity = new DungeonEntrance(new ShooterScreen(), screenManager, tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    entity = new DungeonEntrance(new ShooterScreen(), screenManager, tilesetTexture, (int) obj.Width,
+                        (int) obj.Height, spawnPosition, rotation, source);
                     break;
                 case "Ammo":
-                    var randomBulletType = (BulletType)random.Next(Enum.GetNames(typeof(BulletType)).Length);
-                    entity = new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, rotation, source);
+                    var randomBulletType = (BulletType) random.Next(Enum.GetNames(typeof(BulletType)).Length);
+                    entity = new AmmoPack(randomBulletType, random.Next(15, 30), tilesetTexture, spawnPosition,
+                        (int) obj.Width, (int) obj.Height, rotation, source);
                     break;
                 case "Health":
-                    entity = new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, rotation, source);
+                    entity = new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, (int) obj.Width,
+                        (int) obj.Height, rotation, source);
                     break;
                 case "Gas":
                     entity = new GasPump(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
                 default:
-                    entity = new Entity(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
+                    entity = new Entity(tilesetTexture, (int) obj.Width, (int) obj.Height, spawnPosition, rotation,
+                        source);
                     break;
             }
 
@@ -254,24 +294,24 @@ namespace game.World
 
         private static Vector2 GetObjectPosition(TmxObject obj, Rectangle source)
         {
-            var scale = new Vector2((float)(obj.Width / source.Width), (float)(obj.Height / source.Height));
-            var position = new Vector2((float)(obj.X + (source.Width * scale.X / 2)),
-                                        (float)(obj.Y - (source.Height * scale.Y / 2)));
+            var scale = new Vector2((float) (obj.Width / source.Width), (float) (obj.Height / source.Height));
+            var position = new Vector2((float) (obj.X + (source.Width * scale.X / 2)),
+                (float) (obj.Y - (source.Height * scale.Y / 2)));
 
             if (obj.Rotation == 90 || obj.Rotation == -270)
             {
-                position.Y += (int)obj.Height;
+                position.Y += (int) obj.Height;
             }
 
             else if (obj.Rotation == 180 || obj.Rotation == -180)
             {
-                position.Y += (int)obj.Height;
-                position.X -= (int)obj.Width;
+                position.Y += (int) obj.Height;
+                position.X -= (int) obj.Width;
             }
 
             else if (obj.Rotation == 270 || obj.Rotation == -90)
             {
-                position.X -= (int)obj.Width;
+                position.X -= (int) obj.Width;
             }
 
             return position;
