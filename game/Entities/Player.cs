@@ -2,8 +2,10 @@
 using game.Entities.Animations;
 using game.GameScreens;
 using game.Particles;
+using game.Sound;
 using game.World;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,37 +13,37 @@ namespace game
 {
     public class Player : Entity, IControllable
     {
-        private float speed;
         public WeaponManager WeaponManager { get; private set; }
         public PlayerController playerController { get; private set; }
         private Map map;
 
         public int MaxHealth { get; private set; } = 100;
-        public int Health { get; private set; }
+        public int Health { get; private set; } = 100;
+        public float Speed { get; private set; } = 256;
 
-        public Player(float speed, Texture2D texture, Vector2 position, Map map, float rotation = 0, Rectangle source = default(Rectangle))
+        public Player(Texture2D texture, Vector2 position, Map map, ContentManager contentManager, float rotation = 0, Rectangle source = default(Rectangle))
             : base(texture, 32, 32, position, rotation, source)
         {
             this.map = map;
-            this.speed = speed;
-            Health = MaxHealth;
 
             animator = new Animator(32, 32);
             animator.AddAnimation(new Animation(0, 1, 0)); //Idle
             animator.AddAnimation(new Animation(1, 3, 100)); //Running
 
             playerController = new PlayerController(this);
-            playerController.OnControlChanged += (controlledEntity) => {
-                if (controlledEntity == this)
-                    IsVisible = true;
-                else IsVisible = false;
-            };
+            playerController.OnControlChanged += ChangeControl;
 
-            WeaponManager = new WeaponManager(this);
-            WeaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture,
-                base.position + Forward));
-            WeaponManager.AddWeapon(new AssaultRifle(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
-                base.position + Forward));
+            WeaponManager = new WeaponManager(this, contentManager);
+            var bulletTexture = contentManager.Load<Texture2D>("Sprites/bullet");
+            WeaponManager.AddWeapon(new Pistol(bulletTexture, contentManager.Load<Texture2D>("Sprites/pistol"), base.position + Forward));
+            WeaponManager.AddWeapon(new AssaultRifle(bulletTexture, contentManager.Load<Texture2D>("Sprites/rifle"), base.position + Forward));
+        }
+
+        private void ChangeControl(IControllable controllable)
+        {
+            if (controllable == this)
+                IsVisible = true;
+            else IsVisible = false;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -70,24 +72,7 @@ namespace game
         /// </summary>
         public void HandleInput(GameTime gameTime)
         {
-            Vector2 direction = new Vector2();
-
-            if (InputManager.IsKeyDown(Keys.A))
-                direction.X -= 1;
-
-            if (InputManager.IsKeyDown(Keys.D))
-                direction.X += 1;
-
-            if (InputManager.IsKeyDown(Keys.W))
-                direction.Y -= 1;
-
-            if (InputManager.IsKeyDown(Keys.S))
-                direction.Y += 1;
-
-            if (direction.X != 0 || direction.Y != 0)
-                animator.ChangeAnimation(1);
-            else
-                animator.ChangeAnimation(0);
+            Vector2 direction = new Vector2(InputManager.HorizontalAxis, -InputManager.VerticalAxis);
 
             //Shooting
             if (InputManager.IsMouseButtonPressed(MouseButton.Left))
@@ -98,22 +83,27 @@ namespace game
                 WeaponManager.NextWeapon();
             if (InputManager.IsKeyPressed(Keys.Q) || InputManager.ScrollWheelDown)
                 WeaponManager.PreviousWeapon();
-            
+
             //Normalize vector to prevent faster movement when 2 directions are pressed
             if (direction.X != 0 || direction.Y != 0)
             {
                 direction.Normalize();
-                Vector2 velocity = direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
+                Vector2 velocity = direction * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 velocity = map.Move(velocity, this);
-                
+
+                animator.ChangeAnimation(1);
+
                 position += velocity;
             }
+            else
+                animator.ChangeAnimation(0);
         }
 
         public void TakeDamage(int amount, Vector2 hitDirection)
         {
             Health -= amount;
             new ParticleEmitter(true, false, 25, position, -hitDirection, .05f, 180, .25f, 1, ParticleShape.Square, EmitType.Burst, Color.Red, Color.Red);
+            AudioManager.Instance.PlaySoundEffect("hitsound", .3f);
             if (Health <= 0)
                 Die();
         }

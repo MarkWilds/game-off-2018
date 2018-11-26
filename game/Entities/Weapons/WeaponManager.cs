@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using game.Screens;
+using Microsoft.Xna.Framework.Content;
 
 namespace game
 {
@@ -18,15 +19,19 @@ namespace game
         private List<IWeapon> weaponList = new List<IWeapon>();
         private int currWeaponIndex = 0;
         private Entity owner;
-        private Dictionary<BulletType, int> ammo = new Dictionary<BulletType, int>()
-        {
-            {BulletType.Pistol, 30 },
-            {BulletType.AssaultRifle, 30 }
-        };
+        private Dictionary<BulletType, int> ammo;
+        private ContentManager contentManager;
 
-        public WeaponManager(Entity owner)
+        public WeaponManager(Entity owner, ContentManager contentManager)
         {
             this.owner = owner;
+            this.contentManager = contentManager;
+
+            ammo = new Dictionary<BulletType, int>()
+            {
+                {BulletType.Pistol, 30 },
+                {BulletType.AssaultRifle, 30 }
+            };
         }
 
         public void NextWeapon()

@@ -11,10 +11,8 @@ namespace game.Particles
         private List<Particle> particles = new List<Particle>();
         private Random random;
         private int maxParticles;
-        private Vector2 emitLocation;
         private bool repeat;
         private float particleLifeTime;
-        private Vector2 particleDirection;
         private float particleScale;
         private ParticleShape particleShape;
         private Color startColor;
@@ -22,13 +20,14 @@ namespace game.Particles
         private float maxAngle;
         private float particleSpeed;
         private EmitType emitType;
-
         private float emitterLifeTime;
         private float particlesPerFrame;
-        private bool paused = false;
         private Texture2D particleTexture;
 
+        public bool Paused { get; set; }
         public bool ShouldBeDestroyed { get; private set; }
+        public Vector2 ParticleDirection { get; set; }
+        public Vector2 Position { get; set; }
 
         /// <summary>
         /// Creates a new particleEmitter
@@ -52,8 +51,8 @@ namespace game.Particles
         {
             this.repeat = repeat;
             this.maxParticles = maxParticles;
-            this.emitLocation = emitLocation;
-            this.particleDirection = direction;
+            this.Position = emitLocation;
+            this.ParticleDirection = direction;
             this.particleSpeed = particleSpeed;
             this.maxAngle = maxAngle;
             this.particleLifeTime = particleLifeTime;
@@ -62,7 +61,7 @@ namespace game.Particles
             this.emitType = emitType;
             this.startColor = startColor;
             this.endColor = endColor;
-            this.paused = !autoStart;
+            this.Paused = !autoStart;
             random = new Random();
 
             if (repeat == false)
@@ -102,7 +101,7 @@ namespace game.Particles
         /// </summary>
         private void CreateNewParticles(GameTime gameTime)
         {
-            if (paused)
+            if (Paused)
                 return;
 
             switch (emitType)
@@ -126,7 +125,7 @@ namespace game.Particles
         {
             //Random angle based on emit direction and maxAngle;
             var randomAngle = (float)(random.NextDouble() * 2 - 1) * (maxAngle /2);
-            var directionDeg = MathHelper.ToDegrees((float)Math.Atan2(particleDirection.Y, particleDirection.X)) + randomAngle;
+            var directionDeg = MathHelper.ToDegrees((float)Math.Atan2(ParticleDirection.Y, ParticleDirection.X)) + randomAngle;
             var directionRad = MathHelper.ToRadians(directionDeg);
 
             //Calculate the new random direction from the direction and maxAngle
@@ -137,7 +136,7 @@ namespace game.Particles
             //Randomize the speed
             var randomSpeed = random.NextDouble() * particleSpeed + particleSpeed / 2;
 
-            return new Particle(particleTexture, emitLocation, newDirection, (float)randomSpeed, 0, 0, particleScale, particleLifeTime, startColor, endColor);
+            return new Particle(particleTexture, Position, newDirection, (float)randomSpeed, 0, 0, particleScale, particleLifeTime, startColor, endColor);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -146,30 +145,10 @@ namespace game.Particles
                 particles[index].Draw(spriteBatch, gameTime);
         }
 
-        public void Stop()
-        {
-            paused = true;
-        }
-
-        public void Start()
-        {
-            paused = false;
-        }
-
         public void Destroy()
         {
             particles.Clear();
             ShouldBeDestroyed = true;
-        }
-
-        public void SetLocation(Vector2 newLocation)
-        {
-            emitLocation = newLocation;
-        }
-
-        public void SetDirection(Vector2 newDirection)
-        {
-            particleDirection = newDirection;
         }
     }
 }

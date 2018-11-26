@@ -15,10 +15,7 @@ namespace game.GameScreens
 {
     public class OverworldScreen : IGameScreen
     {
-        //TODO: Remove after testing
         public static Texture2D BulletTexture;
-        public static Texture2D PistolTexture;
-        public static Texture2D RifleTexture;
 
         private Player player;
         private Camera camera;
@@ -32,8 +29,6 @@ namespace game.GameScreens
         public void Initialize(ContentManager Content)
         {
             BulletTexture = Content.Load<Texture2D>("Sprites/Bullet");
-            PistolTexture = Content.Load<Texture2D>("Sprites/Pistol");
-            RifleTexture = Content.Load<Texture2D>("Sprites/Rifle");
 
             CursorInfo = new CursorInfo(MouseCursor.FromTexture2D(Content.Load<Texture2D>("Sprites/CrossHair"), 0, 0), true);
 
@@ -44,7 +39,7 @@ namespace game.GameScreens
             ScreenManager.Game.IsMouseVisible = false;
 
             //Create the player
-            player = new Player(256, Content.Load<Texture2D>("Sprites/Player"), new Vector2(456, 456), hubMap);
+            player = new Player(Content.Load<Texture2D>("Sprites/Player"), new Vector2(456, 456), hubMap, Content);
 
             //Initialize some systems
             ParticleSystem.Instance.Initialize(Content);

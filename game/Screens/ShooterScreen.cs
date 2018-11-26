@@ -58,26 +58,13 @@ namespace game.GameScreens
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
             Mouse.SetPosition(viewport.Width / 2, viewport.Height / 2);
 
-            float verticalMovement = 0.0f;
-            float horizontalMovement = 0.0f;
-
-            if (InputManager.IsKeyDown(Keys.A))
-                horizontalMovement = -1.0f;
-            else if (InputManager.IsKeyDown(Keys.D))
-                horizontalMovement = 1.0f;
-
-            if (InputManager.IsKeyDown(Keys.W))
-                verticalMovement = 1.0f;
-            else if (InputManager.IsKeyDown(Keys.S))
-                verticalMovement = -1.0f;
-
             Vector2 forward = new Vector2((float) Math.Cos(angle * Math.PI / 180),
                 (float) Math.Sin(angle * Math.PI / 180));
             Vector2 right = new Vector2(-forward.Y, forward.X);
 
-            Vector2 movementDirection = forward * verticalMovement + right * horizontalMovement;
+            Vector2 movementDirection = forward * InputManager.VerticalAxis + right * InputManager.HorizontalAxis;
 
-            if (verticalMovement != 0.0f || horizontalMovement != 0.0f)
+            if (movementDirection != Vector2.Zero)
             {
                 movementDirection.Normalize();
 

@@ -32,7 +32,7 @@ namespace game.Entities
             {
                 if (player.Heal(healAmount))
                 {
-                    AudioManager.Instance.PlaySoundEffect("Pickup");
+                    AudioManager.Instance.PlaySoundEffect("Pickup", .1f);
                     Destroy();
                 }
             }

@@ -13,7 +13,6 @@ namespace game.Entities
 {
     public class Enemy : Entity, IDamageable, IScout
     {
-        private float speed;
         private float timeBetweenShots = 1;
         private float timer;
         private IDamageable target => EntityManager.Instance.GetPlayer();
@@ -25,12 +24,12 @@ namespace game.Entities
 
         public int Health { get; private set; } = 50;
         public int MaxHealth { get; private set; } = 50;
+        private float speed = 128;
 
-        public Enemy(float speed, Texture2D texture, Vector2 position, int width, int height, Map map,
+        public Enemy(Texture2D texture, Vector2 position, int width, int height, Map map,
             float rotation = 0, Rectangle source = default(Rectangle))
             : base(texture, width, height, position, rotation, source)
         {
-            this.speed = speed;
             this.map = map;
         }
 
@@ -40,7 +39,8 @@ namespace game.Entities
             timer += (float) gameTime.ElapsedGameTime.TotalSeconds;
 
             LookAtTarget();
-            if (Vector2.Distance(position, target.position) < 125)
+
+            if (Vector2.Distance(position, target.position) < 200)
                 Shoot();
             else
             {
@@ -99,9 +99,7 @@ namespace game.Entities
             EntityManager.Instance.AddEntity(new Bullet(damage, OverworldScreen.BulletTexture,
                 position + (Forward * Height), Forward, rotation));
             timer = 0;
-            AudioManager.Instance.PlaySoundEffect("GunShot");
-
-            StaticScreenShaker.Instance.Shake(100, 3);
+            AudioManager.Instance.PlaySoundEffect("GunShot", .08f);
         }
 
         private void LookAtTarget()
@@ -115,6 +113,7 @@ namespace game.Entities
             Health -= amount;
             new ParticleEmitter(true, false, 25, position, -hitDirection, .05f, 180, .25f, 1, ParticleShape.Square,
                 EmitType.Burst, Color.Red, Color.Red);
+
             if (Health <= 0)
                 Die();
         }

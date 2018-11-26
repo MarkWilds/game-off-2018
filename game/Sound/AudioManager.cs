@@ -20,6 +20,7 @@ namespace game.Sound
         }
         private static AudioManager instance;
         private AudioManager() {}
+        private Dictionary<string, SoundEffect> soundEffects;
 
         public void Initialize(ContentManager contentManager)
         {
@@ -36,17 +37,15 @@ namespace game.Sound
             }
         }
 
-        private Dictionary<string, SoundEffect> soundEffects;
-
-        public void PlaySoundEffect(string soundName)
+        public void PlaySoundEffect(string soundName, float volume)
         {
             if (soundEffects.ContainsKey(soundName))
             {
-                soundEffects[soundName].Play(0.1f, 0, 0);
+                soundEffects[soundName].Play(volume, 0, 0);
             }
         }
 
-        public SoundEffectInstance GetSoundEffectInstance(string soundName, bool looped)
+        public SoundEffectInstance GetSoundEffectInstance(string soundName, bool looped, bool autoPlay)
         {
             SoundEffectInstance effectInstance = null;
             if (soundEffects.ContainsKey(soundName))
@@ -55,7 +54,11 @@ namespace game.Sound
                 if (effectInstance != null)
                 {
                     effectInstance.IsLooped = looped;
-                    effectInstance.Play();
+
+                    if (autoPlay)
+                        effectInstance.Play();
+                    else
+                        effectInstance.Stop();
                 }
             }
 

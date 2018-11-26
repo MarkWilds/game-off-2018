@@ -252,20 +252,19 @@ namespace game.World
         private void CreateObject(TmxObject obj, Rectangle source, TmxTileset tileset, Texture2D tilesetTexture)
         {
             var random = new Random();
-            var tileId = obj.Tile.Gid - tileset.FirstGid;
-            var type = tileset.Tiles[tileId].Type;
-            var rotation = MathHelper.ToRadians((float) obj.Rotation);
+            var type = tileset.Tiles[obj.Tile.Gid - tileset.FirstGid].Type;
+            var rotation = MathHelper.ToRadians((float)obj.Rotation);
             var spawnPosition = GetObjectPosition(obj, source);
             Entity entity;
 
             switch (type)
             {
                 case "Car":
-                    entity = new Car(500, 75f, tilesetTexture, (int) obj.Width, (int) obj.Height, spawnPosition,
+                    entity = new Car(tilesetTexture, (int) obj.Width, (int) obj.Height, spawnPosition,
                         rotation, source);
                     break;
                 case "Enemy_Spawn":
-                    entity = new Enemy(128, tilesetTexture, spawnPosition, (int) obj.Width, (int) obj.Height, this,
+                    entity = new Enemy(tilesetTexture, spawnPosition, (int) obj.Width, (int) obj.Height, this,
                         rotation, source);
                     break;
                 case "Dungeon_Entrance":
@@ -280,6 +279,9 @@ namespace game.World
                 case "Health":
                     entity = new HealthPack(random.Next(15, 30), tilesetTexture, spawnPosition, (int) obj.Width,
                         (int) obj.Height, rotation, source);
+                    break;
+                case "Gas":
+                    entity = new GasPump(tilesetTexture, (int)obj.Width, (int)obj.Height, spawnPosition, rotation, source);
                     break;
                 default:
                     entity = new Entity(tilesetTexture, (int) obj.Width, (int) obj.Height, spawnPosition, rotation,
