@@ -36,16 +36,18 @@ namespace game.Screens
         public void Update(GameTime time)
         {
             if (milliseconds <= 0)
+                radius = radius - (time.ElapsedGameTime.Milliseconds / 100f);
+            
+            if (radius <= 0)
                 return;
 
-            radius -= radius / 3;
             angle += (150 + (new Random().Next(60)));
             milliseconds -= time.ElapsedGameTime.Milliseconds;
         }
 
         public Vector2 GetOffset()
         {
-            if (milliseconds <= 0)
+            if (radius <= 0 && milliseconds <= 0)
                 return new Vector2();
             
             var offset = new Vector2((float)(Math.Sin(angle) * radius), (float)(Math.Cos(angle) * radius));
