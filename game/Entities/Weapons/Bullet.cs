@@ -37,7 +37,7 @@ namespace game
 
         private void CheckCollision()
         {
-            var damagableObjects = EntityManager.Instance.GetDamageableEntities();
+            var damagableObjects = EntityManager.Instance.GetEntitiesInRange(position, 768);
             for (int i = 0; i < damagableObjects.Length; i++)
             {
                 if (BoundingBox.Intersects(damagableObjects[i].BoundingBox))

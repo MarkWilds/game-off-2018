@@ -120,7 +120,7 @@ namespace game.Entities
                 return;
 
             //Get all nearby entities and check if we hit them
-            var nearbyEntities = EntityManager.Instance.GetDamageableEntities().Where(e => Vector2.Distance(position, e.position) < 100).ToArray();
+            var nearbyEntities = EntityManager.Instance.GetEntitiesInRange(position, 100);
             for (int i = 0; i < nearbyEntities.Length; i++)
             {
                 if (nearbyEntities[i] == this)

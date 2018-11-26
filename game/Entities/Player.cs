@@ -5,6 +5,7 @@ using game.Particles;
 using game.Sound;
 using game.World;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -12,35 +13,33 @@ namespace game
 {
     public class Player : Entity, IControllable
     {
-        private float speed;
         public WeaponManager WeaponManager { get; private set; }
         public PlayerController playerController { get; private set; }
         private Map map;
 
         public int MaxHealth { get; private set; } = 100;
         public int Health { get; private set; } = 100;
+        public float Speed { get; private set; } = 256;
 
-        public Player(float speed, Texture2D texture, Vector2 position, Map map, float rotation = 0, Rectangle source = default(Rectangle))
+        public Player(Texture2D texture, Vector2 position, Map map, ContentManager contentManager, float rotation = 0, Rectangle source = default(Rectangle))
             : base(texture, 32, 32, position, rotation, source)
         {
             this.map = map;
-            this.speed = speed;
 
             animator = new Animator(32, 32);
             animator.AddAnimation(new Animation(0, 1, 0)); //Idle
             animator.AddAnimation(new Animation(1, 3, 100)); //Running
 
             playerController = new PlayerController(this);
-            playerController.OnControlChanged += ChangeVisibility;
+            playerController.OnControlChanged += ChangeControl;
 
-            WeaponManager = new WeaponManager(this);
-            WeaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture,
-                base.position + Forward));
-            WeaponManager.AddWeapon(new AssaultRifle(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
-                base.position + Forward));
+            WeaponManager = new WeaponManager(this, contentManager);
+            var bulletTexture = contentManager.Load<Texture2D>("Sprites/bullet");
+            WeaponManager.AddWeapon(new Pistol(bulletTexture, contentManager.Load<Texture2D>("Sprites/pistol"), base.position + Forward));
+            WeaponManager.AddWeapon(new AssaultRifle(bulletTexture, contentManager.Load<Texture2D>("Sprites/rifle"), base.position + Forward));
         }
 
-        private void ChangeVisibility(IControllable controllable)
+        private void ChangeControl(IControllable controllable)
         {
             if (controllable == this)
                 IsVisible = true;
@@ -89,7 +88,7 @@ namespace game
             if (direction.X != 0 || direction.Y != 0)
             {
                 direction.Normalize();
-                Vector2 velocity = direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Vector2 velocity = direction * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 velocity = map.Move(velocity, this);
 
                 animator.ChangeAnimation(1);

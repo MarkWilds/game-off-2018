@@ -10,6 +10,7 @@ namespace game.Entities
     public class GasPump : Entity, IDamageable
     {
         private List<ParticleEmitter> gasLeaks;
+        private float explosionRange = 150;
 
         public GasPump(Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle)) 
             : base(texture, width, height, position, rotation, source)
@@ -36,9 +37,24 @@ namespace game.Entities
             {
                 emitter.Destroy();
             }
+            DamageNearbyEntities();
             Destroy();
         }
-        
+
+        private void DamageNearbyEntities()
+        {
+            var nearbyEntities = EntityManager.Instance.GetEntitiesInRange(position, explosionRange);
+            foreach (IDamageable entity in nearbyEntities)
+            {
+                if (entity == this)
+                    continue;
+
+                var distance = Vector2.Distance(entity.position, position);
+                var damage = (1 - (distance / explosionRange)) * 100;
+                entity.TakeDamage((int)damage, (position - entity.position));
+            }
+        }
+
         private void SpawnParticles()
         {
             new ParticleEmitter(true, false, 250, position, Forward, .075f, 360, .75f, .75f, ParticleShape.Circle, EmitType.Burst, Color.DarkRed, Color.Transparent);

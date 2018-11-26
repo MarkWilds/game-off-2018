@@ -71,9 +71,18 @@ namespace game.Entities
         /// Get all exisiting damageable entities
         /// </summary>
         /// <returns></returns>
-        public Entity[] GetDamageableEntities()
+        public Entity[] GetEntities()
         {
             return entities.Where(entity => entity is IDamageable).ToArray();
+        }
+
+        /// <summary>
+        /// Get all exisiting damageable entities in a certain range
+        /// </summary>
+        /// <returns></returns>
+        public Entity[] GetEntitiesInRange(Vector2 position, float range)
+        {
+            return entities.Where(entity => entity is IDamageable && Vector2.Distance(entity.position, position) <= range).ToArray();
         }
 
         public IControllable GetPlayer()
