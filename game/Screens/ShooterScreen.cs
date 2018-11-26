@@ -62,7 +62,7 @@ namespace game.GameScreens
                 (float) Math.Sin(angle * Math.PI / 180));
             Vector2 right = new Vector2(-forward.Y, forward.X);
 
-            Vector2 movementDirection = forward * InputManager.VerticalAxis() + right * InputManager.HorizontalAxis();
+            Vector2 movementDirection = forward * InputManager.VerticalAxis + right * InputManager.HorizontalAxis;
 
             if (movementDirection != Vector2.Zero)
             {

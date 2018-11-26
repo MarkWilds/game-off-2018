@@ -83,26 +83,12 @@ namespace game
         /// <summary>
         /// Return the horizontal axis input
         /// </summary>
-        public static float HorizontalAxis()
-        {
-            if (IsKeyDown(Keys.A))
-                return -1;
-            if (IsKeyDown(Keys.D))
-                return 1;
-            else return 0;
-        }
+        public static float HorizontalAxis => IsKeyDown(Keys.D) ? 1 : IsKeyDown(Keys.A) ? -1 : 0;
 
         /// <summary>
         /// Return the vertical axis input
         /// </summary>
-        public static float VerticalAxis()
-        {
-            if (IsKeyDown(Keys.W))
-                return 1;
-            if (IsKeyDown(Keys.S))
-                return -1;
-            else return 0;
-        }
+        public static float VerticalAxis => IsKeyDown(Keys.W) ? 1 : IsKeyDown(Keys.S) ? -1 : 0;
 
         public static void Update()
         {            

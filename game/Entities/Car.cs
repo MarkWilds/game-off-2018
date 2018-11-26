@@ -135,14 +135,14 @@ namespace game.Entities
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            currentSpeed += InputManager.VerticalAxis() * acceleration * deltaTime;
-            rotation += InputManager.HorizontalAxis() * turnAngle * (currentSpeed / topSpeed) * deltaTime;
+            currentSpeed += InputManager.VerticalAxis * acceleration * deltaTime;
+            rotation += InputManager.HorizontalAxis * turnAngle * (currentSpeed / topSpeed) * deltaTime;
 
             if (InputManager.IsKeyPressed(Keys.F) && interactionTimerCooldown <= 0f)
                 ShutDown();
 
             //Not accelerating or braking
-            if (InputManager.VerticalAxis() == 0)
+            if (InputManager.VerticalAxis == 0)
                 SlowDown(deltaTime);
         }
 
