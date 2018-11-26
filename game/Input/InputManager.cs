@@ -80,6 +80,30 @@ namespace game
             }
         }
 
+        /// <summary>
+        /// Return the horizontal axis input
+        /// </summary>
+        public static float HorizontalAxis()
+        {
+            if (IsKeyDown(Keys.A))
+                return -1;
+            if (IsKeyDown(Keys.D))
+                return 1;
+            else return 0;
+        }
+
+        /// <summary>
+        /// Return the vertical axis input
+        /// </summary>
+        public static float VerticalAxis()
+        {
+            if (IsKeyDown(Keys.W))
+                return 1;
+            if (IsKeyDown(Keys.S))
+                return -1;
+            else return 0;
+        }
+
         public static void Update()
         {            
             previousKeyboardState = currentKeyboardState;

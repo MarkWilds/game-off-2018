@@ -18,31 +18,33 @@ namespace game
         private Map map;
 
         public int MaxHealth { get; private set; } = 100;
-        public int Health { get; private set; }
+        public int Health { get; private set; } = 100;
 
         public Player(float speed, Texture2D texture, Vector2 position, Map map, float rotation = 0, Rectangle source = default(Rectangle))
             : base(texture, 32, 32, position, rotation, source)
         {
             this.map = map;
             this.speed = speed;
-            Health = MaxHealth;
 
             animator = new Animator(32, 32);
             animator.AddAnimation(new Animation(0, 1, 0)); //Idle
             animator.AddAnimation(new Animation(1, 3, 100)); //Running
 
             playerController = new PlayerController(this);
-            playerController.OnControlChanged += (controlledEntity) => {
-                if (controlledEntity == this)
-                    IsVisible = true;
-                else IsVisible = false;
-            };
+            playerController.OnControlChanged += ChangeVisibility;
 
             WeaponManager = new WeaponManager(this);
             WeaponManager.AddWeapon(new Pistol(OverworldScreen.BulletTexture, OverworldScreen.PistolTexture,
                 base.position + Forward));
             WeaponManager.AddWeapon(new AssaultRifle(OverworldScreen.BulletTexture, OverworldScreen.RifleTexture,
                 base.position + Forward));
+        }
+
+        private void ChangeVisibility(IControllable controllable)
+        {
+            if (controllable == this)
+                IsVisible = true;
+            else IsVisible = false;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -71,19 +73,7 @@ namespace game
         /// </summary>
         public void HandleInput(GameTime gameTime)
         {
-            Vector2 direction = new Vector2();
-
-            if (InputManager.IsKeyDown(Keys.A))
-                direction.X -= 1;
-
-            if (InputManager.IsKeyDown(Keys.D))
-                direction.X += 1;
-
-            if (InputManager.IsKeyDown(Keys.W))
-                direction.Y -= 1;
-
-            if (InputManager.IsKeyDown(Keys.S))
-                direction.Y += 1;
+            Vector2 direction = new Vector2(InputManager.HorizontalAxis(), -InputManager.VerticalAxis());
 
             if (direction.X != 0 || direction.Y != 0)
                 animator.ChangeAnimation(1);
