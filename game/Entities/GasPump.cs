@@ -23,6 +23,9 @@ namespace game.Entities
 
         public void TakeDamage(int amount, Vector2 hitDirection)
         {
+            if (Health <= 0)
+                return;
+
             Health -= amount;
             gasLeaks.Add(new ParticleEmitter(true, true, 10, position - hitDirection * Width / 3, -hitDirection, .005f, 20, 1, .4f, ParticleShape.Circle, EmitType.OverTime, Color.Brown, Color.RosyBrown));
 
@@ -32,33 +35,12 @@ namespace game.Entities
 
         private void Explode()
         {
-            SpawnParticles();
             foreach (var emitter in gasLeaks)
             {
                 emitter.Destroy();
             }
-            DamageNearbyEntities();
+            new Explosion(this, 100, position);
             Destroy();
-        }
-
-        private void DamageNearbyEntities()
-        {
-            var nearbyEntities = EntityManager.Instance.GetEntitiesInRange(position, explosionRange);
-            foreach (IDamageable entity in nearbyEntities)
-            {
-                if (entity == this)
-                    continue;
-
-                var distance = Vector2.Distance(entity.position, position);
-                var damage = (1 - (distance / explosionRange)) * 100;
-                entity.TakeDamage((int)damage, (position - entity.position));
-            }
-        }
-
-        private void SpawnParticles()
-        {
-            new ParticleEmitter(true, false, 250, position, Forward, .075f, 360, .75f, .75f, ParticleShape.Circle, EmitType.Burst, Color.DarkRed, Color.Transparent);
-            new ParticleEmitter(true, false, 200, position, -Forward, .075f, 360, .75f, .75f, ParticleShape.Circle, EmitType.OverTime, Color.Black, Color.Transparent);
         }
     }
 }

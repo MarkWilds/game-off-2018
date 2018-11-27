@@ -158,12 +158,6 @@ namespace game.Entities
             }
         }
 
-        private void SpawnExplosion()
-        {
-            new ParticleEmitter(true, false, 50, position, Forward, .05f, 360, .75f, .5f, ParticleShape.Circle, EmitType.Burst, Color.DarkRed, Color.Transparent);
-            new ParticleEmitter(true, false, 50, position, -Forward, .05f, 360, .75f, .5f, ParticleShape.Circle, EmitType.OverTime, Color.Black, Color.Transparent);
-        }
-
         private void SlowDown(float deltaTime)
         {
             if (currentSpeed > 0.1f)
@@ -180,7 +174,7 @@ namespace game.Entities
         {
             carSound.Stop();
             exhaustParticles.Destroy();
-            SpawnExplosion();
+            new Explosion(this, 100, position);
             base.Destroy();
         }
     }

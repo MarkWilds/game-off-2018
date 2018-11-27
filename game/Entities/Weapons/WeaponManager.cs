@@ -50,14 +50,6 @@ namespace game
                 currWeaponIndex--;
         }
 
-        public void SwitchWeapon(int index)
-        {
-            if (index < 0 || index >= weaponList.Count)
-                throw new IndexOutOfRangeException("Weapon index out of range");
-
-            currWeaponIndex = index;
-        }
-
         public void AddWeapon(IWeapon weapon)
         {
             weaponList.Add(weapon);
@@ -83,7 +75,7 @@ namespace game
                 return;
             
             ammo[CurrentWeapon.BulletType]--;
-            StaticScreenShaker.Instance.Shake(100, 5);
+            StaticScreenShaker.Instance.Shake(100, 2.5f);
         }
 
         public void AddAmmo(BulletType type, int amount)

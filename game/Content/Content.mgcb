@@ -26,6 +26,12 @@
 /processorParam:Quality=Best
 /build:Audio/car.wav
 
+#begin Audio/Explosion.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Explosion.wav
+
 #begin Audio/GunShot.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
