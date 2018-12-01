@@ -26,8 +26,8 @@ namespace game.Entities
         public int Health { get; private set; } = 150;
         public int MaxHealth { get; private set; } = 150;
         private float currentSpeed;
-        private float topSpeed = 5000;
-        private float acceleration = 750f;
+        private float topSpeed = 500;
+        private float acceleration = 75f;
         private float turnAngle = 6f;
         private Map map;
 
