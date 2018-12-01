@@ -85,6 +85,7 @@ namespace game.Entities
             var point = path.Peek();
             var direction = point - position;
             direction.Normalize();
+
             position += direction * speed * (float) gameTime.ElapsedGameTime.TotalSeconds;
 
             if (Vector2.Distance(position, point) < 5)

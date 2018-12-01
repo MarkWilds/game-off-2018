@@ -2,6 +2,7 @@
 using game.Entities.Animations;
 using game.GameScreens;
 using game.Particles;
+using game.Screens;
 using game.Sound;
 using game.World;
 using Microsoft.Xna.Framework;
@@ -16,15 +17,18 @@ namespace game
         public WeaponManager WeaponManager { get; private set; }
         public PlayerController playerController { get; private set; }
         private Map map;
+        public int Collectables { get; set; } = 0;
+        private ScreenManager ScreenManager;
 
         public int MaxHealth { get; private set; } = 100;
         public int Health { get; private set; } = 100;
         public float Speed { get; private set; } = 256;
 
-        public Player(Texture2D texture, Vector2 position, Map map, ContentManager contentManager, float rotation = 0, Rectangle source = default(Rectangle))
+        public Player(Texture2D texture, Vector2 position, Map map, ContentManager contentManager, ScreenManager screenManager, float rotation = 0, Rectangle source = default(Rectangle))
             : base(texture, 32, 32, position, rotation, source)
         {
             this.map = map;
+            this.ScreenManager = screenManager;
 
             animator = new Animator(32, 32);
             animator.AddAnimation(new Animation(0, 1, 0)); //Idle
@@ -123,6 +127,13 @@ namespace game
                 Health = MaxHealth;
 
             return true;
+        }
+
+        public void PickUpCollectable()
+        {
+            Collectables++;
+            if (Collectables >= 5)
+                ScreenManager.ChangeScreen(new GameWonScreen());
         }
     }
 }

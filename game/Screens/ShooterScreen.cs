@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using game.Entities;
 using game.Interface;
 using game.Screens;
 using game.World;
@@ -25,6 +26,7 @@ namespace game.GameScreens
         private float movementSpeed = 128;
         private float angle;
         private int cellSize = 32;
+        private Entity player;
 
         private MouseState previousState;
 
@@ -39,6 +41,7 @@ namespace game.GameScreens
             previousState = Mouse.GetState();
 
             CursorInfo = new CursorInfo(MouseCursor.Arrow, false);
+            player = new Entity(null, 32, 32, Vector2.Zero);
         }
 
         public void Update(GameTime gameTime)
@@ -83,6 +86,9 @@ namespace game.GameScreens
                     }
                 }
 
+
+                player.position = position;
+                velocity = currentMap.Move(velocity, player);
                 position += velocity;
             }
         }
@@ -92,11 +98,10 @@ namespace game.GameScreens
             ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-
             renderer.ClearDepthBuffer();
             renderer.RenderMap(spriteBatch, currentMap, position, angle, cellSize, "walls1");
 
-            RenderProps(spriteBatch);
+            //RenderProps(spriteBatch);
 
             spriteBatch.End();
         }

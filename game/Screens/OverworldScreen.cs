@@ -39,7 +39,7 @@ namespace game.GameScreens
             ScreenManager.Game.IsMouseVisible = false;
 
             //Create the player
-            player = new Player(Content.Load<Texture2D>("Sprites/Player"), new Vector2(456, 456), hubMap, Content);
+            player = new Player(Content.Load<Texture2D>("Sprites/Player"), new Vector2(456, 456), hubMap, Content, ScreenManager);
 
             //Initialize some systems
             ParticleSystem.Instance.Initialize(Content);

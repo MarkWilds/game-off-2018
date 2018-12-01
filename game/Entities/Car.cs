@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using game.Particles;
 using game.Sound;
+using game.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,11 +26,12 @@ namespace game.Entities
         public int Health { get; private set; } = 150;
         public int MaxHealth { get; private set; } = 150;
         private float currentSpeed;
-        private float topSpeed = 500;
-        private float acceleration = 75f;
+        private float topSpeed = 5000;
+        private float acceleration = 750f;
         private float turnAngle = 6f;
+        private Map map;
 
-        public Car(Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle)) 
+        public Car(Map map, Texture2D texture, int width, int height, Vector2 position, float rotation = 0, Rectangle source = default(Rectangle)) 
             : base(texture, width, height, position, rotation, source)
         {
             exhaustParticles = new ParticleEmitter(false, true, 90, position, -Forward, .05f, 20, .45f, 0.25f * scale.X, ParticleShape.Circle, EmitType.OverTime, Color.Gray, Color.Transparent);
@@ -37,6 +39,7 @@ namespace game.Entities
 
             player = EntityManager.Instance.GetPlayer() as Player;
             carSound = new SoundEffectWrapper("car", true, false, .025f, true);
+            this.map = map;
         }
 
         public void Start()
@@ -103,7 +106,10 @@ namespace game.Entities
             if (!IsPlayerDriving && currentSpeed != 0)
                 SlowDown(deltaTime);
 
-            position += direction * currentSpeed * deltaTime;
+            var velocity = direction * currentSpeed * deltaTime;
+            velocity = map.Move(velocity, this);
+
+            position += velocity;
         }
 
         private void CheckCollisions()
@@ -154,6 +160,7 @@ namespace game.Entities
                 if (IsPlayerDriving)
                     ShutDown();
 
+                new Explosion(this, 100, position);
                 Destroy();
             }
         }
@@ -174,7 +181,6 @@ namespace game.Entities
         {
             carSound.Stop();
             exhaustParticles.Destroy();
-            new Explosion(this, 100, position);
             base.Destroy();
         }
     }

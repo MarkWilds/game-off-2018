@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="180" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="30" nextobjectid="240">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="180" height="130" tilewidth="32" tileheight="32" infinite="0" nextlayerid="30" nextobjectid="267">
  <tileset firstgid="1" name="hub" tilewidth="32" tileheight="32" tilecount="64" columns="8">
   <image source="../Tilesets/hub.png" width="256" height="256"/>
   <tile id="4" probability="0.1"/>
@@ -22,6 +22,7 @@
   <tile id="12" type="Gas"/>
   <tile id="13" type="Shelf"/>
   <tile id="15" type="Car"/>
+  <tile id="17" type="Collectable"/>
   <tile id="24" type="Enemy_Spawn"/>
  </tileset>
  <layer id="27" name="Ground_Buildings" width="180" height="130">
@@ -355,10 +356,7 @@
   <object id="98" gid="92" x="4320" y="3200" width="64" height="64" rotation="-90"/>
   <object id="99" gid="92" x="4032" y="3264" width="64" height="64"/>
   <object id="100" gid="91" x="4032" y="3008" width="64" height="64"/>
-  <object id="113" gid="93" x="5184" y="416" width="32" height="32" rotation="180"/>
   <object id="132" gid="114" x="4032" y="2400" width="32" height="32"/>
-  <object id="140" gid="101" x="832" y="736" width="32" height="32"/>
-  <object id="141" gid="101" x="736" y="896" width="32" height="32"/>
   <object id="145" gid="101" x="4224" y="2304" width="32" height="32"/>
   <object id="146" gid="101" x="4032" y="2400" width="32" height="32"/>
   <object id="147" gid="101" x="4512" y="2432" width="32" height="32"/>
@@ -385,21 +383,6 @@
   <object id="168" gid="101" x="4800" y="960" width="32" height="32"/>
   <object id="169" gid="105" x="736" y="544" width="64" height="32"/>
   <object id="171" gid="105" x="4672" y="416" width="64" height="32" rotation="90"/>
-  <object id="172" gid="96" x="448" y="512" width="32" height="32"/>
-  <object id="173" gid="96" x="448" y="544" width="32" height="32"/>
-  <object id="174" gid="96" x="448" y="576" width="32" height="32"/>
-  <object id="175" gid="96" x="576" y="672" width="32" height="32"/>
-  <object id="176" gid="96" x="544" y="672" width="32" height="32"/>
-  <object id="177" gid="96" x="448" y="672" width="32" height="32"/>
-  <object id="178" gid="96" x="480" y="672" width="32" height="32"/>
-  <object id="179" gid="96" x="512" y="672" width="32" height="32"/>
-  <object id="180" gid="97" x="640" y="416" width="32" height="32"/>
-  <object id="181" gid="97" x="672" y="416" width="32" height="32"/>
-  <object id="182" gid="97" x="704" y="416" width="32" height="32"/>
-  <object id="183" gid="97" x="736" y="416" width="32" height="32"/>
-  <object id="184" gid="97" x="768" y="416" width="32" height="32"/>
-  <object id="185" gid="97" x="800" y="416" width="32" height="32"/>
-  <object id="186" gid="97" x="832" y="416" width="32" height="32"/>
   <object id="191" gid="100" x="1342" y="956.333" width="67.3333" height="54" rotation="90"/>
   <object id="192" gid="92" x="1568" y="928" width="64" height="64"/>
   <object id="193" gid="97" x="1600" y="1024" width="32" height="32"/>
@@ -439,6 +422,27 @@
   <object id="237" gid="103" x="1152" y="992" width="32" height="32" rotation="180"/>
   <object id="238" gid="103" x="1184" y="992" width="32" height="32" rotation="180"/>
   <object id="239" gid="103" x="1408" y="992" width="32" height="32" rotation="90"/>
+  <object id="240" gid="107" x="1472" y="896" width="32" height="32"/>
+  <object id="241" gid="107" x="384" y="3776" width="32" height="32"/>
+  <object id="242" gid="107" x="4608" y="2752" width="32" height="32"/>
+  <object id="243" gid="107" x="5056" y="480" width="32" height="32"/>
+  <object id="244" gid="107" x="4256" y="3008" width="32" height="32"/>
+  <object id="245" gid="101" x="416" y="3648" width="32" height="32"/>
+  <object id="246" gid="101" x="512" y="3744" width="32" height="32"/>
+  <object id="247" gid="96" x="704" y="3136" width="32" height="32"/>
+  <object id="248" gid="96" x="896" y="2944" width="32" height="32"/>
+  <object id="249" gid="96" x="2336" y="2560" width="32" height="32"/>
+  <object id="250" gid="96" x="3008" y="1792" width="32" height="32"/>
+  <object id="251" gid="96" x="3104" y="1696" width="32" height="32"/>
+  <object id="252" gid="97" x="1024" y="992" width="32" height="32"/>
+  <object id="253" gid="97" x="3008" y="576" width="32" height="32"/>
+  <object id="254" gid="96" x="3008" y="608" width="32" height="32"/>
+  <object id="255" gid="105" x="4352" y="3008" width="64" height="32"/>
+  <object id="256" gid="101" x="640" y="3424" width="32" height="32"/>
+  <object id="257" gid="101" x="1856" y="2720" width="32" height="32"/>
+  <object id="258" gid="101" x="3104" y="2368" width="32" height="32"/>
+  <object id="259" gid="101" x="3424" y="1632" width="32" height="32"/>
+  <object id="260" gid="101" x="2752" y="896" width="32" height="32"/>
  </objectgroup>
  <layer id="29" name="collision" width="180" height="130" visible="0">
   <data encoding="csv">

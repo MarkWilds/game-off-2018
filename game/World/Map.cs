@@ -260,7 +260,7 @@ namespace game.World
             switch (type)
             {
                 case "Car":
-                    entity = new Car(tilesetTexture, (int) obj.Width, (int) obj.Height, spawnPosition,
+                    entity = new Car(this, tilesetTexture, (int) obj.Width, (int) obj.Height, spawnPosition,
                         rotation, source);
                     break;
                 case "Enemy_Spawn":
@@ -270,6 +270,9 @@ namespace game.World
                 case "Dungeon_Entrance":
                     entity = new DungeonEntrance(new ShooterScreen(), screenManager, tilesetTexture, (int) obj.Width,
                         (int) obj.Height, spawnPosition, rotation, source);
+                    break;
+                case "Collectable":
+                    entity = new Collectable(tilesetTexture, spawnPosition, (int)obj.Width, (int)obj.Height, rotation, source);
                     break;
                 case "Ammo":
                     var randomBulletType = (BulletType) random.Next(Enum.GetNames(typeof(BulletType)).Length);
